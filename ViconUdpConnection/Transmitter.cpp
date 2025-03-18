@@ -13,7 +13,7 @@
 
 #define PORT	 8080 
 #define MAXLINE 1024 
-#define IP "SOME IP ADDRESS" 
+#define IP "192.168.50.193" 
 
 void sendData(int sockfd, struct sockaddr_in servaddr, const char* message) {
     int time = 0;
