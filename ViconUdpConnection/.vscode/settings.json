@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "ostream": "cpp"
+    },
+    "python.autoComplete.extraPaths": [
+        "/home/jens/ros2_ws/install/turtlesim/lib/python3.12/site-packages",
+        "/opt/ros/jazzy/lib/python3.12/site-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/jens/ros2_ws/install/turtlesim/lib/python3.12/site-packages",
+        "/opt/ros/jazzy/lib/python3.12/site-packages"
+    ],
+    "cmake.sourceDirectory": "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/src/my_cpp_pkg"
+}

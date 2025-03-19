@@ -9,13 +9,16 @@
 #include <netinet/in.h> 
 #include <thread>
 
+#include "rclcpp/rclcpp.hpp"
+#include "std_msgs/msg/string.hpp"
+
 #define PORT	 8080 
 #define MAXLINE 1024 
 
-void receiveData(int sockfd, struct sockaddr_in servaddr) {
+void receiveData(int sockfd, struct sockaddr_in servaddr, rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub) {
     char buffer[MAXLINE];
     socklen_t len = sizeof(servaddr);
-    while (true) {
+    while (rclcpp::ok()) {
         int n = recvfrom(sockfd, buffer, MAXLINE, MSG_WAITALL, (struct sockaddr *) &servaddr, &len); 
         if (n < 0) {
             perror("recvfrom failed");
@@ -23,11 +26,23 @@ void receiveData(int sockfd, struct sockaddr_in servaddr) {
         }
         buffer[n] = '\0'; 
         std::cout << "Server: " << buffer << std::endl;
+
+        // Create a ROS message and publish it
+        auto msg = std::make_shared<std_msgs::msg::String>();
+        msg->data = buffer;
+        pub->publish(*msg);
     }
 }
 
 // Driver code 
-int main() { 
+int main(int argc, char **argv) { 
+    // Initialize the ROS node
+    rclcpp::init(argc, argv);
+    auto node = rclcpp::Node::make_shared("udp_receiver");
+
+    // Create a ROS publisher
+    auto pub = node->create_publisher<std_msgs::msg::String>("vicon_udp_data", 10);
+    
     int sockfd; 
     struct sockaddr_in servaddr; 
 
@@ -50,10 +65,13 @@ int main() {
         exit(EXIT_FAILURE); 
     } 
 
-    std::thread receiveThread(receiveData, sockfd, servaddr);
+    std::thread receiveThread(receiveData, sockfd, servaddr, pub);
+
+    rclcpp::spin(node);
 
     receiveThread.join();
 
     close(sockfd); 
+    rclcpp::shutdown();
     return 0; 
 }

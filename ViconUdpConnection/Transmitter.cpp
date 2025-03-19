@@ -13,7 +13,7 @@
 
 #define PORT	 8080 
 #define MAXLINE 1024 
-#define IP "192.168.50.193" 
+#define IP "172.26.51.94" 
 
 void sendData(int sockfd, struct sockaddr_in servaddr, const char* message) {
     int time = 0;
@@ -32,7 +32,7 @@ void sendData(int sockfd, struct sockaddr_in servaddr, const char* message) {
 // Driver code 
 int main() { 
     int sockfd; 
-    const char *hello = "Hello from client"; 
+    const char *hello = ""; 
     struct sockaddr_in servaddr; 
 
     // Creating socket file descriptor 
