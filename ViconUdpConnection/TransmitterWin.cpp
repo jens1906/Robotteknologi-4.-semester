@@ -4,13 +4,13 @@
 #include <thread>
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#include <ViconDataStreamSDK_CPP/DataStreamClient.h>
+#include <DataStreamClient.h>
 
 #pragma comment(lib, "Ws2_32.lib")
 
 #define PORT     8080 
 #define MAXLINE  1024 
-#define IP       "172.26.51.94" g
+#define IP       "172.26.51.94"
 
 using namespace ViconDataStreamSDK::CPP;
 
