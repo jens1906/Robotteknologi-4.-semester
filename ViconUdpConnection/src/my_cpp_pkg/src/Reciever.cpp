@@ -8,14 +8,17 @@
 #include <arpa/inet.h> 
 #include <netinet/in.h> 
 #include <thread>
+#include <nlohmann/json.hpp>
+#include "std_msgs/msg/float64_multi_array.hpp"
+
 
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 
-#define PORT	 8080 
+#define PORT	 8081
 #define MAXLINE 1024 
 
-void receiveData(int sockfd, struct sockaddr_in servaddr, rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub) {
+void receiveData(int sockfd, struct sockaddr_in servaddr, rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr pub) {
     char buffer[MAXLINE];
     socklen_t len = sizeof(servaddr);
     while (rclcpp::ok()) {
@@ -25,12 +28,28 @@ void receiveData(int sockfd, struct sockaddr_in servaddr, rclcpp::Publisher<std_
             break;
         }
         buffer[n] = '\0'; 
-        std::cout << "Server: " << buffer << std::endl;
+        nlohmann::json RecievedData = nlohmann::json::parse(buffer);
+        // Create a ROS message and populate it with the received data
+        std_msgs::msg::Float64MultiArray msg;
+        for (int i = 0; i < 3; ++i) {
+            msg.data.push_back(RecievedData["Position(M)"][i]);  // Position
+        }
+        for (int i = 0; i < 3; ++i) {
+            msg.data.push_back(RecievedData["Euler(rad)"][i]);  // Euler
+        }
+        //msg.data.push_back(RecievedData["Time"]);
+        std::cout << "Server: " << std::endl;
+        std::cout << "Position: " << RecievedData["Position(M)"] << std::endl;
+        std::cout << "Euler: " << RecievedData["Euler(rad)"] << std::endl;
+        std::cout << "Array: ";
+        for (size_t i = 0; i < msg.data.size(); ++i) {
+            std::cout << msg.data[i] << " ";
+        }
+        std::cout << std::endl;
 
         // Create a ROS message and publish it
-        auto msg = std::make_shared<std_msgs::msg::String>();
-        msg->data = buffer;
-        pub->publish(*msg);
+
+        pub->publish(msg);
     }
 }
 
@@ -41,7 +60,7 @@ int main(int argc, char **argv) {
     auto node = rclcpp::Node::make_shared("udp_receiver");
 
     // Create a ROS publisher
-    auto pub = node->create_publisher<std_msgs::msg::String>("vicon_udp_data", 10);
+    auto pub = node->create_publisher<std_msgs::msg::Float64MultiArray>("vicon_udp_data", 10);
     
     int sockfd; 
     struct sockaddr_in servaddr; 
@@ -67,11 +86,15 @@ int main(int argc, char **argv) {
 
     std::thread receiveThread(receiveData, sockfd, servaddr, pub);
 
-    rclcpp::spin(node);
+    // Spin the node in a separate thread to allow signal handling
+    std::thread rosSpinThread([&]() {
+        rclcpp::spin(node);
+    });
 
+    // Wait for the signal to stop the program
+    rosSpinThread.join();
     receiveThread.join();
 
     close(sockfd); 
-    rclcpp::shutdown();
     return 0; 
 }

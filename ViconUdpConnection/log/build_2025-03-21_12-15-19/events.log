@@ -1,0 +1,130 @@
+[0.000000] (-) TimerEvent: {}
+[0.001313] (my_cpp_pkg) JobQueued: {'identifier': 'my_cpp_pkg', 'dependencies': OrderedDict()}
+[0.001377] (my_cpp_pkg) JobStarted: {'identifier': 'my_cpp_pkg'}
+[0.015906] (my_cpp_pkg) JobProgress: {'identifier': 'my_cpp_pkg', 'progress': 'cmake'}
+[0.017001] (my_cpp_pkg) JobProgress: {'identifier': 'my_cpp_pkg', 'progress': 'build'}
+[0.017996] (my_cpp_pkg) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg', '--', '-j12', '-l12'], 'cwd': '/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg', 'env': OrderedDict({'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'jens', 'XDG_SESSION_TYPE': 'wayland', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/home/jens/ros2_ws/install/turtlesim/lib:/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/x86_64-linux-gnu:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/jens', 'DESKTOP_SESSION': 'ubuntu', 'ROS_PYTHON_VERSION': '3', 'GNOME_SHELL_SESSION_MODE': 'ubuntu', 'GTK_MODULES': 'gail:atk-bridge', 'DBUS_STARTER_BUS_TYPE': 'session', 'SYSTEMD_EXEC_PID': '2716', 'GSM_SKIP_SSH_AGENT_WORKAROUND': 'true', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus,guid=5f5994ec6f273d209eb3cafd67dd39e2', 'COLORTERM': 'truecolor', 'DEBUGINFOD_URLS': 'https://debuginfod.ubuntu.com', 'IM_CONFIG_PHASE': '1', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install:/home/jens/ros2_ws/install', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'jens', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'MEMORY_PRESSURE_WATCH': '/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice/app-gnome\\x2dsession\\x2dmanager.slice/gnome-session-manager@ubuntu.service/memory.pressure', 'XDG_SESSION_CLASS': 'user', 'USERNAME': 'jens', 'TERM': 'xterm-256color', 'GNOME_DESKTOP_SESSION_ID': 'this-is-deprecated', 'PATH': '/opt/ros/jazzy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin', 'SESSION_MANAGER': 'local/JensLaptop:@/tmp/.ICE-unix/2716,unix/JensLaptop:/tmp/.ICE-unix/2716', 'XDG_MENU_PREFIX': 'gnome-', 'GNOME_TERMINAL_SCREEN': '/org/gnome/Terminal/screen/d80172b8_975b_43b8_a4ac_422918d48c15', 'GNOME_SETUP_DISPLAY': ':1', 'XDG_RUNTIME_DIR': '/run/user/1000', 'DISPLAY': ':0', 'LANG': 'en_US.UTF-8', 'XDG_CURRENT_DESKTOP': 'ubuntu:GNOME', 'XMODIFIERS': '@im=ibus', 'XDG_SESSION_DESKTOP': 'ubuntu', 'XAUTHORITY': '/run/user/1000/.mutter-Xwaylandauth.TAIU32', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'GNOME_TERMINAL_SERVICE': ':1.120', 'SSH_AUTH_SOCK': '/run/user/1000/keyring/ssh', 'AMENT_PREFIX_PATH': '/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg:/home/jens/ros2_ws/install/turtlesim:/home/jens/ros2_ws/install/my_package:/home/jens/ros2_ws/install/creating_package_tutorial:/home/jens/ros2_ws/install/cpp_pubsub:/opt/ros/jazzy', 'SHELL': '/bin/bash', 'QT_ACCESSIBILITY': '1', 'GDMSESSION': 'ubuntu', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'QT_IM_MODULE': 'ibus', 'PWD': '/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg', 'LC_ALL': 'en_US.UTF-8', 'XDG_CONFIG_DIRS': '/etc/xdg/xdg-ubuntu:/etc/xdg', 'DBUS_STARTER_ADDRESS': 'unix:path=/run/user/1000/bus,guid=5f5994ec6f273d209eb3cafd67dd39e2', 'XDG_DATA_DIRS': '/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/jens/ros2_ws/install/turtlesim/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages', 'COLCON': '1', 'MEMORY_PRESSURE_WRITE': 'c29tZSAyMDAwMDAgMjAwMDAwMAA=', 'VTE_VERSION': '7600', 'CMAKE_PREFIX_PATH': '/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg:/home/jens/ros2_ws/install/turtlesim:/home/jens/ros2_ws/install/my_package:/home/jens/ros2_ws/install/creating_package_tutorial:/home/jens/ros2_ws/install/cpp_pubsub:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/opt/ros/jazzy'}), 'shell': False}
+[0.099568] (-) TimerEvent: {}
+[0.152247] (my_cpp_pkg) StdoutLine: {'line': b'[ 50%] \x1b[32mBuilding CXX object CMakeFiles/receiver.dir/src/Reciever.cpp.o\x1b[0m\n'}
+[0.199760] (-) TimerEvent: {}
+[0.300219] (-) TimerEvent: {}
+[0.400689] (-) TimerEvent: {}
+[0.501174] (-) TimerEvent: {}
+[0.601804] (-) TimerEvent: {}
+[0.702684] (-) TimerEvent: {}
+[0.803206] (-) TimerEvent: {}
+[0.903720] (-) TimerEvent: {}
+[1.004264] (-) TimerEvent: {}
+[1.104758] (-) TimerEvent: {}
+[1.205312] (-) TimerEvent: {}
+[1.305912] (-) TimerEvent: {}
+[1.406445] (-) TimerEvent: {}
+[1.506925] (-) TimerEvent: {}
+[1.607448] (-) TimerEvent: {}
+[1.707829] (-) TimerEvent: {}
+[1.808195] (-) TimerEvent: {}
+[1.908552] (-) TimerEvent: {}
+[2.008967] (-) TimerEvent: {}
+[2.109386] (-) TimerEvent: {}
+[2.209748] (-) TimerEvent: {}
+[2.310106] (-) TimerEvent: {}
+[2.410466] (-) TimerEvent: {}
+[2.510835] (-) TimerEvent: {}
+[2.611176] (-) TimerEvent: {}
+[2.711541] (-) TimerEvent: {}
+[2.811943] (-) TimerEvent: {}
+[2.912318] (-) TimerEvent: {}
+[3.012696] (-) TimerEvent: {}
+[3.113054] (-) TimerEvent: {}
+[3.213432] (-) TimerEvent: {}
+[3.313758] (-) TimerEvent: {}
+[3.414113] (-) TimerEvent: {}
+[3.514466] (-) TimerEvent: {}
+[3.614927] (-) TimerEvent: {}
+[3.715286] (-) TimerEvent: {}
+[3.815659] (-) TimerEvent: {}
+[3.916016] (-) TimerEvent: {}
+[4.016378] (-) TimerEvent: {}
+[4.116744] (-) TimerEvent: {}
+[4.217110] (-) TimerEvent: {}
+[4.317474] (-) TimerEvent: {}
+[4.417851] (-) TimerEvent: {}
+[4.518213] (-) TimerEvent: {}
+[4.618571] (-) TimerEvent: {}
+[4.718958] (-) TimerEvent: {}
+[4.819316] (-) TimerEvent: {}
+[4.919728] (-) TimerEvent: {}
+[5.020131] (-) TimerEvent: {}
+[5.120489] (-) TimerEvent: {}
+[5.221011] (-) TimerEvent: {}
+[5.321373] (-) TimerEvent: {}
+[5.421730] (-) TimerEvent: {}
+[5.522091] (-) TimerEvent: {}
+[5.622454] (-) TimerEvent: {}
+[5.722835] (-) TimerEvent: {}
+[5.823218] (-) TimerEvent: {}
+[5.923583] (-) TimerEvent: {}
+[6.023955] (-) TimerEvent: {}
+[6.124314] (-) TimerEvent: {}
+[6.224699] (-) TimerEvent: {}
+[6.325161] (-) TimerEvent: {}
+[6.425519] (-) TimerEvent: {}
+[6.525925] (-) TimerEvent: {}
+[6.626341] (-) TimerEvent: {}
+[6.726725] (-) TimerEvent: {}
+[6.827098] (-) TimerEvent: {}
+[6.927453] (-) TimerEvent: {}
+[7.027836] (-) TimerEvent: {}
+[7.128209] (-) TimerEvent: {}
+[7.228565] (-) TimerEvent: {}
+[7.328934] (-) TimerEvent: {}
+[7.429279] (-) TimerEvent: {}
+[7.529625] (-) TimerEvent: {}
+[7.630002] (-) TimerEvent: {}
+[7.730348] (-) TimerEvent: {}
+[7.830715] (-) TimerEvent: {}
+[7.931075] (-) TimerEvent: {}
+[8.031436] (-) TimerEvent: {}
+[8.131812] (-) TimerEvent: {}
+[8.232153] (-) TimerEvent: {}
+[8.332506] (-) TimerEvent: {}
+[8.432882] (-) TimerEvent: {}
+[8.533227] (-) TimerEvent: {}
+[8.633569] (-) TimerEvent: {}
+[8.734150] (-) TimerEvent: {}
+[8.834506] (-) TimerEvent: {}
+[8.934942] (-) TimerEvent: {}
+[9.035274] (-) TimerEvent: {}
+[9.135602] (-) TimerEvent: {}
+[9.235952] (-) TimerEvent: {}
+[9.336262] (-) TimerEvent: {}
+[9.436571] (-) TimerEvent: {}
+[9.481070] (my_cpp_pkg) StdoutLine: {'line': b'[100%] \x1b[32m\x1b[1mLinking CXX executable receiver\x1b[0m\n'}
+[9.536705] (-) TimerEvent: {}
+[9.637004] (-) TimerEvent: {}
+[9.677430] (my_cpp_pkg) StdoutLine: {'line': b'[100%] Built target receiver\n'}
+[9.692855] (my_cpp_pkg) CommandEnded: {'returncode': 0}
+[9.693557] (my_cpp_pkg) JobProgress: {'identifier': 'my_cpp_pkg', 'progress': 'install'}
+[9.704394] (my_cpp_pkg) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg'], 'cwd': '/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg', 'env': OrderedDict({'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'jens', 'XDG_SESSION_TYPE': 'wayland', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/home/jens/ros2_ws/install/turtlesim/lib:/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/x86_64-linux-gnu:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/jens', 'DESKTOP_SESSION': 'ubuntu', 'ROS_PYTHON_VERSION': '3', 'GNOME_SHELL_SESSION_MODE': 'ubuntu', 'GTK_MODULES': 'gail:atk-bridge', 'DBUS_STARTER_BUS_TYPE': 'session', 'SYSTEMD_EXEC_PID': '2716', 'GSM_SKIP_SSH_AGENT_WORKAROUND': 'true', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus,guid=5f5994ec6f273d209eb3cafd67dd39e2', 'COLORTERM': 'truecolor', 'DEBUGINFOD_URLS': 'https://debuginfod.ubuntu.com', 'IM_CONFIG_PHASE': '1', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install:/home/jens/ros2_ws/install', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'jens', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'MEMORY_PRESSURE_WATCH': '/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice/app-gnome\\x2dsession\\x2dmanager.slice/gnome-session-manager@ubuntu.service/memory.pressure', 'XDG_SESSION_CLASS': 'user', 'USERNAME': 'jens', 'TERM': 'xterm-256color', 'GNOME_DESKTOP_SESSION_ID': 'this-is-deprecated', 'PATH': '/opt/ros/jazzy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin', 'SESSION_MANAGER': 'local/JensLaptop:@/tmp/.ICE-unix/2716,unix/JensLaptop:/tmp/.ICE-unix/2716', 'XDG_MENU_PREFIX': 'gnome-', 'GNOME_TERMINAL_SCREEN': '/org/gnome/Terminal/screen/d80172b8_975b_43b8_a4ac_422918d48c15', 'GNOME_SETUP_DISPLAY': ':1', 'XDG_RUNTIME_DIR': '/run/user/1000', 'DISPLAY': ':0', 'LANG': 'en_US.UTF-8', 'XDG_CURRENT_DESKTOP': 'ubuntu:GNOME', 'XMODIFIERS': '@im=ibus', 'XDG_SESSION_DESKTOP': 'ubuntu', 'XAUTHORITY': '/run/user/1000/.mutter-Xwaylandauth.TAIU32', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'GNOME_TERMINAL_SERVICE': ':1.120', 'SSH_AUTH_SOCK': '/run/user/1000/keyring/ssh', 'AMENT_PREFIX_PATH': '/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg:/home/jens/ros2_ws/install/turtlesim:/home/jens/ros2_ws/install/my_package:/home/jens/ros2_ws/install/creating_package_tutorial:/home/jens/ros2_ws/install/cpp_pubsub:/opt/ros/jazzy', 'SHELL': '/bin/bash', 'QT_ACCESSIBILITY': '1', 'GDMSESSION': 'ubuntu', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'QT_IM_MODULE': 'ibus', 'PWD': '/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg', 'LC_ALL': 'en_US.UTF-8', 'XDG_CONFIG_DIRS': '/etc/xdg/xdg-ubuntu:/etc/xdg', 'DBUS_STARTER_ADDRESS': 'unix:path=/run/user/1000/bus,guid=5f5994ec6f273d209eb3cafd67dd39e2', 'XDG_DATA_DIRS': '/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/jens/ros2_ws/install/turtlesim/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages', 'COLCON': '1', 'MEMORY_PRESSURE_WRITE': 'c29tZSAyMDAwMDAgMjAwMDAwMAA=', 'VTE_VERSION': '7600', 'CMAKE_PREFIX_PATH': '/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg:/home/jens/ros2_ws/install/turtlesim:/home/jens/ros2_ws/install/my_package:/home/jens/ros2_ws/install/creating_package_tutorial:/home/jens/ros2_ws/install/cpp_pubsub:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/opt/ros/jazzy'}), 'shell': False}
+[9.713633] (my_cpp_pkg) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[9.713925] (my_cpp_pkg) StdoutLine: {'line': b'-- Installing: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/lib/my_cpp_pkg/receiver\n'}
+[9.717502] (my_cpp_pkg) StdoutLine: {'line': b'-- Set non-toolchain portion of runtime path of "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/lib/my_cpp_pkg/receiver" to ""\n'}
+[9.717779] (my_cpp_pkg) StdoutLine: {'line': b'-- Up-to-date: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/ament_index/resource_index/package_run_dependencies/my_cpp_pkg\n'}
+[9.717961] (my_cpp_pkg) StdoutLine: {'line': b'-- Up-to-date: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/ament_index/resource_index/parent_prefix_path/my_cpp_pkg\n'}
+[9.718087] (my_cpp_pkg) StdoutLine: {'line': b'-- Up-to-date: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/my_cpp_pkg/environment/ament_prefix_path.sh\n'}
+[9.718179] (my_cpp_pkg) StdoutLine: {'line': b'-- Up-to-date: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/my_cpp_pkg/environment/ament_prefix_path.dsv\n'}
+[9.718286] (my_cpp_pkg) StdoutLine: {'line': b'-- Up-to-date: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/my_cpp_pkg/environment/path.sh\n'}
+[9.718401] (my_cpp_pkg) StdoutLine: {'line': b'-- Up-to-date: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/my_cpp_pkg/environment/path.dsv\n'}
+[9.718516] (my_cpp_pkg) StdoutLine: {'line': b'-- Up-to-date: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/my_cpp_pkg/local_setup.bash\n'}
+[9.718605] (my_cpp_pkg) StdoutLine: {'line': b'-- Up-to-date: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/my_cpp_pkg/local_setup.sh\n'}
+[9.718755] (my_cpp_pkg) StdoutLine: {'line': b'-- Up-to-date: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/my_cpp_pkg/local_setup.zsh\n'}
+[9.718850] (my_cpp_pkg) StdoutLine: {'line': b'-- Up-to-date: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/my_cpp_pkg/local_setup.dsv\n'}
+[9.718937] (my_cpp_pkg) StdoutLine: {'line': b'-- Installing: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/my_cpp_pkg/package.dsv\n'}
+[9.719021] (my_cpp_pkg) StdoutLine: {'line': b'-- Up-to-date: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/ament_index/resource_index/packages/my_cpp_pkg\n'}
+[9.719105] (my_cpp_pkg) StdoutLine: {'line': b'-- Up-to-date: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/my_cpp_pkg/cmake/my_cpp_pkgConfig.cmake\n'}
+[9.719190] (my_cpp_pkg) StdoutLine: {'line': b'-- Up-to-date: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/my_cpp_pkg/cmake/my_cpp_pkgConfig-version.cmake\n'}
+[9.719275] (my_cpp_pkg) StdoutLine: {'line': b'-- Up-to-date: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/my_cpp_pkg/package.xml\n'}
+[9.720769] (my_cpp_pkg) CommandEnded: {'returncode': 0}
+[9.736817] (my_cpp_pkg) JobEnded: {'identifier': 'my_cpp_pkg', 'rc': 0}
+[9.737617] (-) TimerEvent: {}
+[9.737722] (-) EventReactorShutdown: {}

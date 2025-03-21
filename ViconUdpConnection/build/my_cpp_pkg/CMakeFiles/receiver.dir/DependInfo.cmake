@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/src/my_cpp_pkg/src/Resiever.cpp" "CMakeFiles/receiver.dir/src/Resiever.cpp.o" "gcc" "CMakeFiles/receiver.dir/src/Resiever.cpp.o.d"
+  "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/src/my_cpp_pkg/src/Reciever.cpp" "CMakeFiles/receiver.dir/src/Reciever.cpp.o" "gcc" "CMakeFiles/receiver.dir/src/Reciever.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

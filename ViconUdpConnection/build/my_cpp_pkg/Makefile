@@ -210,29 +210,29 @@ receiver/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/receiver.dir/build.make CMakeFiles/receiver.dir/build
 .PHONY : receiver/fast
 
-src/Resiever.o: src/Resiever.cpp.o
-.PHONY : src/Resiever.o
+src/Reciever.o: src/Reciever.cpp.o
+.PHONY : src/Reciever.o
 
 # target to build an object file
-src/Resiever.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/receiver.dir/build.make CMakeFiles/receiver.dir/src/Resiever.cpp.o
-.PHONY : src/Resiever.cpp.o
+src/Reciever.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/receiver.dir/build.make CMakeFiles/receiver.dir/src/Reciever.cpp.o
+.PHONY : src/Reciever.cpp.o
 
-src/Resiever.i: src/Resiever.cpp.i
-.PHONY : src/Resiever.i
+src/Reciever.i: src/Reciever.cpp.i
+.PHONY : src/Reciever.i
 
 # target to preprocess a source file
-src/Resiever.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/receiver.dir/build.make CMakeFiles/receiver.dir/src/Resiever.cpp.i
-.PHONY : src/Resiever.cpp.i
+src/Reciever.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/receiver.dir/build.make CMakeFiles/receiver.dir/src/Reciever.cpp.i
+.PHONY : src/Reciever.cpp.i
 
-src/Resiever.s: src/Resiever.cpp.s
-.PHONY : src/Resiever.s
+src/Reciever.s: src/Reciever.cpp.s
+.PHONY : src/Reciever.s
 
 # target to generate assembly for a file
-src/Resiever.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/receiver.dir/build.make CMakeFiles/receiver.dir/src/Resiever.cpp.s
-.PHONY : src/Resiever.cpp.s
+src/Reciever.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/receiver.dir/build.make CMakeFiles/receiver.dir/src/Reciever.cpp.s
+.PHONY : src/Reciever.cpp.s
 
 # Help Target
 help:
@@ -250,9 +250,9 @@ help:
 	@echo "... my_cpp_pkg_uninstall"
 	@echo "... uninstall"
 	@echo "... receiver"
-	@echo "... src/Resiever.o"
-	@echo "... src/Resiever.i"
-	@echo "... src/Resiever.s"
+	@echo "... src/Reciever.o"
+	@echo "... src/Reciever.i"
+	@echo "... src/Reciever.s"
 .PHONY : help
 
 

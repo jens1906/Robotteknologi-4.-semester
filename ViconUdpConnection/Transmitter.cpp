@@ -11,9 +11,9 @@
 #include <fcntl.h>
 
 
-#define PORT	 8080 
+#define PORT	 8081 
 #define MAXLINE 1024 
-#define IP "172.26.51.94" 
+#define IP "192.168.1.34" 
 
 void sendData(int sockfd, struct sockaddr_in servaddr, const char* message) {
     int time = 0;

@@ -1,0 +1,25 @@
+[0.023s] Invoking command in '/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg -- -j12 -l12
+[0.177s] [ 50%] [32mBuilding CXX object CMakeFiles/receiver.dir/src/Reciever.cpp.o[0m
+[7.500s] [100%] [32m[1mLinking CXX executable receiver[0m
+[7.794s] [100%] Built target receiver
+[7.815s] Invoked command in '/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg -- -j12 -l12
+[7.833s] Invoking command in '/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg
+[7.848s] -- Install configuration: ""
+[7.849s] -- Installing: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/lib/my_cpp_pkg/receiver
+[7.852s] -- Set non-toolchain portion of runtime path of "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/lib/my_cpp_pkg/receiver" to ""
+[7.853s] -- Up-to-date: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/ament_index/resource_index/package_run_dependencies/my_cpp_pkg
+[7.853s] -- Up-to-date: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/ament_index/resource_index/parent_prefix_path/my_cpp_pkg
+[7.853s] -- Up-to-date: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/my_cpp_pkg/environment/ament_prefix_path.sh
+[7.853s] -- Up-to-date: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/my_cpp_pkg/environment/ament_prefix_path.dsv
+[7.853s] -- Up-to-date: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/my_cpp_pkg/environment/path.sh
+[7.853s] -- Up-to-date: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/my_cpp_pkg/environment/path.dsv
+[7.854s] -- Up-to-date: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/my_cpp_pkg/local_setup.bash
+[7.854s] -- Up-to-date: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/my_cpp_pkg/local_setup.sh
+[7.854s] -- Up-to-date: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/my_cpp_pkg/local_setup.zsh
+[7.854s] -- Up-to-date: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/my_cpp_pkg/local_setup.dsv
+[7.854s] -- Installing: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/my_cpp_pkg/package.dsv
+[7.854s] -- Up-to-date: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/ament_index/resource_index/packages/my_cpp_pkg
+[7.855s] -- Up-to-date: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/my_cpp_pkg/cmake/my_cpp_pkgConfig.cmake
+[7.855s] -- Up-to-date: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/my_cpp_pkg/cmake/my_cpp_pkgConfig-version.cmake
+[7.855s] -- Up-to-date: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg/share/my_cpp_pkg/package.xml
+[7.857s] Invoked command in '/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg

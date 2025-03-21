@@ -69,28 +69,28 @@ include CMakeFiles/receiver.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/receiver.dir/flags.make
 
-CMakeFiles/receiver.dir/src/Resiever.cpp.o: CMakeFiles/receiver.dir/flags.make
-CMakeFiles/receiver.dir/src/Resiever.cpp.o: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/src/my_cpp_pkg/src/Resiever.cpp
-CMakeFiles/receiver.dir/src/Resiever.cpp.o: CMakeFiles/receiver.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/receiver.dir/src/Resiever.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/receiver.dir/src/Resiever.cpp.o -MF CMakeFiles/receiver.dir/src/Resiever.cpp.o.d -o CMakeFiles/receiver.dir/src/Resiever.cpp.o -c /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/src/my_cpp_pkg/src/Resiever.cpp
+CMakeFiles/receiver.dir/src/Reciever.cpp.o: CMakeFiles/receiver.dir/flags.make
+CMakeFiles/receiver.dir/src/Reciever.cpp.o: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/src/my_cpp_pkg/src/Reciever.cpp
+CMakeFiles/receiver.dir/src/Reciever.cpp.o: CMakeFiles/receiver.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/receiver.dir/src/Reciever.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/receiver.dir/src/Reciever.cpp.o -MF CMakeFiles/receiver.dir/src/Reciever.cpp.o.d -o CMakeFiles/receiver.dir/src/Reciever.cpp.o -c /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/src/my_cpp_pkg/src/Reciever.cpp
 
-CMakeFiles/receiver.dir/src/Resiever.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/receiver.dir/src/Resiever.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/src/my_cpp_pkg/src/Resiever.cpp > CMakeFiles/receiver.dir/src/Resiever.cpp.i
+CMakeFiles/receiver.dir/src/Reciever.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/receiver.dir/src/Reciever.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/src/my_cpp_pkg/src/Reciever.cpp > CMakeFiles/receiver.dir/src/Reciever.cpp.i
 
-CMakeFiles/receiver.dir/src/Resiever.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/receiver.dir/src/Resiever.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/src/my_cpp_pkg/src/Resiever.cpp -o CMakeFiles/receiver.dir/src/Resiever.cpp.s
+CMakeFiles/receiver.dir/src/Reciever.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/receiver.dir/src/Reciever.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/src/my_cpp_pkg/src/Reciever.cpp -o CMakeFiles/receiver.dir/src/Reciever.cpp.s
 
 # Object files for target receiver
 receiver_OBJECTS = \
-"CMakeFiles/receiver.dir/src/Resiever.cpp.o"
+"CMakeFiles/receiver.dir/src/Reciever.cpp.o"
 
 # External object files for target receiver
 receiver_EXTERNAL_OBJECTS =
 
-receiver: CMakeFiles/receiver.dir/src/Resiever.cpp.o
+receiver: CMakeFiles/receiver.dir/src/Reciever.cpp.o
 receiver: CMakeFiles/receiver.dir/build.make
 receiver: /opt/ros/jazzy/lib/librclcpp.so
 receiver: /opt/ros/jazzy/lib/libstd_msgs__rosidl_typesupport_fastrtps_c.so
