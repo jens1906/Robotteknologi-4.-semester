@@ -53,48 +53,50 @@ void receiveData(int sockfd, struct sockaddr_in servaddr, rclcpp::Publisher<std_
     }
 }
 
-// Driver code 
+//The main loop which start the code 
 int main(int argc, char **argv) { 
     // Initialize the ROS node
     rclcpp::init(argc, argv);
-    auto node = rclcpp::Node::make_shared("udp_receiver");
+    auto rosNode = rclcpp::Node::make_shared("udp_receiver");
 
-    // Create a ROS publisher
-    auto pub = node->create_publisher<std_msgs::msg::Float64MultiArray>("vicon_udp_data", 10);
+    // Create a ROS publisher which publishes a float array
+    auto rosPublisher = rosNode->create_publisher<std_msgs::msg::Float64MultiArray>("vicon_udp_data", 10);
     
-    int sockfd; 
-    struct sockaddr_in servaddr; 
+    //Variables for creating socket
+    int udpSocket; 
+    struct sockaddr_in serverAdress; 
 
-    // Creating socket file descriptor 
-    if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) { 
+    // Creating a socket file descriptor. Socket=(IPv4, UDP protocol, default), if this fails it will become -1 and fail
+    if ((udpSocket = socket(AF_INET, SOCK_DGRAM, 0)) < 0) { 
         perror("socket creation failed"); 
         exit(EXIT_FAILURE); 
     } 
 
-    memset(&servaddr, 0, sizeof(servaddr)); 
+    // Creating and clearing the server address, basicly set all to 0 and then set the port and IP later to ensure the right data
+    memset(&serverAdress, 0, sizeof(serverAdress)); 
     
-    // Filling server information 
-    servaddr.sin_family = AF_INET; 
-    servaddr.sin_port = htons(PORT); 
-    servaddr.sin_addr.s_addr = INADDR_ANY; 
+    // Set the server address to the right values 
+    serverAdress.sin_family = AF_INET; 
+    serverAdress.sin_port = htons(PORT); 
+    serverAdress.sin_addr.s_addr = INADDR_ANY; 
 
     // Bind the socket with the server address 
-    if (bind(sockfd, (const struct sockaddr *)&servaddr, sizeof(servaddr)) < 0) { 
+    if (bind(udpSocket, (const struct sockaddr *)&serverAdress, sizeof(serverAdress)) < 0) { 
         perror("bind failed"); 
         exit(EXIT_FAILURE); 
     } 
 
-    std::thread receiveThread(receiveData, sockfd, servaddr, pub);
+    std::thread receiveThread(receiveData, udpSocket, serverAdress, rosPublisher);
 
     // Spin the node in a separate thread to allow signal handling
     std::thread rosSpinThread([&]() {
-        rclcpp::spin(node);
+        rclcpp::spin(rosNode);
     });
 
     // Wait for the signal to stop the program
     rosSpinThread.join();
     receiveThread.join();
 
-    close(sockfd); 
+    close(udpSocket); 
     return 0; 
 }
