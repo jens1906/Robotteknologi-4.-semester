@@ -1,8 +1,8 @@
-# Install script for directory: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/src/my_cpp_pkg
+# Install script for directory: /home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUDPConnection/ViconUDPRecieverAndRosPublisherCpp/src/my_cpp_pkg
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg")
+  set(CMAKE_INSTALL_PREFIX "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUDPConnection/ViconUDPRecieverAndRosPublisherCpp/install/my_cpp_pkg")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -49,7 +49,7 @@ if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT
          FILE "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/my_cpp_pkg/receiver"
          RPATH "")
   endif()
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/my_cpp_pkg" TYPE EXECUTABLE FILES "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg/receiver")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/my_cpp_pkg" TYPE EXECUTABLE FILES "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUDPConnection/ViconUDPRecieverAndRosPublisherCpp/build/my_cpp_pkg/receiver")
   if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/my_cpp_pkg/receiver" AND
      NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/my_cpp_pkg/receiver")
     file(RPATH_CHANGE
@@ -63,15 +63,15 @@ if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  include("/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg/CMakeFiles/receiver.dir/install-cxx-module-bmi-noconfig.cmake" OPTIONAL)
+  include("/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUDPConnection/ViconUDPRecieverAndRosPublisherCpp/build/my_cpp_pkg/CMakeFiles/receiver.dir/install-cxx-module-bmi-noconfig.cmake" OPTIONAL)
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ament_index/resource_index/package_run_dependencies" TYPE FILE FILES "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg/ament_cmake_index/share/ament_index/resource_index/package_run_dependencies/my_cpp_pkg")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ament_index/resource_index/package_run_dependencies" TYPE FILE FILES "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUDPConnection/ViconUDPRecieverAndRosPublisherCpp/build/my_cpp_pkg/ament_cmake_index/share/ament_index/resource_index/package_run_dependencies/my_cpp_pkg")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ament_index/resource_index/parent_prefix_path" TYPE FILE FILES "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg/ament_cmake_index/share/ament_index/resource_index/parent_prefix_path/my_cpp_pkg")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ament_index/resource_index/parent_prefix_path" TYPE FILE FILES "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUDPConnection/ViconUDPRecieverAndRosPublisherCpp/build/my_cpp_pkg/ament_cmake_index/share/ament_index/resource_index/parent_prefix_path/my_cpp_pkg")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
@@ -79,7 +79,7 @@ if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/my_cpp_pkg/environment" TYPE FILE FILES "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg/ament_cmake_environment_hooks/ament_prefix_path.dsv")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/my_cpp_pkg/environment" TYPE FILE FILES "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUDPConnection/ViconUDPRecieverAndRosPublisherCpp/build/my_cpp_pkg/ament_cmake_environment_hooks/ament_prefix_path.dsv")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
@@ -87,42 +87,42 @@ if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/my_cpp_pkg/environment" TYPE FILE FILES "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg/ament_cmake_environment_hooks/path.dsv")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/my_cpp_pkg/environment" TYPE FILE FILES "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUDPConnection/ViconUDPRecieverAndRosPublisherCpp/build/my_cpp_pkg/ament_cmake_environment_hooks/path.dsv")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/my_cpp_pkg" TYPE FILE FILES "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg/ament_cmake_environment_hooks/local_setup.bash")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/my_cpp_pkg" TYPE FILE FILES "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUDPConnection/ViconUDPRecieverAndRosPublisherCpp/build/my_cpp_pkg/ament_cmake_environment_hooks/local_setup.bash")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/my_cpp_pkg" TYPE FILE FILES "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg/ament_cmake_environment_hooks/local_setup.sh")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/my_cpp_pkg" TYPE FILE FILES "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUDPConnection/ViconUDPRecieverAndRosPublisherCpp/build/my_cpp_pkg/ament_cmake_environment_hooks/local_setup.sh")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/my_cpp_pkg" TYPE FILE FILES "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg/ament_cmake_environment_hooks/local_setup.zsh")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/my_cpp_pkg" TYPE FILE FILES "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUDPConnection/ViconUDPRecieverAndRosPublisherCpp/build/my_cpp_pkg/ament_cmake_environment_hooks/local_setup.zsh")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/my_cpp_pkg" TYPE FILE FILES "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg/ament_cmake_environment_hooks/local_setup.dsv")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/my_cpp_pkg" TYPE FILE FILES "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUDPConnection/ViconUDPRecieverAndRosPublisherCpp/build/my_cpp_pkg/ament_cmake_environment_hooks/local_setup.dsv")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/my_cpp_pkg" TYPE FILE FILES "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg/ament_cmake_environment_hooks/package.dsv")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/my_cpp_pkg" TYPE FILE FILES "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUDPConnection/ViconUDPRecieverAndRosPublisherCpp/build/my_cpp_pkg/ament_cmake_environment_hooks/package.dsv")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ament_index/resource_index/packages" TYPE FILE FILES "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg/ament_cmake_index/share/ament_index/resource_index/packages/my_cpp_pkg")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ament_index/resource_index/packages" TYPE FILE FILES "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUDPConnection/ViconUDPRecieverAndRosPublisherCpp/build/my_cpp_pkg/ament_cmake_index/share/ament_index/resource_index/packages/my_cpp_pkg")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/my_cpp_pkg/cmake" TYPE FILE FILES
-    "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg/ament_cmake_core/my_cpp_pkgConfig.cmake"
-    "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg/ament_cmake_core/my_cpp_pkgConfig-version.cmake"
+    "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUDPConnection/ViconUDPRecieverAndRosPublisherCpp/build/my_cpp_pkg/ament_cmake_core/my_cpp_pkgConfig.cmake"
+    "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUDPConnection/ViconUDPRecieverAndRosPublisherCpp/build/my_cpp_pkg/ament_cmake_core/my_cpp_pkgConfig-version.cmake"
     )
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/my_cpp_pkg" TYPE FILE FILES "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/src/my_cpp_pkg/package.xml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/my_cpp_pkg" TYPE FILE FILES "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUDPConnection/ViconUDPRecieverAndRosPublisherCpp/src/my_cpp_pkg/package.xml")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)
@@ -133,5 +133,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUDPConnection/ViconUDPRecieverAndRosPublisherCpp/build/my_cpp_pkg/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

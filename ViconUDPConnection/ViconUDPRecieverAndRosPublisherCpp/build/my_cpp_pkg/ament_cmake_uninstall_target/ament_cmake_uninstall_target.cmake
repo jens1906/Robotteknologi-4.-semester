@@ -2,7 +2,7 @@
 # ament_cmake_core/cmake/uninstall_target/ament_cmake_uninstall_target.cmake.in
 
 function(ament_cmake_uninstall_target_remove_empty_directories path)
-  set(install_space "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/install/my_cpp_pkg")
+  set(install_space "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUDPConnection/ViconUDPRecieverAndRosPublisherCpp/install/my_cpp_pkg")
   if(install_space STREQUAL "")
     message(FATAL_ERROR "The CMAKE_INSTALL_PREFIX variable must not be empty")
   endif()
@@ -29,7 +29,7 @@ function(ament_cmake_uninstall_target_remove_empty_directories path)
 endfunction()
 
 # uninstall files installed using the standard install() function
-set(install_manifest "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/build/my_cpp_pkg/install_manifest.txt")
+set(install_manifest "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUDPConnection/ViconUDPRecieverAndRosPublisherCpp/build/my_cpp_pkg/install_manifest.txt")
 if(NOT EXISTS "${install_manifest}")
   message(FATAL_ERROR "Cannot find install manifest: ${install_manifest}")
 endif()

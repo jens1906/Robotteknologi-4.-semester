@@ -37,9 +37,10 @@ while True:
                 #Now we can get local and global translation, which is the same because we are within a confined space, so we do global
                 viconGlobalPosition = tuple(round(x / 1000, 6) for x in viconClient.GetSegmentGlobalTranslation(subjectName, segmentName)[0])
                 viconGlobalEuler = tuple(round(x, 4) for x in viconClient.GetSegmentGlobalRotationEulerXYZ(subjectName, segmentName)[0])
-
+                
                 formattedJsonData = json.dumps({
                     #"Time": datetime.datetime.now().strftime("%H:%M:%S")+ f":{datetime.datetime.now().microsecond // 1000:03d}",
+                    "Time": (datetime.datetime.now().second, datetime.datetime.now().microsecond // 1000),
                     "Position(M)":  (viconGlobalPosition[0],
                                     viconGlobalPosition[1],
                                     viconGlobalPosition[2]),
@@ -47,11 +48,16 @@ while True:
                                     viconGlobalEuler[1],
                                     viconGlobalEuler[2])
                 })
-                print(formattedJsonData)
+                #print(formattedJsonData)
                 raspberrySocket.sendto(formattedJsonData.encode(), (raspberryIp, raspberryPort))
 
         # Sleep for a short period to avoid overwhelming the system
-        time.sleep(0.000001)
+        start_time = time.time() * 1000
+
+        # Loop until 1 millisecond has passed, better than sleep for more consistent running time
+        while (time.time() * 1000 - start_time) < 25:
+            pass  # Busy-waiting for 1ms
+        #time.sleep(0.)
 
     except ViconDataStream.DataStreamException as e:
         print('Error:', e)

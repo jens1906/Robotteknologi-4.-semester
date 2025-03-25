@@ -39,6 +39,9 @@ void receiveData(int udpSocket, struct sockaddr_in serverAdress, rclcpp::Publish
         // Create the ROS data format
         std_msgs::msg::Float64MultiArray viconMessage;
         // Save the data in the ROS message
+        for (int i = 0; i < 2; ++i) {
+            viconMessage.data.push_back(RecievedData["Time"][i]);  // Time
+        }
         for (int i = 0; i < 3; ++i) {
             viconMessage.data.push_back(RecievedData["Position(M)"][i]);  // Position
         }
@@ -49,6 +52,7 @@ void receiveData(int udpSocket, struct sockaddr_in serverAdress, rclcpp::Publish
         // Print the data to the console
         //msg.data.push_back(RecievedData["Time"]);'
         std::cout << "Server: " << std::endl;
+        std::cout << "Time: " << RecievedData["Time"] << std::endl;
         std::cout << "Position: " << RecievedData["Position(M)"] << std::endl;
         std::cout << "Euler: " << RecievedData["Euler(rad)"] << std::endl;
         std::cout << "Array: ";

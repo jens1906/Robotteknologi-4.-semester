@@ -1,3 +1,0 @@
-[0.000000] (-) TimerEvent: {}
-[0.000523] (-) JobUnselected: {'identifier': 'my_cpp_pkg'}
-[0.000560] (-) EventReactorShutdown: {}
