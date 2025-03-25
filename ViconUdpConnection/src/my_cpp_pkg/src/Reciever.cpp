@@ -15,41 +15,52 @@
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 
+// Define the port and the maximum message length/buffer size
 #define PORT	 8081
 #define MAXLINE 1024 
 
-void receiveData(int sockfd, struct sockaddr_in servaddr, rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr pub) {
+void receiveData(int udpSocket, struct sockaddr_in serverAdress, rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr rosPublisher) {
+    // Create a buffer to store the data
     char buffer[MAXLINE];
-    socklen_t len = sizeof(servaddr);
+    socklen_t messageLength = sizeof(serverAdress);
+
+    // Loop to receive the data
     while (rclcpp::ok()) {
-        int n = recvfrom(sockfd, buffer, MAXLINE, MSG_WAITALL, (struct sockaddr *) &servaddr, &len); 
+        // Receive the data from the UDP socket
+        int n = recvfrom(udpSocket, buffer, MAXLINE, MSG_WAITALL, (struct sockaddr *) &serverAdress, &messageLength); 
+        // Check for fail
         if (n < 0) {
             perror("recvfrom failed");
             break;
         }
         buffer[n] = '\0'; 
         nlohmann::json RecievedData = nlohmann::json::parse(buffer);
-        // Create a ROS message and populate it with the received data
-        std_msgs::msg::Float64MultiArray msg;
+
+        // Create the ROS data format
+        std_msgs::msg::Float64MultiArray viconMessage;
+        // Save the data in the ROS message
         for (int i = 0; i < 3; ++i) {
-            msg.data.push_back(RecievedData["Position(M)"][i]);  // Position
+            viconMessage.data.push_back(RecievedData["Position(M)"][i]);  // Position
         }
         for (int i = 0; i < 3; ++i) {
-            msg.data.push_back(RecievedData["Euler(rad)"][i]);  // Euler
+            viconMessage.data.push_back(RecievedData["Euler(rad)"][i]);  // Euler
         }
-        //msg.data.push_back(RecievedData["Time"]);
+
+        // Print the data to the console
+        //msg.data.push_back(RecievedData["Time"]);'
         std::cout << "Server: " << std::endl;
         std::cout << "Position: " << RecievedData["Position(M)"] << std::endl;
         std::cout << "Euler: " << RecievedData["Euler(rad)"] << std::endl;
         std::cout << "Array: ";
-        for (size_t i = 0; i < msg.data.size(); ++i) {
-            std::cout << msg.data[i] << " ";
+        
+        // Print the Vicon data to the console
+        for (size_t i = 0; i < viconMessage.data.size(); ++i) {
+            std::cout << viconMessage.data[i] << " ";
         }
         std::cout << std::endl;
 
-        // Create a ROS message and publish it
-
-        pub->publish(msg);
+        // Publish the data to the ROS topic
+        rosPublisher->publish(viconMessage);
     }
 }
 
