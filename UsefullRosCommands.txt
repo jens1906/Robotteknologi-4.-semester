@@ -16,7 +16,7 @@ ros2 topic pub /fmu/in/offboard_control_mode px4_msgs/msg/OffboardControlMode "{
   direct_actuator: false
 }" --rate 50
 
-#Set thrust of motors ot 100% aka -100
+#Set thrust of motors ot 100% aka in 1 direction
 ros2 topic pub /fmu/in/vehicle_attitude_setpoint px4_msgs/msg/VehicleAttitudeSetpoint "{
   timestamp: 0, 
   q_d: [0.7071, 0.0, 0.7071, 0.0],  # Quaternion [w, x, y, z]
