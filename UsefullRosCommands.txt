@@ -1,0 +1,24 @@
+#ARM the drone
+ros2 topic pub /fmu/in/vehicle_command px4_msgs/msg/VehicleCommand "{command: 400, param1: 1.0, target_system: 1, target_component: 1}" --once
+
+#Change Mode to OFFBOARD
+ros2 topic pub /fmu/in/vehicle_command px4_msgs/msg/VehicleCommand "{command: 176, param1: 1.0,param2: 6.0, target_system: 1, target_component: 1}" --once
+
+#Set Offboard control mode inputs
+ros2 topic pub /fmu/in/offboard_control_mode px4_msgs/msg/OffboardControlMode "{
+  timestamp: 0,
+  position: false,
+  velocity: false,
+  acceleration: false,
+  attitude: true,
+  body_rate: false,
+  thrust_and_torque: true,
+  direct_actuator: false
+}" --rate 50
+
+#Set thrust of motors ot 100% aka -100
+ros2 topic pub /fmu/in/vehicle_attitude_setpoint px4_msgs/msg/VehicleAttitudeSetpoint "{
+  timestamp: 0, 
+  q_d: [0.7071, 0.0, 0.7071, 0.0],  # Quaternion [w, x, y, z]
+  thrust_body: [0.0, 0.0, -1.0]  # Thrust in body frame (x, y, z)
+}" --rate 50
