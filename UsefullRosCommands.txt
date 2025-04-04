@@ -1,3 +1,6 @@
+#Start ROS topics
+MicroXRCEAgent serial --dev /dev/serial0 -b 921600
+
 #ARM the drone
 ros2 topic pub /fmu/in/vehicle_command px4_msgs/msg/VehicleCommand "{command: 400, param1: 1.0, target_system: 1, target_component: 1}" --once
 
