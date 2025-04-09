@@ -1,0 +1,12 @@
+{
+    "version": 1,
+    "packages": {
+        "drone_control": {
+            "dependencies": [
+                "rclcpp",
+                "std_msgs",
+                "geometry_msgs"
+            ]
+        }
+    }
+}
