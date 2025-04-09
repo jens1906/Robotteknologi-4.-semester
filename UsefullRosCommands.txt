@@ -1,4 +1,5 @@
 #Start ROS topics
+source /opt/ros/humble/setup.bash 
 MicroXRCEAgent serial --dev /dev/serial0 -b 921600
 
 #ARM the drone
@@ -20,8 +21,13 @@ ros2 topic pub /fmu/in/offboard_control_mode px4_msgs/msg/OffboardControlMode "{
 }" --rate 50
 
 #Set thrust of motors ot 100% aka in 1 direction
+
 ros2 topic pub /fmu/in/vehicle_attitude_setpoint px4_msgs/msg/VehicleAttitudeSetpoint "{
   timestamp: 0, 
   q_d: [0.7071, 0.0, 0.7071, 0.0],  # Quaternion [w, x, y, z]
   thrust_body: [0.0, 0.0, -1.0]  # Thrust in body frame (x, y, z)
-}" --rate 50
+}" --once
+
+
+#switch to cyclone
+export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp

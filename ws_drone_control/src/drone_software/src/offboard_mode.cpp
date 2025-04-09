@@ -2,6 +2,12 @@
 #include <px4_msgs/msg/vehicle_command.hpp>
 #include <px4_msgs/msg/offboard_control_mode.hpp>
 #include <px4_msgs/msg/vehicle_control_mode.hpp>
+#include <px4_msgs/msg/vehicle_attitude_setpoint.hpp>
+#include <px4_msgs/msg/vehicle_rates_setpoint.hpp>
+#include <px4_msgs/msg/vehicle_attitude.hpp>
+#include <px4_msgs/msg/vehicle_local_position.hpp>
+#include <px4_msgs/msg/vehicle_status.hpp>
+#include <px4_msgs/msg/vehicle_thrust_setpoint.hpp>
 #include <chrono>
 
 using namespace std::chrono_literals;
@@ -10,24 +16,41 @@ using namespace px4_msgs::msg;
 // Global variables for publishers
 rclcpp::Publisher<OffboardControlMode>::SharedPtr ros_offboard_control_mode_pub_;
 rclcpp::Publisher<VehicleCommand>::SharedPtr ros_vehicle_command_pub_;
+rclcpp::Publisher<VehicleAttitudeSetpoint>::SharedPtr ros_attitude_setpoint_pub_;
+rclcpp::Publisher<VehicleRatesSetpoint>::SharedPtr ros_vehicle_rates_setpoint_pub_;
+rclcpp::Publisher<VehicleThrustSetpoint>::SharedPtr ros_vehicle_thrust_setpoint_pub_;
 
 std::atomic<bool> is_offboard_enabled(false);
 
+// Callback for VehicleAttitude messages
+void VehicleAttitudeCallback(const px4_msgs::msg::VehicleAttitude::SharedPtr msg) {
+    //RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Received VehicleAttitude message");
+}
+
+// Callback for VehicleLocalPosition messages
+void VehicleLocalPositionCallback(const px4_msgs::msg::VehicleLocalPosition::SharedPtr msg) {
+    //RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Received VehicleLocalPosition message");
+}
+
+// Callback for VehicleStatus messages
+void VehicleStatusCallback(const px4_msgs::msg::VehicleStatus::SharedPtr msg) {
+    //RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Received VehicleStatus message");
+}
 
 // Function to publish OffboardControlMode
 void publishOffboardControlMode() {
     OffboardControlMode msg{};
     msg.timestamp = rclcpp::Clock().now().nanoseconds() / 1000;  // PX4 expects timestamp in microseconds
-    msg.position = false;
-    msg.velocity = false;
-    msg.acceleration = false;
-    msg.attitude = true;
-    msg.body_rate = false;
-    msg.thrust_and_torque = true;
-    msg.direct_actuator = false;
+    msg.position = false;       // Disable position control
+    msg.velocity = false;       // Disable velocity control
+    msg.acceleration = false;   // Disable acceleration control
+    msg.attitude = true;       // Disable attitude control
+    msg.body_rate = false;       // Enable body rate control
+    msg.thrust_and_torque = false;  // Enable thrust control
+    msg.direct_actuator = false; // Disable direct actuator control
 
     ros_offboard_control_mode_pub_->publish(msg);
-    //RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Published OffboardControlMode message");
+    //RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Published OffboardControlMode for body rate control");
 }
 
 // Function to publish VehicleCommand
@@ -45,6 +68,41 @@ void publishVehicleCommand(uint16_t command, float param1, float param2 = 0.0) {
 
     ros_vehicle_command_pub_->publish(msg);
     //RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Published VehicleCommand: command=%d, param1=%.1f, param2=%.1f", command, param1, param2);
+}
+
+void publishVehicleRatesSetpoint(float roll_rate, float pitch_rate, float yaw_rate, float thrust) {
+    VehicleRatesSetpoint msg{};
+    msg.timestamp = rclcpp::Clock().now().nanoseconds() / 1000;  // PX4 expects timestamp in microseconds
+    msg.roll = roll_rate;
+    msg.pitch = pitch_rate;
+    msg.yaw = yaw_rate;
+    msg.thrust_body = {0.0, 0.0, -thrust};
+    msg.reset_integral = 0;  // Set to true if you want to reset the integral term
+
+    //RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"),
+    //            "Publishing VehicleRatesSetpoint: roll=%.2f, pitch=%.2f, yaw=%.2f, thrust=%.2f",
+    //            roll_rate, pitch_rate, yaw_rate, thrust);
+
+    ros_vehicle_rates_setpoint_pub_->publish(msg);
+}
+
+void publishVehicleAttitudeSetpoint(float w, float x, float y, float z, float thrust) {
+    VehicleAttitudeSetpoint msg{};
+    msg.timestamp = rclcpp::Clock().now().nanoseconds() / 1000;  // PX4 expects timestamp in microseconds
+    msg.q_d = {w, x, y, z};  // Quaternion [w, x, y, z]
+    msg.thrust_body = {0.0f, 0.0f, -thrust};  // Thrust in body frame [x, y, z]
+
+    ros_attitude_setpoint_pub_->publish(msg);
+    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Published VehicleAttitudeSetpoint: thrust=%.2f", thrust);
+}
+
+void publishVehicleThrustSetpoint(float thrust) {
+    VehicleThrustSetpoint msg{};
+    msg.timestamp = rclcpp::Clock().now().nanoseconds() / 1000;  // PX4 expects timestamp in microseconds
+    msg.xyz = {thrust,thrust,thrust};
+
+    ros_vehicle_thrust_setpoint_pub_->publish(msg);
+    //RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Published VehicleThrustSetpoint message");
 }
 
 // Function to arm the vehicle
@@ -70,6 +128,7 @@ void offboard_mode() {
 void publishOffboardControlAndArm() {
     publishOffboardControlMode();
     arm();
+    //publishVehicleAttitudeSetpoint(0.7071, 0.0, 0.7071, 0.0, 0.5);
     //RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Published OffboardControlMode and arm command");
 }
 
@@ -96,7 +155,25 @@ void monitorConsoleInput(rclcpp::Node::SharedPtr node, std::atomic<bool>& runnin
         std::cout << "Enter command (kill to disarm with kill switch, or press Enter to enable): ";
         std::getline(std::cin, input);
 
-        if (input.empty()) {
+        if (input == "kill") {
+            // Disarm with kill switch
+            RCLCPP_INFO(node->get_logger(), "Kill command received. Disarming...");
+            disarm(true);
+            if (timer) {
+                timer->cancel();  // Stop the timer if it is running
+                RCLCPP_INFO(node->get_logger(), "Stopped publishing OffboardControlMode and arming commands.");
+            }
+        } else if (input.rfind("thrust:", 0) == 0) {  // Check if input starts with "thrust:"
+            try {
+                float thrust = std::stof(input.substr(7));  // Extract the thrust value
+                RCLCPP_INFO(node->get_logger(), "Setting thrust to %.2f", thrust);
+                //publishVehicleThrustSetpoint(thrust);  // Example: Set thrust with no roll/pitch/yaw
+                //publishVehicleRatesSetpoint(0.0f, 0.0f, 0.0f, thrust);  // Example: Set thrust with no roll/pitch/yaw
+                publishVehicleAttitudeSetpoint(0.7071f, 0.0f, 0.7071f, 0.0f, thrust);  // Example: 90-degree rotation around Z-axis
+            } catch (const std::exception& e) {
+                RCLCPP_ERROR(node->get_logger(), "Invalid thrust value. Please enter a valid number.");
+            }
+        }else {
             // Enable the timer if it is not already running
             if (!timer || timer->is_canceled()) {  // Check if the timer is null or canceled
                 timer = node->create_wall_timer(
@@ -106,18 +183,12 @@ void monitorConsoleInput(rclcpp::Node::SharedPtr node, std::atomic<bool>& runnin
             } else {
                 RCLCPP_INFO(node->get_logger(), "Timer is already running.");
             }
-        } else if (input == "kill") {
-            // Disarm with kill switch
-            RCLCPP_INFO(node->get_logger(), "Kill command received. Disarming...");
-            disarm(true);
-            if (timer) {
-                timer->cancel();  // Stop the timer if it is running
-                RCLCPP_INFO(node->get_logger(), "Stopped publishing OffboardControlMode and arming commands.");
-            }
-        } else {
-            std::cout << "Unknown command. Try again." << std::endl;
         }
     }
+}
+
+void thrustConsoleController(){
+     
 }
 
 int main(int argc, char *argv[]) {
@@ -128,14 +199,17 @@ int main(int argc, char *argv[]) {
     auto node = rclcpp::Node::make_shared("offboard_control_node");
 
     // Initialize publishers
-    ros_offboard_control_mode_pub_ = node->create_publisher<OffboardControlMode>(
-        "/fmu/in/offboard_control_mode", 10);
-    ros_vehicle_command_pub_ = node->create_publisher<VehicleCommand>(
-        "/fmu/in/vehicle_command", 10);
+    ros_offboard_control_mode_pub_ = node->create_publisher<OffboardControlMode>("/fmu/in/offboard_control_mode", 10);
+    ros_vehicle_command_pub_ = node->create_publisher<VehicleCommand>("/fmu/in/vehicle_command", 10);
+    ros_attitude_setpoint_pub_  = node->create_publisher<VehicleAttitudeSetpoint>("/fmu/in/vehicle_attitude_setpoint", 10);
+    ros_vehicle_rates_setpoint_pub_ = node->create_publisher<VehicleRatesSetpoint>("/fmu/in/vehicle_rates_setpoint", 10);
+    ros_vehicle_thrust_setpoint_pub_ = node->create_publisher<VehicleThrustSetpoint>("/fmu/in/vehicle_thrust_setpoint", 10);
 
     // Initialize subscribers
-    auto ros_vehicle_mode_sub_ = node->create_subscription<VehicleControlMode>(
-        "/fmu/out/vehicle_control_mode", qos, vehicleControlModeCallback);
+    auto ros_vehicle_mode_sub_ = node->create_subscription<VehicleControlMode>("/fmu/out/vehicle_control_mode", qos, vehicleControlModeCallback);
+    auto ros_vehicle_attitude_sub_ = node->create_subscription<VehicleAttitude>("/fmu/out/vehicle_attitude", qos, VehicleAttitudeCallback);
+    auto ros_vehicle_local_position_sub_ = node->create_subscription<VehicleLocalPosition>("/fmu/out/vehicle_local_position", qos, VehicleLocalPositionCallback);
+    auto ros_vehicle_status_sub_ = node->create_subscription<VehicleStatus>("/fmu/out/vehicle_status", qos, VehicleStatusCallback);
 
     RCLCPP_INFO(node->get_logger(), "Waiting for offboard mode to be enabled...");
     while (!is_offboard_enabled.load() && rclcpp::ok()) {
@@ -155,40 +229,3 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-
-/*
-
-void arm() {
-    RCLCPP_INFO(get_logger(), "Sending arm command...");
-    publishVehicleCommand(VehicleCommand::VEHICLE_CMD_COMPONENT_ARM_DISARM, 1.0, 0.0);
-}
-
-void disarm(bool kill = false) {
-    float param2 = kill ? 21196.0 : 0.0;
-    RCLCPP_INFO(get_logger(), "Sending disarm command (kill=%d)...", kill);
-    publishVehicleCommand(VehicleCommand::VEHICLE_CMD_COMPONENT_ARM_DISARM, 0.0, param2);
-}
-
-void publishAttitudeSetpoint(const Eigen::Vector4d& input) {
-    Eigen::Quaterniond q = transformations_.eulerToQuaternion(input.x(), input.y(), input.z());
-    VehicleAttitudeSetpoint msg{};
-    msg.timestamp = get_clock()->now().nanoseconds() / 1000;
-    msg.q_d = {static_cast<float>(q.w()), static_cast<float>(q.x()), static_cast<float>(q.y()), static_cast<float>(q.z())};
-    msg.thrust_body = {0.0f, 0.0f, static_cast<float>(input.w())};
-    attitude_setpoint_pub_->publish(msg);
-}
-
-        // Subscribers
-        ros_local_position_sub_ = create_subscription<VehicleLocalPosition>(
-            "/fmu/out/vehicle_local_position", qos,
-            [this](const VehicleLocalPosition::SharedPtr msg) { localPositionCallback(msg); });            
-        ros_attitude_sub_ = create_subscription<VehicleAttitude>(
-            "/fmu/out/vehicle_attitude", qos,
-            [this](const VehicleAttitude::SharedPtr msg) { attitudeCallback(msg); });
-        ros_sensor_combined_sub_ = create_subscription<SensorCombined>(
-            "/fmu/out/sensor_combined", qos,
-            [this](const SensorCombined::SharedPtr msg) { sensorCombinedCallback(msg); });
-
-
-
-*/
