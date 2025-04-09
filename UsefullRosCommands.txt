@@ -31,3 +31,11 @@ ros2 topic pub /fmu/in/vehicle_attitude_setpoint px4_msgs/msg/VehicleAttitudeSet
 
 #switch to cyclone
 export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+
+#Source build
+source /opt/ros/humble/setup.bash 
+source install/setup.bash
+ros2 run drone_software offboard_mode_node
+
+#Simulated Vicon data
+ros2 topic pub /Vicon std_msgs/msg/Float64MultiArray "{data: [43.0, 229.0, 0.862819, 0.193028, 0.113694, 0.0482, 0.0504, -0.2595]}"
