@@ -105,6 +105,7 @@ float Controller::zToThrust(float z_error) {
     // Calculate dynamic dt (time difference in seconds)
     float dt = (current_time - prev_time).seconds();
     if (dt <= 0.0f) {
+        RCLCPP_WARN(rclcpp::get_logger("offboard_control_node"), "Invalid dt detected, using fallback value.");
         dt = 0.01f;  // Fallback to default value if dt is invalid
     }
 
@@ -114,8 +115,8 @@ float Controller::zToThrust(float z_error) {
     // Derivative term (discrete-time implementation)
     float z_derivative = (z_error - prev_z_error) / dt;
 
-    // PD Control Output
-    float thrust = Kp_z * z_error + Kd_z * z_derivative;  // Thrust to correct z position
+    // PD Control Output 
+    float thrust = (Kp_z * z_error + Kd_z * z_derivative) / 100.0f;  // Thrust to correct z position
     thrust = std::clamp(thrust, 0.0f, 1.0f);  // Clamp thrust to [0, 1] range
 
     // Update previous error
