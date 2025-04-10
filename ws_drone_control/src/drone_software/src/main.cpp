@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
             running.store(true);  // Start the drone thread
         } else if (input == "turnoff") {
             RCLCPP_INFO(node->get_logger(), "Turning off the drone...");
-            controller.publishVehicleAttitudeSetpoint(0.0f, 0.0f, 0.0f, 0.0f);  // Example setpoint
+            controller.publishVehicleAttitudeSetpoint({0.0f, 0.0f, 0.0f}, 0.0f);  // Example setpoint
             running.store(false);  // Stop the drone thread
         } else if (input == "kill") {
             RCLCPP_INFO(node->get_logger(), "Kill command received. Disarming...");
@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
             break;
         } else if (input == "setpoint") {
             RCLCPP_INFO(node->get_logger(), "Altitude setpoint command received.");
-            controller.publishVehicleAttitudeSetpoint(0.0f, 0.0f, 1.57f, 0.2f);  // Example setpoint
+            controller.goalPosition({1.0f, 1.0f, 1.0f});  // Example setpoint
         } else {
             RCLCPP_WARN(node->get_logger(), "Unknown command: %s", input.c_str());
         }
