@@ -18,10 +18,20 @@ void Controller::vehicleAttitudeCallback(const px4_msgs::msg::VehicleAttitude::S
     RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Received VehicleAttitude message");
 }
 
-void Controller::publishVehicleAttitudeSetpoint(float x_error, float y_error, float yaw, float thrust) {
+void Controller::CalculateThrustAndAttitude(float x_error, float y_error, float z_error) {
+    // Calculate thrust based on z error
+    float thrust = zToThrust(y_error);  // Get thrust from zTothrust function
+
+    // Calculate roll and pitch based on x and y errors
     auto roll_pitch = xyToRollPitch(x_error, y_error);
     float roll = roll_pitch[0];
     float pitch = roll_pitch[1];
+
+    //publish the attitude setpoint
+    publishVehicleAttitudeSetpoint(roll, pitch, thrust);
+}
+
+void Controller::publishVehicleAttitudeSetpoint(float roll, float pitch, float yaw, float thrust) {
     px4_msgs::msg::VehicleAttitudeSetpoint msg{};
     msg.timestamp = rclcpp::Clock().now().nanoseconds() / 1000;  // PX4 expects timestamp in microseconds
     msg.q_d = rpyToQuaternion(roll, pitch, yaw);  // Quaternion [w, x, y, z]
@@ -29,6 +39,40 @@ void Controller::publishVehicleAttitudeSetpoint(float x_error, float y_error, fl
 
     ros_attitude_setpoint_pub_->publish(msg);
     RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Published VehicleAttitudeSetpoint: thrust=%.2f", thrust);
+}
+
+std::array<float, 1> Controller::zToThrust(float z_error) {
+    //PD controller parameters
+    float Kp_z = 5.534;  // Proportional gain for z control
+    float Kd_z = 5.108;  // Derivative gain for z control
+
+    // Static variables to store previous errors and timestamp  
+    static float prev_z_error = 0.0f;
+    static rclcpp::Time prev_time = rclcpp::Clock().now(); // Initialize with current time
+
+    // Current timestamp
+    rclcpp::Time current_time = rclcpp::Clock().now();
+
+    // Calculate dynamic dt (time difference in seconds)
+    float dt = (current_time - prev_time).seconds();
+    if (dt <= 0.0f) {
+        dt = 0.01f;  // Fallback to default value if dt is invalid
+    }
+
+    // Update the previous timestamp
+    prev_time = current_time;
+
+    // Derivative term (discrete-time implementation)
+    float z_derivative = (z_error - prev_z_error) / dt;
+
+    // PD Control Output
+    float thrust = Kp_z * z_error + Kd_z * z_derivative;  // Thrust to correct z position
+    thrust = std::clamp(thrust, 0.0f, 1.0f);  // Clamp thrust to [0, 1] range
+
+    // Update previous error
+    prev_z_error = z_error;
+
+    return (thrust);  // Return thrust as a single value
 }
 
 std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error) {
@@ -39,7 +83,7 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error) {
     // Static variables to store previous errors and timestamp
     static float prev_x_error = 0.0f;
     static float prev_y_error = 0.0f;
-    static rclcpp::Time prev_time = rclcpp::Clock().now();
+    static rclcpp::Time prev_time = rclcpp::Clock().now(); // Initialize with current time
 
     // Current timestamp
     rclcpp::Time current_time = rclcpp::Clock().now();
