@@ -6,6 +6,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(px4_msgs REQUIRED)
 
 # Add the include directory
 include_directories(include)
@@ -18,6 +19,7 @@ ament_target_dependencies(drone_controller
   rclcpp
   std_msgs
   geometry_msgs
+  px4_msgs
 )
 
 # Install the executable
