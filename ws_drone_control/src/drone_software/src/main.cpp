@@ -12,30 +12,32 @@ int main(int argc, char *argv[]) {
     // Create a shared node
     auto node = rclcpp::Node::make_shared("offboard_control_node");
 
-    // Create an instance of the Initialize class
+    // Create an instance of the Initialize classes
     Initialize initialize(node);
     Controller controller(node);
     RCLCPP_INFO(node->get_logger(), "Enabling offboard mode...");
     initialize.enable_offboard_mode();
     controller.initialize(node);
 
-    // Atomic flag to control the turn_on_drone thread
+    // The next to are used to control if the drone are turned on or off
     std::atomic<bool> running(false);
     std::atomic<bool> terminate(false);
 
-    // Thread for running turn_on_drone in a loop
+    // Because we need arming and publishoffboardcontrolmode to be sent often 
+    // we multithread and makes it so these commands are run in the background
+    // depending on the atomic bools.
     std::thread drone_thread([&]() {
         while (!terminate.load()) {
             if (running.load()) {
                 initialize.turn_on_drone();
                 std::this_thread::sleep_for(std::chrono::milliseconds(20));  // Adjust loop frequency as needed
             } else {
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));  // Avoid busy-waiting
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));  // Avoid busy-waiting aka let the cpu chill
             }
         }
     });
 
-    // Monitor user input
+    // A little control panel
     std::string input;
     while (rclcpp::ok()) {
         std::cout << "Enter command (turnon, turnoff, kill, setpoint): ";

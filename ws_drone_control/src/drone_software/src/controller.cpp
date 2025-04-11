@@ -4,37 +4,42 @@ Controller::Controller(rclcpp::Node::SharedPtr node) : vicon_position_{0.0f, 0.0
     node_ = node;  // Assign the node to the member variable
 }
 
+//We start by initilizing the ros topics
 void Controller::initialize(rclcpp::Node::SharedPtr node) {
-    node_ = node;  // Assign the node to the member variable
-    rclcpp::QoS qos(10);  // Depth of 10
+    // Check if the node is initialized
+    node_ = node; 
+    // Setup how you want to handle the nodes
+    rclcpp::QoS qos(10); 
     qos.reliability(rclcpp::ReliabilityPolicy::BestEffort);
+    // Activate the nodes
     ros_attitude_setpoint_pub_ = node->create_publisher<px4_msgs::msg::VehicleAttitudeSetpoint>("/fmu/in/vehicle_attitude_setpoint", 10);
     auto ros_vehicle_attitude_sub_ = node->create_subscription<px4_msgs::msg::VehicleAttitude>(
         "/fmu/out/vehicle_attitude", qos,
         std::bind(&Controller::vehicleAttitudeCallback, this, std::placeholders::_1));
 }
 
+//Just to ensure if there are problems
 void Controller::vehicleAttitudeCallback(const px4_msgs::msg::VehicleAttitude::SharedPtr msg) {
     RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Received VehicleAttitude message");
 }
 
+// This function controls the setup of the vehicle attitude setpoint px4 format 
 void Controller::publishVehicleAttitudeSetpoint(const std::array<float, 3>& xyz_error, float yaw) {
-    auto roll_pitch = xyToRollPitch(xyz_error[0], xyz_error[1]);
-    float thrust = zToThrust(xyz_error[2]);  // Assuming z_error is the desired thrust
-    yaw = 0.0f;  // Set yaw to 0 for simplicity
+    auto roll_pitch = xyToRollPitch(xyz_error[0], xyz_error[1]); // PD to calculate the roll and pitch
+    float thrust = zToThrust(xyz_error[2]);  // PD to calculate the thrust
+    yaw = 0.0f;  // We ignore YAW
 
     px4_msgs::msg::VehicleAttitudeSetpoint msg{};
     msg.timestamp = rclcpp::Clock().now().nanoseconds() / 1000;  // PX4 expects timestamp in microseconds
-    msg.q_d = rpyToQuaternion(roll_pitch[0], roll_pitch[1], yaw);  // Quaternion [w, x, y, z]
+    msg.q_d = rpyToQuaternion(roll_pitch[0], roll_pitch[1], yaw);  // We want Quaternion [w, x, y, z], so we quickly convert
     msg.thrust_body = std::array<float, 3>{0.0f, 0.0f, -thrust};  // Thrust in body frame [x, y, z]
 
     ros_attitude_setpoint_pub_->publish(msg);
     RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Published VehicleAttitudeSetpoint: thrust=%.2f", thrust);
 }
 
-
+// This function converts roll, pitch, yaw to quaternion
 std::array<float, 4> Controller::rpyToQuaternion(float roll, float pitch, float yaw) {
-    // Convert roll, pitch, yaw to quaternion
     float cy = cos(yaw * 0.5);
     float sy = sin(yaw * 0.5);
     float cp = cos(pitch * 0.5);
@@ -52,7 +57,7 @@ std::array<float, 4> Controller::rpyToQuaternion(float roll, float pitch, float 
     return {w, x, y, z};  // Return the quaternion as an array
 }
 
-
+// PD controller for roll and pitch
 std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error) {
     // PD Controller Parameters for x/y control
     float Kp_xy = 7.344;  // Proportional gain for x/y
@@ -90,6 +95,7 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error) {
     return {roll_desired, pitch_desired};  // Return roll and pitch as an array
 }
 
+// PD controller for thrust
 float Controller::zToThrust(float z_error) {
     // PD controller parameters
     float Kp_z = 5.534;  // Proportional gain for z control
@@ -125,13 +131,18 @@ float Controller::zToThrust(float z_error) {
     return thrust;  // Return thrust as a single value
 }
 
-std::array<float, 3>  Controller::goalPosition(const std::array<float, 3>& goal_position) {
+// Function to compare the current vicon position to the goal position
+std::array<float, 3> Controller::goalPosition(const std::array<float, 3>& goal_position) {
+    // Create a flag to track if new Vicon data has been received
+    std::atomic<bool> vicon_data_received(false);
+
+    // Create a temporary subscription to get the latest Vicon data
     rclcpp::QoS qos(10);  // Depth of 10
     qos.reliability(rclcpp::ReliabilityPolicy::Reliable);  // Use Reliable reliability
 
     auto ros_vicon_sub_ = node_->create_subscription<std_msgs::msg::Float64MultiArray>(
         "/Vicon", qos,
-        [this](const std_msgs::msg::Float64MultiArray::SharedPtr msg) {
+        [this, &vicon_data_received](const std_msgs::msg::Float64MultiArray::SharedPtr msg) {
             if (msg->data.size() >= 6) {
                 vicon_position_[0] = msg->data[2];
                 vicon_position_[1] = msg->data[3];
@@ -144,20 +155,31 @@ std::array<float, 3>  Controller::goalPosition(const std::array<float, 3>& goal_
                             "Vicon position updated: x=%.2f, y=%.2f, z=%.2f, r=%.2f, p=%.2f, y=%.2f",
                             vicon_position_[0], vicon_position_[1], vicon_position_[2],
                             vicon_position_[3], vicon_position_[4], vicon_position_[5]);
+
+                // Set the flag to indicate new data has been received
+                vicon_data_received.store(true);
             } else {
                 RCLCPP_WARN(rclcpp::get_logger("offboard_control_node"),
                             "Received Vicon data with insufficient elements.");
             }
         });
 
-    //X and Y error
+    // Wait for new Vicon data
+    rclcpp::Time start_time = rclcpp::Clock().now();
+    while (!vicon_data_received.load() && (rclcpp::Clock().now() - start_time).seconds() < 1.0) {
+        rclcpp::spin_some(node_);  // Process callbacks
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));  // Avoid busy-waiting
+    }
+
+    if (!vicon_data_received.load()) {
+        RCLCPP_WARN(rclcpp::get_logger("offboard_control_node"), "Timeout waiting for Vicon data.");
+    }
+
+    // Calculate errors
     float x_error = goal_position[0] - vicon_position_[0];
     float y_error = goal_position[1] - vicon_position_[1];
-    //Z error
     float z_error = goal_position[2] - vicon_position_[2];
 
-    // Allow the node to spin and process callbacks
-    //rclcpp::spin(node_);
     return {x_error, y_error, z_error};  // Return the errors as an array
 }
 
