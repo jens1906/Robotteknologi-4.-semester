@@ -1,5 +1,5 @@
 {
-    "cmake.sourceDirectory": "C:/Users/Jens/Documents/GitHub/Robotteknologi-4.-semester/ViconUdpConnection/src/my_cpp_pkg",
+    "cmake.sourceDirectory": "/home/andr465m/Repos/Robotteknologi-4.-semester/Drone_control_system/src/drone_control",
     "C_Cpp.default.compilerPath": "C:/msys64/ucrt64/bin/g++.exe",
     "ros.distro": "jazzy",
     "files.associations": {
@@ -64,5 +64,6 @@
         "xstring": "cpp",
         "xtr1common": "cpp",
         "xutility": "cpp"
-    }
+    },
+    "idf.pythonInstallPath": "/usr/bin/python3"
 }
