@@ -146,12 +146,12 @@ void Controller::goalPosition(const std::array<float, 3>& goal_position) {
                 vicon_position_[0] = msg->data[2];
                 vicon_position_[1] = msg->data[3];
                 vicon_position_[2] = msg->data[4];
-                vicon_position_[3] = msg->data[5];
-                vicon_position_[4] = msg->data[6];
-                vicon_position_[5] = msg->data[7];
+                vicon_position_[3] = msg->data[5];  // Roll
+                vicon_position_[4] = msg->data[6];  // Pitch
+                vicon_position_[5] = msg->data[7];  // Yaw
 
                 RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"),
-                            "Vicon position updated: x=%.2f, y=%.2f, z=%.2f, r=%.2f, p=%.2f, y=%.2f",
+                            "Vicon position updated: x=%.2f, y=%.2f, z=%.2f, roll=%.2f, pitch=%.2f, yaw=%.2f",
                             vicon_position_[0], vicon_position_[1], vicon_position_[2],
                             vicon_position_[3], vicon_position_[4], vicon_position_[5]);
 
@@ -173,12 +173,26 @@ void Controller::goalPosition(const std::array<float, 3>& goal_position) {
         return;
     }
 
-    float x_error = goal_position[0] - vicon_position_[0];
-    float y_error = goal_position[1] - vicon_position_[1];
+    float x_error_global = goal_position[0] - vicon_position_[0];
+    float y_error_global = goal_position[1] - vicon_position_[1];
     float z_error = goal_position[2] - vicon_position_[2];
 
-    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Errors computed: x=%.2f, y=%.2f, z=%.2f",
-                x_error, y_error, z_error);
+    // RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Errors computed: x=%.2f, y=%.2f, z=%.2f",
+    //            x_error, y_error, z_error);
 
-    publishVehicleAttitudeSetpoint({x_error, y_error, z_error}, 0.0f);
+     // Transform global errors to local frame using Vicon yaw
+     float yaw_global = vicon_position_[5];  // Vicon yaw
+     float x_error_local = cos(yaw_global) * x_error_global + sin(yaw_global) * y_error_global;
+     float y_error_local = -sin(yaw_global) * x_error_global + cos(yaw_global) * y_error_global;
+ 
+     RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Errors computed (global): x=%.2f, y=%.2f, z=%.2f",
+                 x_error_global, y_error_global, z_error);
+     RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Errors computed (local): x=%.2f, y=%.2f",
+                 x_error_local, y_error_local);
+ 
+     // Use local errors to compute roll and pitch
+     publishVehicleAttitudeSetpoint({x_error_local, y_error_local, z_error}, 0.0f);
+ }
 }
+    
+    
