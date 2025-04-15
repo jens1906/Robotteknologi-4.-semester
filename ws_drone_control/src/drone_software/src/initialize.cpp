@@ -4,6 +4,7 @@
 Initialize::Initialize(rclcpp::Node::SharedPtr node) : node_(node) {  
     ros_vehicle_command_pub_ = node_->create_publisher<px4_msgs::msg::VehicleCommand>("/fmu/in/vehicle_command", 10);
     ros_offboard_control_mode_pub_ = node_->create_publisher<px4_msgs::msg::OffboardControlMode>("/fmu/in/offboard_control_mode", 10);
+    motor_thrust_pub_ = node_->create_publisher<std_msgs::msg::Float32MultiArray>("motor_thrusts", 10);
 }
 
 // By looking into the px4 message format we can find the layout to put vehicle commands. 

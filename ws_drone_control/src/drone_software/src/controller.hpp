@@ -18,7 +18,8 @@ public:
     void initialize(rclcpp::Node::SharedPtr node); // Actiovation of ros topics
     void publishVehicleAttitudeSetpoint(const std::array<float, 3>& xyz_error, float yaw); // Control the format of the attitude setpoint commands
     void goalPosition(const std::array<float, 3>& goal_position); // Get the goal position
-    
+    rclcpp::Publisher<std_msgs::msg::Float32MultiArray>::SharedPtr motor_thrust_pub_;
+
 private:
     rclcpp::Node::SharedPtr node_;  // Store the shared node
     std::array<float, 6> vicon_position_;  // Store the latest Vicon position
