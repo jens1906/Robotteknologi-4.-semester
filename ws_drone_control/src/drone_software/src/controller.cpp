@@ -192,7 +192,4 @@ void Controller::goalPosition(const std::array<float, 3>& goal_position) {
  
      // Use local errors to compute roll and pitch
      publishVehicleAttitudeSetpoint({x_error_local, y_error_local, z_error}, 0.0f);
- }
-}
-    
-    
+}  
