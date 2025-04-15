@@ -72,6 +72,9 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error) {
     float roll_desired = Kp_xy * y_error + Kd_xy * y_derivative * (3.14159/180);  // Roll to correct y position
     float pitch_desired = -(Kp_xy * x_error + Kd_xy * x_derivative) * (3.14159/180); // Pitch to correct x position
 
+    roll_desired = std::clamp(roll_desired, -0.5f, 0.5f);
+    pitch_desired = std::clamp(pitch_desired, -0.5f, 0.5f);
+
     prev_x_error = x_error;
     prev_y_error = y_error;
 
@@ -95,7 +98,7 @@ float Controller::zToThrust(float z_error) {
 
     float z_derivative = (z_error - prev_z_error) / dt;
     float thrust = (Kp_z * z_error + Kd_z * z_derivative) / 100.0f;
-    thrust = std::clamp(thrust, 0.0f, 1.0f);
+    thrust = std::clamp(thrust, 0.0f, 0.8f);
 
     prev_z_error = z_error;
 
