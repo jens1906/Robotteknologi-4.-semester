@@ -68,8 +68,9 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error) {
     float x_derivative = (x_error - prev_x_error) / dt;
     float y_derivative = (y_error - prev_y_error) / dt;
 
-    float roll_desired = Kp_xy * y_error + Kd_xy * y_derivative;
-    float pitch_desired = Kp_xy * x_error + Kd_xy * x_derivative;
+    // PD Control Outputs
+    float roll_desired = Kp_xy * y_error + Kd_xy * y_derivative * (3.14159/180);  // Roll to correct y position
+    float pitch_desired = -(Kp_xy * x_error + Kd_xy * x_derivative) * (3.14159/180); // Pitch to correct x position
 
     prev_x_error = x_error;
     prev_y_error = y_error;
