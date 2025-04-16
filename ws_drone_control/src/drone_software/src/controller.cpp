@@ -37,10 +37,10 @@ void Controller::publishVehicleAttitudeSetpoint(const std::array<float, 3>& xyz_
 }
 
 void Controller::publishMotorThrusts(float thrust, float roll, float pitch, float yaw) {
-    float motor1 = thrust + roll + pitch - yaw; // Front-left
-    float motor2 = thrust - roll + pitch + yaw; // Front-right
-    float motor3 = thrust - roll - pitch - yaw; // Rear-right
-    float motor4 = thrust + roll - pitch + yaw; // Rear-left
+    float motor1 = thrust + roll + pitch; // Front-left
+    float motor2 = thrust - roll + pitch; // Front-right
+    float motor3 = thrust - roll - pitch; // Rear-right
+    float motor4 = thrust + roll - pitch; // Rear-left
 
     motor1 = std::clamp(motor1, 0.0f, 1.0f);
     motor2 = std::clamp(motor2, 0.0f, 1.0f);
@@ -48,7 +48,7 @@ void Controller::publishMotorThrusts(float thrust, float roll, float pitch, floa
     motor4 = std::clamp(motor4, 0.0f, 1.0f);
 
     // Create and publish the message
-    std_msgs::msg::Float32MultiArray msg;
+    std_msgs::msg::Float64MultiArray msg;
     msg.data = {motor1, motor2, motor3, motor4};
     motor_thrust_pub_->publish(msg);
 
@@ -192,4 +192,4 @@ void Controller::goalPosition(const std::array<float, 3>& goal_position) {
  
      // Use local errors to compute roll and pitch
      publishVehicleAttitudeSetpoint({x_error_local, y_error_local, z_error}, 0.0f);
-}  
+}
