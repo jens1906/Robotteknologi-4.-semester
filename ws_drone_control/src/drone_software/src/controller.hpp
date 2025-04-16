@@ -18,7 +18,6 @@ public:
     void initialize(rclcpp::Node::SharedPtr node); // Actiovation of ros topics
     void publishVehicleAttitudeSetpoint(const std::array<float, 3>& xyz_error, float yaw); // Control the format of the attitude setpoint commands
     void goalPosition(const std::array<float, 3>& goal_position); // Get the goal position
-    rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr motor_thrust_pub_;
 
 private:
     rclcpp::Node::SharedPtr node_;  // Store the shared node
@@ -28,7 +27,6 @@ private:
     rclcpp::Publisher<px4_msgs::msg::VehicleAttitudeSetpoint>::SharedPtr ros_attitude_setpoint_pub_; // Publisher for vehicle attitude setpoint
     void vehicleAttitudeCallback(const px4_msgs::msg::VehicleAttitude::SharedPtr msg); // Callback for vehicle attitude
     std::array<float, 4> rpyToQuaternion(float roll, float pitch, float yaw); // Convert roll, pitch, yaw to quaternion because of the px4 message format
-    rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr motor_thrust_pub_;
 };
 
 #endif

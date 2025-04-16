@@ -31,31 +31,6 @@ void Controller::publishVehicleAttitudeSetpoint(const std::array<float, 3>& xyz_
 
     ros_attitude_setpoint_pub_->publish(msg);
     RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Published VehicleAttitudeSetpoint: thrust=%.2f", thrust);
-
-    // Publish motor thrusts for debugging
-    publishMotorThrusts(thrust, roll_pitch[0], roll_pitch[1], yaw);
-}
-
-void Controller::publishMotorThrusts(float thrust, float roll, float pitch, float yaw) {
-    float motor1 = thrust + roll + pitch; // Front-left
-    float motor2 = thrust - roll + pitch; // Front-right
-    float motor3 = thrust - roll - pitch; // Rear-right
-    float motor4 = thrust + roll - pitch; // Rear-left
-
-    motor1 = std::clamp(motor1, 0.0f, 1.0f);
-    motor2 = std::clamp(motor2, 0.0f, 1.0f);
-    motor3 = std::clamp(motor3, 0.0f, 1.0f);
-    motor4 = std::clamp(motor4, 0.0f, 1.0f);
-
-    // Create and publish the message
-    std_msgs::msg::Float64MultiArray msg;
-    msg.data = {motor1, motor2, motor3, motor4};
-    motor_thrust_pub_->publish(msg);
-
-    // Log the motor thrusts
-    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"),
-                "Motor Thrusts: M1=%.2f, M2=%.2f, M3=%.2f, M4=%.2f",
-                motor1, motor2, motor3, motor4);
 }
 
 std::array<float, 4> Controller::rpyToQuaternion(float roll, float pitch, float yaw) {
