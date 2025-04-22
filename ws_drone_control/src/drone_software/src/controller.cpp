@@ -136,9 +136,7 @@ float Controller::zToThrust(float z_error) {
 
 //This is not in use
 void Controller::goalPosition(const std::array<float, 3>& goal_position) {
-    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"),
-                "goalPosition called with goal: x=%.2f, y=%.2f, z=%.2f",
-                goal_position[0], goal_position[1], goal_position[2]);
+
 
     // Wait for at least one Vicon update (optional: add a timeout)
     rclcpp::Time start_time = rclcpp::Clock().now();
@@ -146,6 +144,11 @@ void Controller::goalPosition(const std::array<float, 3>& goal_position) {
         rclcpp::spin_some(node_);
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
+    rclcpp::spin_some(node_);
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"),
+                "goalPosition called with goal: x=%.2f, y=%.2f, z=%.2f",
+                goal_position[0], goal_position[1], goal_position[2]);
 
     float x_error_global = goal_position[0] - vicon_position_[0];
     float y_error_global = goal_position[1] - vicon_position_[1];
@@ -175,7 +178,7 @@ void Controller::startGoalPositionThread(const std::array<float, 3>& goal_positi
                 rclcpp::spin_some(node_);
                 std::this_thread::sleep_for(std::chrono::milliseconds(10));
             }
-            
+
             // Use the latest vicon_position_ directly
             RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"),
                         "Current Vicon position: x=%.2f, y=%.2f, z=%.2f",
