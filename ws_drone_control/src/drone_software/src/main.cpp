@@ -52,6 +52,7 @@ int main(int argc, char *argv[]) {
             running.store(false);  // Stop the drone thread
         } else if (input == "kill") {
             RCLCPP_INFO(node->get_logger(), "Kill command received. Disarming...");
+            controller.publishVehicleAttitudeSetpoint({0.0f, 0.0f, 0.0f}, 0.0f);  // Example setpoint
             running.store(false);  // Stop the drone thread
             initialize.disarm(true);  // Disarm the drone
         } else if (input == "exit") {
