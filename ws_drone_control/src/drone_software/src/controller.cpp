@@ -96,7 +96,7 @@ float Controller::zToThrust(float z_error) {
     prev_time = current_time;
 
     float z_derivative = (z_error - prev_z_error) / dt;
-    float thrust = Kp_z * z_error + Kd_z * z_derivative + g;
+    float thrust = Kp_z * z_error + Kd_z * z_derivative - g;
     thrust = std::clamp(thrust, 0.0f, 15.0f);  // Limit thrust
 
     prev_z_error = z_error;
