@@ -129,7 +129,7 @@ float Controller::zToThrust(float z_error) {
     thrust = std::clamp(thrust, 0.0f, 0.8f);
     RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Thrust After Clamp: %.2f", thrust);
 
-    prev_z_error = z_error;s
+    prev_z_error = z_error;
 
     return thrust;
 }
