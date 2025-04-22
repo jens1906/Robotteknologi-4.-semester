@@ -49,6 +49,7 @@ int main(int argc, char *argv[]) {
             controller.publishVehicleAttitudeSetpoint({0.0f, 0.0f, 0.0f}, 0.0f);  // Example setpoint
         } else if (input == "turnoff") {
             RCLCPP_INFO(node->get_logger(), "Turning off the drone...");
+            controller.stopGoalPositionThread();
             controller.publishVehicleAttitudeSetpoint({0.0f, 0.0f, 0.0f}, 0.0f);  // Example setpoint
             running.store(false);  // Stop the drone thread
         } else if (input == "kill") {
