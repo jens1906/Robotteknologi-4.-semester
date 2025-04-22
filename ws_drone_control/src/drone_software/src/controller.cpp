@@ -217,10 +217,14 @@ void Controller::startGoalPositionThread(const std::array<float, 3>& goal_positi
             float x_error_global = goal_position[0] - vicon_position_[0];
             float y_error_global = goal_position[1] - vicon_position_[1];
             float z_error = goal_position[2] - vicon_position_[2];
+            RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"),
+                        "Errors (global): x=%.2f, y=%.2f, z=%.2f", x_error_global, y_error_global, z_error);
 
             float yaw_global = vicon_position_[5];  // Vicon yaw
             float x_error_local = cos(yaw_global) * x_error_global + sin(yaw_global) * y_error_global;
             float y_error_local = -sin(yaw_global) * x_error_global + cos(yaw_global) * y_error_global;
+            RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"),
+                        "Errors (local): x=%.2f, y=%.2f", x_error_local, y_error_local);
 
             publishVehicleAttitudeSetpoint({x_error_local, y_error_local, z_error}, 0.0f);
 
