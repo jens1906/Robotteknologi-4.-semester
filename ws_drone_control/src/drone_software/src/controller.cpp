@@ -80,6 +80,8 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error) {
 
     prev_x_error = x_error;
     prev_y_error = y_error;
+    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), 
+                "Roll desired: %.2f, Pitch desired: %.2f", roll_desired, pitch_desired);
 
     return {roll_desired, pitch_desired};
 }
