@@ -3,6 +3,8 @@
 
 #include <memory>
 #include <array>  
+#include <thread>
+#include <atomic>
 #include <iostream> 
 #include <std_msgs/msg/float64_multi_array.hpp>  
 #include <rclcpp/rclcpp.hpp>
@@ -18,6 +20,8 @@ public:
     void initialize(rclcpp::Node::SharedPtr node); // Actiovation of ros topics
     void publishVehicleAttitudeSetpoint(const std::array<float, 3>& xyz_error, float yaw); // Control the format of the attitude setpoint commands
     void goalPosition(const std::array<float, 3>& goal_position); // Get the goal position
+    void startGoalPositionThread(const std::array<float, 3>& goal_position);
+    void stopGoalPositionThread();
 
 private:
     rclcpp::Node::SharedPtr node_;  // Store the shared node
@@ -27,6 +31,9 @@ private:
     rclcpp::Publisher<px4_msgs::msg::VehicleAttitudeSetpoint>::SharedPtr ros_attitude_setpoint_pub_; // Publisher for vehicle attitude setpoint
     void vehicleAttitudeCallback(const px4_msgs::msg::VehicleAttitude::SharedPtr msg); // Callback for vehicle attitude
     std::array<float, 4> rpyToQuaternion(float roll, float pitch, float yaw); // Convert roll, pitch, yaw to quaternion because of the px4 message format
+
+    std::thread goal_position_thread_;
+    std::atomic<bool> stop_thread_;
 };
 
 #endif

@@ -58,10 +58,17 @@ int main(int argc, char *argv[]) {
         } else if (input == "exit") {
             RCLCPP_INFO(node->get_logger(), "Exiting...");
             terminate.store(true);  // Signal the thread to terminate
+            controller.stopGoalPositionThread();
             break;
+        } else if (input == "start") {
+            RCLCPP_INFO(node->get_logger(), "Starting goal position thread...");
+            controller.startGoalPositionThread({1.0f, 1.0f, 0.40f});  // Example goal position
+        } else if (input == "stop") {
+            RCLCPP_INFO(node->get_logger(), "Stopping goal position thread...");
+            controller.stopGoalPositionThread();
         } else if (input == "setpoint") {
             RCLCPP_INFO(node->get_logger(), "Altitude setpoint command received.");
-            controller.goalPosition({1.0f, 1.0f, 1.0f});  // Example setpoint
+            controller.goalPosition({1.0f, 1.0f, 0.40f});  // Example setpoint
         } else {
             RCLCPP_WARN(node->get_logger(), "Unknown command: %s", input.c_str());
         }

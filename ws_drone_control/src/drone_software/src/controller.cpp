@@ -149,3 +149,71 @@ void Controller::goalPosition(const std::array<float, 3>& goal_position) {
 
     publishVehicleAttitudeSetpoint({x_error_local, y_error_local, z_error}, 0.0f);
 }
+ 
+
+void Controller::startGoalPositionThread(const std::array<float, 3>& goal_position) {
+    stop_thread_.store(false);  // Reset the stop flag
+    goal_position_thread_ = std::thread([this, goal_position]() {
+        RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Starting goalPosition thread.");
+
+        while (!stop_thread_.load()) {
+            std::atomic<bool> vicon_data_received(false);
+
+            rclcpp::QoS qos(10);
+            qos.reliability(rclcpp::ReliabilityPolicy::Reliable);
+
+            auto ros_vicon_sub_ = node_->create_subscription<std_msgs::msg::Float64MultiArray>(
+                "/Vicon", qos,
+                [this, &vicon_data_received](const std_msgs::msg::Float64MultiArray::SharedPtr msg) {
+                    if (msg->data.size() >= 6) {
+                        vicon_position_[0] = msg->data[2];
+                        vicon_position_[1] = msg->data[3];
+                        vicon_position_[2] = msg->data[4];
+                        vicon_position_[3] = msg->data[5];  // Roll
+                        vicon_position_[4] = msg->data[6];  // Pitch
+                        vicon_position_[5] = msg->data[7];  // Yaw
+
+                        vicon_data_received.store(true);
+                    }
+                });
+
+            rclcpp::Time start_time = rclcpp::Clock().now();
+            while (!vicon_data_received.load() && (rclcpp::Clock().now() - start_time).seconds() < 1.0) {
+                rclcpp::spin_some(node_);
+                std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            }
+
+            if (!vicon_data_received.load()) {
+                RCLCPP_WARN(rclcpp::get_logger("offboard_control_node"), "Timeout waiting for Vicon data.");
+                continue;
+            }
+
+            float x_error_global = goal_position[0] - vicon_position_[0];
+            float y_error_global = goal_position[1] - vicon_position_[1];
+            float z_error = goal_position[2] - vicon_position_[2];
+
+            float yaw_global = vicon_position_[5];  // Vicon yaw
+            float x_error_local = cos(yaw_global) * x_error_global + sin(yaw_global) * y_error_global;
+            float y_error_local = -sin(yaw_global) * x_error_global + cos(yaw_global) * y_error_global;
+
+            publishVehicleAttitudeSetpoint({x_error_local, y_error_local, z_error}, 0.0f);
+
+            // Check if errors are close to zero
+            if (std::abs(x_error_local) < 0.01f && std::abs(y_error_local) < 0.01f && std::abs(z_error) < 0.01f) {
+                RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Goal position reached.");
+                break;
+            }
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));  // Adjust loop frequency as needed
+        }
+
+        RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Exiting goalPosition thread.");
+    });
+}
+
+void Controller::stopGoalPositionThread() {
+    if (goal_position_thread_.joinable()) {
+        stop_thread_.store(true);  // Signal the thread to stop
+        goal_position_thread_.join();  // Wait for the thread to finish
+    }
+}
