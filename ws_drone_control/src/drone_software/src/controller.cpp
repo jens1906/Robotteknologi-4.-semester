@@ -46,7 +46,6 @@ std::array<float, 4> Controller::rpyToQuaternion(float roll, float pitch, float 
     float y = sy * cp * sr + cy * sp * cr;
     float z = sy * cp * cr - cy * sp * sr;
 
-    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Quaternion: w=%.4f, x=%.4f, y=%.4f, z=%.4f", w, x, y, z);
     return {w, x, y, z};
 }
 
@@ -69,8 +68,8 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error) {
     float y_derivative = (y_error - prev_y_error) / dt;
 
     // PD Control Outputs
-    float roll_desired = Kp_xy * y_error + Kd_xy * y_derivative * (3.14159/180);  // Roll to correct y position
-    float pitch_desired = -(Kp_xy * x_error + Kd_xy * x_derivative) * (3.14159/180); // Pitch to correct x position
+    float roll_desired = Kp_xy * y_error + Kd_xy * y_derivative;
+    float pitch_desired = -(Kp_xy * x_error + Kd_xy * x_derivative);
 
     roll_desired = std::clamp(roll_desired, -0.2f, 0.2f);
     pitch_desired = std::clamp(pitch_desired, -0.2f, 0.2f);
@@ -84,6 +83,7 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error) {
 float Controller::zToThrust(float z_error) {
     float Kp_z = 5.534;
     float Kd_z = 5.108;
+    float g = 9.81;  // Gravity
 
     static float prev_z_error = 0.0f;
     static rclcpp::Time prev_time = rclcpp::Clock().now();
@@ -91,14 +91,13 @@ float Controller::zToThrust(float z_error) {
     rclcpp::Time current_time = rclcpp::Clock().now();
     float dt = (current_time - prev_time).seconds();
     if (dt <= 0.0f) {
-        RCLCPP_WARN(rclcpp::get_logger("offboard_control_node"), "Invalid dt detected, using fallback value.");
         dt = 0.01f;
     }
     prev_time = current_time;
 
     float z_derivative = (z_error - prev_z_error) / dt;
-    float thrust = (Kp_z * z_error + Kd_z * z_derivative) / 100.0f;
-    thrust = std::clamp(thrust, 0.0f, 0.8f);
+    float thrust = Kp_z * z_error + Kd_z * z_derivative + g;
+    thrust = std::clamp(thrust, 0.0f, 15.0f);  // Limit thrust
 
     prev_z_error = z_error;
 
@@ -125,15 +124,7 @@ void Controller::goalPosition(const std::array<float, 3>& goal_position) {
                 vicon_position_[4] = msg->data[6];  // Pitch
                 vicon_position_[5] = msg->data[7];  // Yaw
 
-                RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"),
-                            "Vicon position updated: x=%.2f, y=%.2f, z=%.2f, roll=%.2f, pitch=%.2f, yaw=%.2f",
-                            vicon_position_[0], vicon_position_[1], vicon_position_[2],
-                            vicon_position_[3], vicon_position_[4], vicon_position_[5]);
-
                 vicon_data_received.store(true);
-            } else {
-                RCLCPP_WARN(rclcpp::get_logger("offboard_control_node"),
-                            "Received Vicon data with insufficient elements.");
             }
         });
 
@@ -152,19 +143,9 @@ void Controller::goalPosition(const std::array<float, 3>& goal_position) {
     float y_error_global = goal_position[1] - vicon_position_[1];
     float z_error = goal_position[2] - vicon_position_[2];
 
-    // RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Errors computed: x=%.2f, y=%.2f, z=%.2f",
-    //            x_error, y_error, z_error);
+    float yaw_global = vicon_position_[5];  // Vicon yaw
+    float x_error_local = cos(yaw_global) * x_error_global + sin(yaw_global) * y_error_global;
+    float y_error_local = -sin(yaw_global) * x_error_global + cos(yaw_global) * y_error_global;
 
-     // Transform global errors to local frame using Vicon yaw
-     float yaw_global = vicon_position_[5];  // Vicon yaw
-     float x_error_local = cos(yaw_global) * x_error_global + sin(yaw_global) * y_error_global;
-     float y_error_local = -sin(yaw_global) * x_error_global + cos(yaw_global) * y_error_global;
- 
-     RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Errors computed (global): x=%.2f, y=%.2f, z=%.2f",
-                 x_error_global, y_error_global, z_error);
-     RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Errors computed (local): x=%.2f, y=%.2f",
-                 x_error_local, y_error_local);
- 
-     // Use local errors to compute roll and pitch
-     publishVehicleAttitudeSetpoint({x_error_local, y_error_local, z_error}, 0.0f);
+    publishVehicleAttitudeSetpoint({x_error_local, y_error_local, z_error}, 0.0f);
 }
