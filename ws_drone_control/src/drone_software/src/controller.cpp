@@ -75,13 +75,14 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error) {
     float roll_desired = (Kp_xy * y_error + Kd_xy * y_derivative) * (M_PI / 180.0f);
     float pitch_desired = -(Kp_xy * x_error + Kd_xy * x_derivative) * (M_PI / 180.0f);
 
+    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), 
+                "Roll desired: %.2f, Pitch desired: %.2f", roll_desired, pitch_desired);
+
     roll_desired = std::clamp(roll_desired, -0.2f, 0.2f);
     pitch_desired = std::clamp(pitch_desired, -0.2f, 0.2f);
 
     prev_x_error = x_error;
     prev_y_error = y_error;
-    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), 
-                "Roll desired: %.2f, Pitch desired: %.2f", roll_desired, pitch_desired);
 
     return {roll_desired, pitch_desired};
 }
