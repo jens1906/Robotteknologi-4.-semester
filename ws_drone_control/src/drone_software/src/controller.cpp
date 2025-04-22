@@ -170,6 +170,9 @@ void Controller::startGoalPositionThread(const std::array<float, 3>& goal_positi
 
         while (!stop_thread_.load()) {
             // Use the latest vicon_position_ directly
+            RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"),
+                        "Current Vicon position: x=%.2f, y=%.2f, z=%.2f",
+                        vicon_position_[0], vicon_position_[1], vicon_position_[2]);
             float x_error_global = goal_position[0] - vicon_position_[0];
             float y_error_global = goal_position[1] - vicon_position_[1];
             float z_error = goal_position[2] - vicon_position_[2];
@@ -189,7 +192,7 @@ void Controller::startGoalPositionThread(const std::array<float, 3>& goal_positi
                 RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Goal position reached.");
                 break;
             }
-
+            RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Sleeping for 100ms before next iteration.");
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
 
