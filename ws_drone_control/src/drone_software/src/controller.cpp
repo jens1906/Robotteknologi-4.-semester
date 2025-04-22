@@ -32,6 +32,9 @@ void Controller::publishVehicleAttitudeSetpoint(const std::array<float, 3>& xyz_
     msg.timestamp = rclcpp::Clock().now().nanoseconds() / 1000; // PX4 expects µs
     msg.q_d = rpyToQuaternion(roll_pitch[0], roll_pitch[1], yaw);
     msg.thrust_body = std::array<float, 3>{0.0f, 0.0f, -thrust};
+    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), 
+                "Publishing VehicleAttitudeSetpoint: roll=%.2f, pitch=%.2f, thrust=%.2f",
+                roll_pitch[0], roll_pitch[1], thrust);
 
     ros_attitude_setpoint_pub_->publish(msg);
     RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), 
@@ -104,6 +107,7 @@ float Controller::zToThrust(float z_error) {
 
     float z_derivative = (z_error - prev_z_error) / dt;
     float thrust = (Kp_z * z_error + Kd_z * z_derivative) / 100.0f;
+    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Thrust: %.2f", thrust);
     thrust = std::clamp(thrust, 0.0f, 0.8f);
 
     prev_z_error = z_error;
