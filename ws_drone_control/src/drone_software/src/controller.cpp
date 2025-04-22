@@ -221,8 +221,8 @@ void Controller::startGoalPositionThread(const std::array<float, 3>& goal_positi
                         "Errors (global): x=%.2f, y=%.2f, z=%.2f", x_error_global, y_error_global, z_error);
 
             float yaw_global = vicon_position_[5];  // Vicon yaw
-            float x_error_local = cos(yaw_global) * x_error_global + sin(yaw_global) * y_error_global;
-            float y_error_local = -sin(yaw_global) * x_error_global + cos(yaw_global) * y_error_global;
+            float x_error_local = cos(yaw_global) * x_error_global - sin(yaw_global) * y_error_global;
+            float y_error_local = sin(yaw_global) * x_error_global + cos(yaw_global) * y_error_global;
             RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"),
                         "Errors (local): x=%.2f, y=%.2f", x_error_local, y_error_local);
 
