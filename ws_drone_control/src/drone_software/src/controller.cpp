@@ -121,10 +121,11 @@ float Controller::zToThrust(float z_error) {
 
     float z_derivative = (z_error - prev_z_error) / dt;
     float thrust = (Kp_z * z_error + Kd_z * z_derivative) / 100.0f;
-    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Thrust: %.2f", thrust);
+    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Thrust Before Clamp: %.2f", thrust);
     thrust = std::clamp(thrust, 0.0f, 0.8f);
+    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Thrust After Clamp: %.2f", thrust);
 
-    prev_z_error = z_error;
+    prev_z_error = z_error;s
 
     return thrust;
 }
