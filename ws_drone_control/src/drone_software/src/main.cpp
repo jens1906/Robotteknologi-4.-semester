@@ -46,6 +46,7 @@ int main(int argc, char *argv[]) {
         if (input == "turnon") {
             RCLCPP_INFO(node->get_logger(), "Turning on the drone...");
             running.store(true);  // Start the drone thread
+            controller.publishVehicleAttitudeSetpoint({0.0f, 0.0f, 0.0f}, 0.0f);  // Example setpoint
         } else if (input == "turnoff") {
             RCLCPP_INFO(node->get_logger(), "Turning off the drone...");
             controller.publishVehicleAttitudeSetpoint({0.0f, 0.0f, 0.0f}, 0.0f);  // Example setpoint
