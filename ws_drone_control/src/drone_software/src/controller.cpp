@@ -26,9 +26,11 @@ void Controller::initialize(rclcpp::Node::SharedPtr node) {
                 vicon_position_[0] = msg->data[2];
                 vicon_position_[1] = msg->data[3];
                 vicon_position_[2] = msg->data[4];
-                vicon_position_[3] = msg->data[5]; // Roll
-                vicon_position_[4] = msg->data[6]; // Pitch
-                vicon_position_[5] = msg->data[7]; // Yaw
+                vicon_position_[3] = msg->data[5];
+                vicon_position_[4] = msg->data[6];
+                vicon_position_[5] = msg->data[7];
+                RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"),
+                            "Vicon update: x=%.2f, y=%.2f, z=%.2f", vicon_position_[0], vicon_position_[1], vicon_position_[2]);
             }
         });
 }
