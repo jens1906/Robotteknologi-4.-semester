@@ -91,14 +91,16 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error) {
     float x_derivative = (x_error - prev_x_error) / dt;
     float y_derivative = (y_error - prev_y_error) / dt;
 
-    float roll_desired = (Kp_xy * y_error + Kd_xy * y_derivative) * (M_PI / 180.0f);
-    float pitch_desired = -(Kp_xy * x_error + Kd_xy * x_derivative) * (M_PI / 180.0f);
+    float roll_desired = (Kp_xy * y_error + Kd_xy * y_derivative);//* (M_PI / 180.0f)
+    float pitch_desired = -(Kp_xy * x_error + Kd_xy * x_derivative);//* (M_PI / 180.0f)
 
     RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), 
-                "Roll desired: %.2f, Pitch desired: %.2f", roll_desired, pitch_desired);
+                "Before Clamp Roll desired: %.2f, Pitch desired: %.2f", roll_desired, pitch_desired);
 
     roll_desired = std::clamp(roll_desired, -0.2f, 0.2f);
     pitch_desired = std::clamp(pitch_desired, -0.2f, 0.2f);
+    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), 
+                "After Clamp Roll desired: %.2f, Pitch desired: %.2f", roll_desired, pitch_desired);
 
     prev_x_error = x_error;
     prev_y_error = y_error;
@@ -123,10 +125,11 @@ float Controller::zToThrust(float z_error) {
 
     float z_derivative = (z_error - prev_z_error) / dt;
     float thrust = (Kp_z * z_error + Kd_z * z_derivative) / 100.0f;
-    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Thrust: %.2f", thrust);
+    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Thrust Before Clamp: %.2f", thrust);
     thrust = std::clamp(thrust, 0.0f, 0.8f);
+    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Thrust After Clamp: %.2f", thrust);
 
-    prev_z_error = z_error;
+    prev_z_error = z_error;s
 
     return thrust;
 }
