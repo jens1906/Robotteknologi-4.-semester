@@ -11,9 +11,6 @@
 #include <px4_msgs/msg/vehicle_attitude.hpp>
 #include <px4_msgs/msg/vehicle_attitude_setpoint.hpp>
 
-//Next we set up which functinos are public and private
-//and which variables are public and private
-//AKA which functions can only be used in the class and which can be used outside the class
 class Controller {
 public:
     Controller(rclcpp::Node::SharedPtr node); // Constructor to initialize the node
