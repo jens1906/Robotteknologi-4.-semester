@@ -69,7 +69,7 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error) {
 
     rclcpp::Time current_time = rclcpp::Clock().now();
     float dt = (current_time - prev_time).seconds();
-    if (dt <= 0.0f) dt = 0.01f;
+    if (dt < 0.01f) {dt = 0.01f};  // Avoid division by zero
     prev_time = current_time;
 
     float x_derivative = (x_error - prev_x_error) / dt;
@@ -99,10 +99,10 @@ float Controller::zToThrust(float z_error) {
 
     rclcpp::Time current_time = rclcpp::Clock().now();
     float dt = (current_time - prev_time).seconds();
-    if (dt <= 0.0f) {
+    if (dt < 0.01f) {
         RCLCPP_WARN(rclcpp::get_logger("offboard_control_node"), "Invalid dt detected, using fallback value.");
         dt = 0.01f;
-    }
+    } // Avoid division by zero
     prev_time = current_time;
 
     float z_derivative = (z_error - prev_z_error) / dt;
