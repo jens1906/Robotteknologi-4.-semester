@@ -1,7 +1,9 @@
 #include "controller.hpp"
 
 Controller::Controller(rclcpp::Node::SharedPtr node) 
-    : vicon_position_{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f} {
+    : vicon_position_{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
+      vicon_velocity_{0.0f, 0.0f, 0.0f},
+      prev_vicon_time_{0} {
     node_ = node;
 }
 
@@ -24,9 +26,23 @@ void Controller::initialize(rclcpp::Node::SharedPtr node) {
         [this](const std_msgs::msg::Float64MultiArray::SharedPtr msg) {
             if (msg->data.size() >= 8) {
                 std::unique_lock<std::mutex> lock(vicon_mutex_);
+                // Save previous position and time
+                std::array<float, 3> prev_pos = {vicon_position_[0], vicon_position_[1], vicon_position_[2]};
+                rclcpp::Time prev_time = prev_vicon_time_;
+                // Update position
                 vicon_position_[0] = msg->data[2];
                 vicon_position_[1] = msg->data[3];
                 vicon_position_[2] = msg->data[4];
+                // Compute velocity
+                rclcpp::Time now = rclcpp::Clock().now();
+                float dt = (now - prev_time).seconds();
+                if (dt > 0.001f && prev_time.nanoseconds() != 0) {
+                    vicon_velocity_[0] = (vicon_position_[0] - prev_pos[0]) / dt;
+                    vicon_velocity_[1] = (vicon_position_[1] - prev_pos[1]) / dt;
+                    vicon_velocity_[2] = (vicon_position_[2] - prev_pos[2]) / dt;
+                }
+                prev_vicon_time_ = now;
+                // Update orientation
                 vicon_position_[3] = msg->data[5];
                 vicon_position_[4] = msg->data[6];
                 vicon_position_[5] = msg->data[7];
@@ -34,7 +50,9 @@ void Controller::initialize(rclcpp::Node::SharedPtr node) {
                 lock.unlock();
                 vicon_update_cv_.notify_one(); // Notify the waiting thread
                 RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"),
-                            "Vicon update: x=%.2f, y=%.2f, z=%.2f", vicon_position_[0], vicon_position_[1], vicon_position_[2]);
+                            "Vicon update: x=%.2f, y=%.2f, z=%.2f, vx=%.2f, vy=%.2f, vz=%.2f",
+                            vicon_position_[0], vicon_position_[1], vicon_position_[2],
+                            vicon_velocity_[0], vicon_velocity_[1], vicon_velocity_[2]);
             }
         });
 }
@@ -44,7 +62,15 @@ void Controller::vehicleAttitudeCallback(const px4_msgs::msg::VehicleAttitude::S
 }
 
 void Controller::publishVehicleAttitudeSetpoint(const std::array<float, 3>& xyz_error, float yaw) {
-    auto roll_pitch = xyToRollPitch(xyz_error[0], xyz_error[1]);
+    float vx_err, vy_err;
+    {
+        std::lock_guard<std::mutex> lock(vicon_mutex_);
+        // Transform global velocity to local frame using yaw if needed
+        float yaw = vicon_position_[5];
+        vx_err = cos(yaw) * vicon_velocity_[0] + sin(yaw) * vicon_velocity_[1];
+        vy_err = -sin(yaw) * vicon_velocity_[0] + cos(yaw) * vicon_velocity_[1];
+    }
+    auto roll_pitch = xyToRollPitch(xyz_error[0], xyz_error[1], vx_err, vy_err);
     float thrust = zToThrust(xyz_error[2]);
     yaw = 0.0f;
 
@@ -99,35 +125,47 @@ std::array<float, 4> Controller::rpyToQuaternion(float roll, float pitch, float 
     return {w, x, y, z};
 }
 
-std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error) {
-    float Kp_xy = 7.344f;
-    float Kd_xy = 6.778f;
+std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, float vx_err, float vy_err) {
+    // Outer loop gains (position to velocity)
+    float Kp_xy_outer = 0.111f;
+    float Kd_xy_outer = 0.1804f;
+    // Inner loop gains (velocity to attitude)
+    float Kp_xy_inner = 0.1f;
+    float Kd_xy_inner = 0.05f;
 
     static float prev_x_error = 0.0f;
     static float prev_y_error = 0.0f;
+    static float prev_vx_cmd = 0.0f;
+    static float prev_vy_cmd = 0.0f;
     static rclcpp::Time prev_time = rclcpp::Clock().now();
 
     rclcpp::Time current_time = rclcpp::Clock().now();
     float dt = (current_time - prev_time).seconds();
-    if (dt < 0.01f) {dt = 0.01f;}  // Avoid division by zero
+    if (dt < 0.01f) { dt = 0.01f; }
     prev_time = current_time;
 
-    float x_derivative = (x_error - prev_x_error) / dt;
-    float y_derivative = (y_error - prev_y_error) / dt;
+    // Outer loop: position error to velocity command
+    float dx = (x_error - prev_x_error) / dt;
+    float dy = (y_error - prev_y_error) / dt;
+    float vx_cmd = Kp_xy_outer * x_error + Kd_xy_outer * dx;
+    float vy_cmd = Kp_xy_outer * y_error + Kd_xy_outer * dy;
 
-    float roll_desired = (Kp_xy * y_error + Kd_xy * y_derivative);//* (M_PI / 180.0f)
-    float pitch_desired = -(Kp_xy * x_error + Kd_xy * x_derivative);//* (M_PI / 180.0f)
-
-    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), 
-                "Before Clamp Roll desired: %.2f, Pitch desired: %.2f", roll_desired, pitch_desired);
+    // Inner loop: velocity command to roll/pitch
+    float dvx = (vx_cmd - prev_vx_cmd) / dt;
+    float dvy = (vy_cmd - prev_vy_cmd) / dt;
+    float roll_desired  = Kp_xy_inner * (vy_cmd - vy_err) + Kd_xy_inner * dvy;
+    float pitch_desired = -(Kp_xy_inner * (vx_cmd - vx_err) + Kd_xy_inner * dvx);
 
     roll_desired = std::clamp(roll_desired, -0.2f, 0.2f);
     pitch_desired = std::clamp(pitch_desired, -0.2f, 0.2f);
-    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), 
-                "After Clamp Roll desired: %.2f, Pitch desired: %.2f", roll_desired, pitch_desired);
 
     prev_x_error = x_error;
     prev_y_error = y_error;
+    prev_vx_cmd = vx_cmd;
+    prev_vy_cmd = vy_cmd;
+
+    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"),
+                "After Clamp Roll desired: %.2f, Pitch desired: %.2f", roll_desired, pitch_desired);
 
     return {roll_desired, pitch_desired};
 }
@@ -241,7 +279,7 @@ void Controller::stopGoalPositionThread() {
 }
 
 void Controller::simulateDroneCommands(const std::array<float, 3>& xyz_error, float yaw) {
-    auto roll_pitch = xyToRollPitch(xyz_error[0], xyz_error[1]);
+    auto roll_pitch = xyToRollPitch(xyz_error[0], xyz_error[1], vicon_velocity_[0], vicon_velocity_[1]);
     float thrust = zToThrust(xyz_error[2]);
 
     // Simulate the quaternion calculation for roll, pitch, and yaw
