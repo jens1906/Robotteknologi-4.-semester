@@ -4,6 +4,7 @@
 #include <thread>
 #include <atomic>
 #include <iostream>
+#include <limits>
 
 int main(int argc, char *argv[]) {
     // Initialize ROS 2
@@ -80,11 +81,16 @@ int main(int argc, char *argv[]) {
             controller.goalPosition({1.0f, 0.0f, 0.80f});  // Example setpoint
         } else if (input == "test") {
             if (!test_mode.load()) {
-                RCLCPP_INFO(node->get_logger(), "Entering test mode...");
+                float x, y, z, yaw;
+                std::cout << "Enter x, y, z, and yaw values separated by spaces: ";
+                std::cin >> x >> y >> z >> yaw;
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
+
+                RCLCPP_INFO(node->get_logger(), "Entering test mode with x: %.2f, y: %.2f, z: %.2f, yaw: %.2f", x, y, z, yaw);
                 test_mode.store(true);
                 test_thread = std::thread([&]() {
                     while (test_mode.load()) {
-                        controller.simulateDroneCommands({0.5f, -0.3f, 0.2f}, 0.1f);  // Example errors and yaw
+                        controller.simulateDroneCommands({x, y, z}, yaw);  // Use user-provided values
                         std::this_thread::sleep_for(std::chrono::milliseconds(100));  // Adjust frequency as needed
                     }
                     RCLCPP_INFO(node->get_logger(), "Exiting test mode...");
