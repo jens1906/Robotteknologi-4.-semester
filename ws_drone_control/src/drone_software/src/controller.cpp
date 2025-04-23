@@ -49,10 +49,10 @@ void Controller::initialize(rclcpp::Node::SharedPtr node) {
                 vicon_updated_ = true; // Set the update flag
                 lock.unlock();
                 vicon_update_cv_.notify_one(); // Notify the waiting thread
-                RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"),
-                            "Vicon update: x=%.2f, y=%.2f, z=%.2f, vx=%.2f, vy=%.2f, vz=%.2f",
-                            vicon_position_[0], vicon_position_[1], vicon_position_[2],
-                            vicon_velocity_[0], vicon_velocity_[1], vicon_velocity_[2]);
+                std::cout << "Vicon update: x=" << vicon_position_[0] << ", y=" << vicon_position_[1]
+                << ", z=" << vicon_position_[2] << ", vx=" << vicon_velocity_[0]
+                << ", vy=" << vicon_velocity_[1] << ", vz=" << vicon_velocity_[2] << std::endl;
+      
             }
         });
 }
@@ -78,9 +78,8 @@ void Controller::publishVehicleAttitudeSetpoint(const std::array<float, 3>& xyz_
     msg.timestamp = rclcpp::Clock().now().nanoseconds() / 1000; // PX4 expects µs
     msg.q_d = rpyToQuaternion(roll_pitch[0], roll_pitch[1], yaw);
     msg.thrust_body = std::array<float, 3>{0.0f, 0.0f, -thrust};
-    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), 
-                "Publishing VehicleAttitudeSetpoint: roll=%.2f, pitch=%.2f, thrust=%.2f",
-                roll_pitch[0], roll_pitch[1], thrust);
+    std::cout << "Publishing VehicleAttitudeSetpoint: roll=" << roll_pitch[0]
+    << ", pitch=" << roll_pitch[1] << ", thrust=" << thrust << std::endl;
 
     // --- Compute and log motor outputs (custom order) ---
     // M1 = Front right, M2 = behind Left, M3 = Front left, M4 = Behind right
@@ -98,13 +97,14 @@ void Controller::publishVehicleAttitudeSetpoint(const std::array<float, 3>& xyz_
     m3 = std::clamp(m3, 0.0f, 1.0f);
     m4 = std::clamp(m4, 0.0f, 1.0f);
 
-    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"),
-        "Motor outputs: M1=%.2f (Front right), M2=%.2f (Behind left), M3=%.2f (Front left), M4=%.2f (Behind right)", m1, m2, m3, m4);
+    std::cout << "Motor outputs: M1=" << m1 << " (Front right), M2=" << m2
+          << " (Behind left), M3=" << m3 << " (Front left), M4=" << m4
+          << " (Behind right)" << std::endl;
+
     // ---------------------------------------------------
 
     ros_attitude_setpoint_pub_->publish(msg);
-    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), 
-                "Published VehicleAttitudeSetpoint: thrust=%.2f", thrust);
+    std::cout << "Published VehicleAttitudeSetpoint: thrust=" << thrust << std::endl;
 }
 
 std::array<float, 4> Controller::rpyToQuaternion(float roll, float pitch, float yaw) {
@@ -120,8 +120,8 @@ std::array<float, 4> Controller::rpyToQuaternion(float roll, float pitch, float 
     float y = sy * cp * sr + cy * sp * cr;
     float z = sy * cp * cr - cy * sp * sr;
 
-    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"),
-                "Quaternion: w=%.4f, x=%.4f, y=%.4f, z=%.4f", w, x, y, z);
+    std::cout << "Quaternion: w=" << w << ", x=" << x << ", y=" << y << ", z=" << z << std::endl;
+
     return {w, x, y, z};
 }
 
@@ -164,8 +164,8 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, flo
     prev_vx_cmd = vx_cmd;
     prev_vy_cmd = vy_cmd;
 
-    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"),
-                "After Clamp Roll desired: %.2f, Pitch desired: %.2f", roll_desired, pitch_desired);
+    std::cout << "After Clamp Roll desired: " << roll_desired
+    << ", Pitch desired: " << pitch_desired << std::endl;
 
     return {roll_desired, pitch_desired};
 }
@@ -180,16 +180,16 @@ float Controller::zToThrust(float z_error) {
     rclcpp::Time current_time = rclcpp::Clock().now();
     float dt = (current_time - prev_time).seconds();
     if (dt < 0.01f) {
-        RCLCPP_WARN(rclcpp::get_logger("offboard_control_node"), "Invalid dt detected, using fallback value.");
+        std::cout << "Invalid dt detected, using fallback value." << std::endl;
         dt = 0.01f;
     } // Avoid division by zero
     prev_time = current_time;
 
     float z_derivative = (z_error - prev_z_error) / dt;
     float thrust = (Kp_z * z_error + Kd_z * z_derivative);
-    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Thrust Before Clamp: %.2f", thrust);
+    std::cout << "Thrust Before Clamp: " << thrust << std::endl;
     thrust = std::clamp(thrust, 0.0f, 0.8f);
-    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Thrust After Clamp: %.2f", thrust);
+    std::cout << "Thrust After Clamp: " << thrust << std::endl;
 
     prev_z_error = z_error;
 
@@ -208,9 +208,8 @@ void Controller::goalPosition(const std::array<float, 3>& goal_position) {
     }
     rclcpp::spin_some(node_);
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"),
-                "goalPosition called with goal: x=%.2f, y=%.2f, z=%.2f",
-                goal_position[0], goal_position[1], goal_position[2]);
+    std::cout << "goalPosition called with goal: x=" << goal_position[0]
+          << ", y=" << goal_position[1] << ", z=" << goal_position[2] << std::endl;
 
     float x_error_global = goal_position[0] - vicon_position_[0];
     float y_error_global = goal_position[1] - vicon_position_[1];
@@ -220,10 +219,9 @@ void Controller::goalPosition(const std::array<float, 3>& goal_position) {
     float x_error_local = cos(yaw_global) * x_error_global - sin(yaw_global) * y_error_global;
     float y_error_local = sin(yaw_global) * x_error_global + cos(yaw_global) * y_error_global;
 
-    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"),
-                "Errors (global): x=%.2f, y=%.2f, z=%.2f", x_error_global, y_error_global, z_error);
-    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"),
-                "Errors (local): x=%.2f, y=%.2f", x_error_local, y_error_local);
+    std::cout << "Errors (global): x=" << x_error_global << ", y=" << y_error_global
+          << ", z=" << z_error << std::endl;
+    std::cout << "Errors (local): x=" << x_error_local << ", y=" << y_error_local << std::endl;
 
     publishVehicleAttitudeSetpoint({x_error_local, y_error_local, z_error}, 0.0f);
 }
@@ -232,7 +230,7 @@ void Controller::goalPosition(const std::array<float, 3>& goal_position) {
 void Controller::startGoalPositionThread(const std::array<float, 3>& goal_position) {
     stop_thread_.store(false);
     goal_position_thread_ = std::thread([this, goal_position]() {
-        RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Starting goalPosition thread.");
+        std::cout << "Starting goalPosition thread." << std::endl;
 
         while (!stop_thread_.load()) {
             std::unique_lock<std::mutex> lock(vicon_mutex_);
@@ -243,9 +241,8 @@ void Controller::startGoalPositionThread(const std::array<float, 3>& goal_positi
             vicon_updated_ = false; // Reset the update flag
 
             // Use the latest vicon_position_ directly
-            RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"),
-                        "Current Vicon position: x=%.2f, y=%.2f, z=%.2f",
-                        vicon_position_[0], vicon_position_[1], vicon_position_[2]);
+            std::cout << "Current Vicon position: x=" << vicon_position_[0]
+            << ", y=" << vicon_position_[1] << ", z=" << vicon_position_[2] << std::endl;
             float x_error_global = goal_position[0] - vicon_position_[0];
             float y_error_global = goal_position[1] - vicon_position_[1];
             float z_error = goal_position[2] - vicon_position_[2];
@@ -254,20 +251,19 @@ void Controller::startGoalPositionThread(const std::array<float, 3>& goal_positi
             float x_error_local = cos(yaw_global) * x_error_global - sin(yaw_global) * y_error_global;
             float y_error_local = sin(yaw_global) * x_error_global + cos(yaw_global) * y_error_global;
 
-            RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"),
-                        "Errors (global): x=%.2f, y=%.2f, z=%.2f", x_error_global, y_error_global, z_error);
-            RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"),
-                        "Errors (local): x=%.2f, y=%.2f", x_error_local, y_error_local);
+            std::cout << "Errors (global): x=" << x_error_global << ", y=" << y_error_global
+            << ", z=" << z_error << std::endl;
+            std::cout << "Errors (local): x=" << x_error_local << ", y=" << y_error_local << std::endl;
 
             publishVehicleAttitudeSetpoint({x_error_local, y_error_local, z_error}, 0.0f);
 
             if (std::abs(x_error_local) < 0.01f && std::abs(y_error_local) < 0.01f && std::abs(z_error) < 0.01f) {
-                RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Goal position reached.");
+                std::cout << "Goal position reached." << std::endl;
                 break;
             }
         }
 
-        RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Exiting goalPosition thread.");
+        std::cout << "Exiting goalPosition thread." << std::endl;
     });
 }
 
@@ -286,10 +282,9 @@ void Controller::simulateDroneCommands(const std::array<float, 3>& xyz_error, fl
     auto quaternion = rpyToQuaternion(roll_pitch[0], roll_pitch[1], yaw);
 
     // Log the simulated commands
-    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"),
-                "Simulated Commands: Roll=%.2f, Pitch=%.2f, Yaw=%.2f, Thrust=%.2f",
-                roll_pitch[0], roll_pitch[1], yaw, thrust);
-    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"),
-                "Simulated Quaternion: w=%.4f, x=%.4f, y=%.4f, z=%.4f",
-                quaternion[0], quaternion[1], quaternion[2], quaternion[3]);
+    std::cout << "Simulated Commands: Roll=" << roll_pitch[0] << ", Pitch=" << roll_pitch[1]
+          << ", Yaw=" << yaw << ", Thrust=" << thrust << std::endl;
+    std::cout << "Simulated Quaternion: w=" << quaternion[0] << ", x=" << quaternion[1]
+            << ", y=" << quaternion[2] << ", z=" << quaternion[3] << std::endl;
+
 }
