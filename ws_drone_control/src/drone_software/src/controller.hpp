@@ -10,6 +10,8 @@
 #include <rclcpp/rclcpp.hpp>
 #include <px4_msgs/msg/vehicle_attitude.hpp>
 #include <px4_msgs/msg/vehicle_attitude_setpoint.hpp>
+#include <condition_variable>
+#include <mutex>
 
 class Controller {
 public:
@@ -33,6 +35,10 @@ private:
 
     std::thread goal_position_thread_;
     std::atomic<bool> stop_thread_;
+
+    std::condition_variable vicon_update_cv_; // Condition variable for Vicon updates
+    std::mutex vicon_mutex_;                 // Mutex for Vicon data synchronization
+    bool vicon_updated_ = false;             // Flag to indicate a new Vicon update
 };
 
 #endif
