@@ -22,8 +22,6 @@ public:
     void startGoalPositionThread(const std::array<float, 3>& goal_position);
     void stopGoalPositionThread();
     void simulateDroneCommands(const std::array<float, 3>& xyz_error, float yaw);
-    void startGoalPositionThread(const std::array<float, 3>& goal_position);
-    void stopGoalPositionThread();
 
 private:
     rclcpp::Node::SharedPtr node_;  // Store the shared node
