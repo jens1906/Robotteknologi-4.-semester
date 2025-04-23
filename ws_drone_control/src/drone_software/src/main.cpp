@@ -86,15 +86,16 @@ int main(int argc, char *argv[]) {
                 std::cin >> x >> y >> z >> yaw;
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
 
-                RCLCPP_INFO(node->get_logger(), "Entering test mode with x: %.2f, y: %.2f, z: %.2f, yaw: %.2f", x, y, z, yaw);
+                RCLCPP_INFO(node->get_logger(), "Executing test mode with x: %.2f, y: %.2f, z: %.2f, yaw: %.2f", x, y, z, yaw);
                 test_mode.store(true);
                 test_thread = std::thread([&]() {
-                    while (test_mode.load()) {
-                        controller.simulateDroneCommands({x, y, z}, yaw);  // Use user-provided values
-                        std::this_thread::sleep_for(std::chrono::milliseconds(100));  // Adjust frequency as needed
-                    }
-                    RCLCPP_INFO(node->get_logger(), "Exiting test mode...");
+                    controller.simulateDroneCommands({x, y, z}, yaw);  // Execute the command once
+                    RCLCPP_INFO(node->get_logger(), "Test mode execution completed.");
+                    test_mode.store(false);  // Reset the test mode flag
                 });
+                if (test_thread.joinable()) {
+                    test_thread.join();  // Ensure the thread completes before proceeding
+                }
             } else {
                 RCLCPP_WARN(node->get_logger(), "Test mode is already running.");
             }
