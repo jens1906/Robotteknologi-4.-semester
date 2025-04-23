@@ -75,7 +75,7 @@ int main(int argc, char **argv) {
     auto rosNode = rclcpp::Node::make_shared("udp_receiver");
 
     // Create a ROS publisher which publishes a float array
-    auto rosPublisher = rosNode->create_publisher<std_msgs::msg::Float64MultiArray>("vicon_udp_data", 10);
+    auto rosPublisher = rosNode->create_publisher<std_msgs::msg::Float64MultiArray>("Vicon", 10);
     
     //Variables for creating socket
     int udpSocket; 

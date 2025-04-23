@@ -39,15 +39,20 @@ int main(int argc, char *argv[]) {
 
     // A little control panel
     std::string input;
+    std::atomic<bool> test_mode(false);  // New atomic flag for test mode
+    std::thread test_thread;
+
     while (rclcpp::ok()) {
-        std::cout << "Enter command (turnon, turnoff, kill, setpoint): ";
+        std::cout << "Enter command (turnon, turnoff, kill, setpoint, test, stoptest): ";
         std::getline(std::cin, input);
 
         if (input == "turnon") {
             RCLCPP_INFO(node->get_logger(), "Turning on the drone...");
             running.store(true);  // Start the drone thread
+            controller.publishVehicleAttitudeSetpoint({0.0f, 0.0f, 0.0f}, 0.0f);  // Example setpoint
         } else if (input == "turnoff") {
             RCLCPP_INFO(node->get_logger(), "Turning off the drone...");
+            controller.stopGoalPositionThread();
             controller.publishVehicleAttitudeSetpoint({0.0f, 0.0f, 0.0f}, 0.0f);  // Example setpoint
             running.store(false);  // Stop the drone thread
         } else if (input == "kill") {
@@ -58,10 +63,45 @@ int main(int argc, char *argv[]) {
         } else if (input == "exit") {
             RCLCPP_INFO(node->get_logger(), "Exiting...");
             terminate.store(true);  // Signal the thread to terminate
+            controller.stopGoalPositionThread();
+            if (test_thread.joinable()) {
+                test_mode.store(false);  // Stop the test thread
+                test_thread.join();
+            }
             break;
+        } else if (input == "start") {
+            RCLCPP_INFO(node->get_logger(), "Starting goal position thread...");
+            controller.startGoalPositionThread({1.0f, 0.0f, 0.80f});  // Example goal position
+        } else if (input == "stop") {
+            RCLCPP_INFO(node->get_logger(), "Stopping goal position thread...");
+            controller.stopGoalPositionThread();
         } else if (input == "setpoint") {
             RCLCPP_INFO(node->get_logger(), "Altitude setpoint command received.");
-            controller.goalPosition({1.0f, 1.0f, 1.0f});  // Example setpoint
+            controller.goalPosition({1.0f, 0.0f, 0.80f});  // Example setpoint
+        } else if (input == "test") {
+            if (!test_mode.load()) {
+                RCLCPP_INFO(node->get_logger(), "Entering test mode...");
+                test_mode.store(true);
+                test_thread = std::thread([&]() {
+                    while (test_mode.load()) {
+                        controller.simulateDroneCommands({0.5f, -0.3f, 0.2f}, 0.1f);  // Example errors and yaw
+                        std::this_thread::sleep_for(std::chrono::milliseconds(100));  // Adjust frequency as needed
+                    }
+                    RCLCPP_INFO(node->get_logger(), "Exiting test mode...");
+                });
+            } else {
+                RCLCPP_WARN(node->get_logger(), "Test mode is already running.");
+            }
+        } else if (input == "stoptest") {
+            if (test_mode.load()) {
+                RCLCPP_INFO(node->get_logger(), "Stopping test mode...");
+                test_mode.store(false);
+                if (test_thread.joinable()) {
+                    test_thread.join();
+                }
+            } else {
+                RCLCPP_WARN(node->get_logger(), "Test mode is not running.");
+            }
         } else {
             RCLCPP_WARN(node->get_logger(), "Unknown command: %s", input.c_str());
         }
@@ -69,6 +109,9 @@ int main(int argc, char *argv[]) {
 
     // Wait for the thread to finish
     drone_thread.join();
+    if (test_thread.joinable()) {
+        test_thread.join();
+    }
 
     // Shutdown ROS 2
     rclcpp::shutdown();
