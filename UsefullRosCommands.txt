@@ -49,3 +49,5 @@ rm -rf Robotteknologi-4.-semester
 git clone https://github.com/jens1906/Robotteknologi-4.-semester.git
 cd 
 cp -r Robotteknologi-4.-semester/ws_drone_control/src/drone_software/* ws_drone_control/src/drone_software/
+cd ws_drone_control/
+colcon build

@@ -56,6 +56,26 @@ void Controller::publishVehicleAttitudeSetpoint(const std::array<float, 3>& xyz_
                 "Publishing VehicleAttitudeSetpoint: roll=%.2f, pitch=%.2f, thrust=%.2f",
                 roll_pitch[0], roll_pitch[1], thrust);
 
+    // --- Compute and log motor outputs (custom order) ---
+    // M1 = Front right, M2 = behind Left, M3 = Front left, M4 = Behind right
+    float roll = roll_pitch[0];
+    float pitch = roll_pitch[1];
+    float yaw_rate = 0.0f; // If you have yaw control, use it here
+
+    float m1 = thrust + pitch - roll + yaw_rate; // Front right
+    float m2 = thrust - pitch + roll + yaw_rate; // Behind left
+    float m3 = thrust + pitch + roll - yaw_rate; // Front left
+    float m4 = thrust - pitch - roll - yaw_rate; // Behind right
+
+    m1 = std::clamp(m1, 0.0f, 1.0f);
+    m2 = std::clamp(m2, 0.0f, 1.0f);
+    m3 = std::clamp(m3, 0.0f, 1.0f);
+    m4 = std::clamp(m4, 0.0f, 1.0f);
+
+    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"),
+        "Motor outputs: M1=%.2f (Front right), M2=%.2f (Behind left), M3=%.2f (Front left), M4=%.2f (Behind right)", m1, m2, m3, m4);
+    // ---------------------------------------------------
+
     ros_attitude_setpoint_pub_->publish(msg);
     RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), 
                 "Published VehicleAttitudeSetpoint: thrust=%.2f", thrust);
@@ -113,8 +133,8 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error) {
 }
 
 float Controller::zToThrust(float z_error) {
-    float Kp_z = 5.534f;
-    float Kd_z = 5.108f;
+    float Kp_z = 0.8173f;
+    float Kd_z = 2.214f;
 
     static float prev_z_error = 0.0f;
     static rclcpp::Time prev_time = rclcpp::Clock().now();
