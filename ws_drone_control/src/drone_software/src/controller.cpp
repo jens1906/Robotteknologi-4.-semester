@@ -133,8 +133,8 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error) {
 }
 
 float Controller::zToThrust(float z_error) {
-    float Kp_z = 5.108f;
-    float Kd_z = 5.534f;
+    float Kp_z = 0.8173f;
+    float Kd_z = 2.214f;
 
     static float prev_z_error = 0.0f;
     static rclcpp::Time prev_time = rclcpp::Clock().now();
