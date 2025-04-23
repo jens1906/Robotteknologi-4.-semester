@@ -219,3 +219,19 @@ void Controller::stopGoalPositionThread() {
         goal_position_thread_.join();  // Wait for the thread to finish
     }
 }
+
+void Controller::simulateDroneCommands(const std::array<float, 3>& xyz_error, float yaw) {
+    auto roll_pitch = xyToRollPitch(xyz_error[0], xyz_error[1]);
+    float thrust = zToThrust(xyz_error[2]);
+
+    // Simulate the quaternion calculation for roll, pitch, and yaw
+    auto quaternion = rpyToQuaternion(roll_pitch[0], roll_pitch[1], yaw);
+
+    // Log the simulated commands
+    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"),
+                "Simulated Commands: Roll=%.2f, Pitch=%.2f, Yaw=%.2f, Thrust=%.2f",
+                roll_pitch[0], roll_pitch[1], yaw, thrust);
+    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"),
+                "Simulated Quaternion: w=%.4f, x=%.4f, y=%.4f, z=%.4f",
+                quaternion[0], quaternion[1], quaternion[2], quaternion[3]);
+}
