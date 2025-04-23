@@ -22,12 +22,15 @@ public:
     void startGoalPositionThread(const std::array<float, 3>& goal_position);
     void stopGoalPositionThread();
     void simulateDroneCommands(const std::array<float, 3>& xyz_error, float yaw);
-
+    void startGoalPositionThread(const std::array<float, 3>& goal_position);
+    void stopGoalPositionThread();
 
 private:
     rclcpp::Node::SharedPtr node_;  // Store the shared node
     std::array<float, 6> vicon_position_;  // Store the latest Vicon position
-    std::array<float, 2> xyToRollPitch(float x_error, float y_error); // PID for XY roll pitch calculation
+    std::array<float, 3> vicon_velocity_;  // Add this line
+    rclcpp::Time prev_vicon_time_;         // Add this line
+    std::array<float, 2> xyToRollPitch(float x_error, float y_error, float vx_err, float vy_err); // PID for XY roll pitch calculation
     float zToThrust(float z_error); // PID for thrust control
     rclcpp::Publisher<px4_msgs::msg::VehicleAttitudeSetpoint>::SharedPtr ros_attitude_setpoint_pub_; // Publisher for vehicle attitude setpoint
     rclcpp::Subscription<px4_msgs::msg::VehicleAttitude>::SharedPtr ros_vehicle_attitude_sub_; // Subscription for vehicle attitude
