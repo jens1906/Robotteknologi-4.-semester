@@ -9,6 +9,11 @@ Initialize::Initialize(rclcpp::Node::SharedPtr node) : node_(node) {
 // By looking into the px4 message format we can find the layout to put vehicle commands. 
 // We only need the first 2 because of the first param1 is used for most, and param2 is used for mode.
 void Initialize::publishVehicleCommand(uint16_t command, float param1, float param2) {
+    if (!can_publish_.load()) {
+        RCLCPP_WARN(node_->get_logger(), "Publishing is disabled. Command not sent.");
+        return;
+    }
+
     px4_msgs::msg::VehicleCommand msg{}; // Declare the message format
     msg.timestamp = rclcpp::Clock().now().nanoseconds() / 1000;  // PX4 expects timestamp in microseconds
     msg.command = command;
@@ -77,10 +82,29 @@ void Initialize::enable_offboard_mode() {
             }
         });
 
+    auto start_time = std::chrono::steady_clock::now();
+    const auto timeout = std::chrono::seconds(5);  // Set timeout duration
+
     // Wait until offboard mode is enabled
     while (!is_offboard_enabled.load() && rclcpp::ok()) {
         rclcpp::spin_some(node_); // Process callbacks
         std::this_thread::sleep_for(std::chrono::milliseconds(100));  // Avoid busy-waiting aka dont stress the pc
+
+        if (std::chrono::steady_clock::now() - start_time > timeout) {
+            std::cout << "Unable to enable offboard mode within the timeout period." << std::endl;
+            std::cout << "Do you want to continue in offline mode? (y/n): ";
+            std::string input;
+            std::getline(std::cin, input);
+
+            if (input == "y") {
+                RCLCPP_WARN(node_->get_logger(), "Continuing in offline mode.");
+                return;  // Exit the function and continue in offline mode
+            } else {
+                RCLCPP_ERROR(node_->get_logger(), "Exiting program as offboard mode could not be enabled.");
+                rclcpp::shutdown();
+                exit(1);  // Exit the program
+            }
+        }
     }
 
     RCLCPP_INFO(node_->get_logger(), "Offboard mode enabled!");
@@ -89,6 +113,11 @@ void Initialize::enable_offboard_mode() {
 // The drone needs constant reassurance of which inputs it should take serious
 // so we need to send it a command to change the offboard control mode often
 void Initialize::publishOffboardControlMode() {
+    if (!can_publish_.load()) {
+        RCLCPP_WARN(node_->get_logger(), "Publishing is disabled. Offboard control mode not sent.");
+        return;
+    }
+
     px4_msgs::msg::OffboardControlMode msg{};  // Declare and initialize the message format
 
     msg.timestamp = rclcpp::Clock().now().nanoseconds() / 1000;  // PX4 expects timestamp in microseconds
@@ -109,4 +138,7 @@ void Initialize::turn_on_drone() {
     arm();
 }
 
-
+void Initialize::disablePublishing() {
+    can_publish_.store(false);
+    RCLCPP_WARN(node_->get_logger(), "Publishing to ROS topics has been disabled for safety.");
+}
