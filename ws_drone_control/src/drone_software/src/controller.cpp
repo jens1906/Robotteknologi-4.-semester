@@ -66,9 +66,9 @@ void Controller::publishVehicleAttitudeSetpoint(const std::array<float, 3>& xyz_
     {
         std::lock_guard<std::mutex> lock(vicon_mutex_);
         // Transform global velocity to local frame using yaw if needed
-        float yaw = vicon_position_[5];
-        vx_err = cos(yaw) * vicon_velocity_[0] + sin(yaw) * vicon_velocity_[1];
-        vy_err = -sin(yaw) * vicon_velocity_[0] + cos(yaw) * vicon_velocity_[1];
+        float yaw_radians = vicon_position_[5] * M_PI / 180.0f; // Convert degrees to radians
+        vx_err = cos(yaw_radians) * vicon_velocity_[0] + sin(yaw_radians) * vicon_velocity_[1];
+        vy_err = -sin(yaw_radians) * vicon_velocity_[0] + cos(yaw_radians) * vicon_velocity_[1];
     }
     auto roll_pitch = xyToRollPitch(xyz_error[0], xyz_error[1], vx_err, vy_err);
     float thrust = zToThrust(xyz_error[2]);
@@ -215,9 +215,9 @@ void Controller::goalPosition(const std::array<float, 3>& goal_position) {
     float y_error_global = goal_position[1] - vicon_position_[1];
     float z_error = goal_position[2] - vicon_position_[2];
 
-    float yaw_global = vicon_position_[5];
-    float x_error_local = cos(yaw_global) * x_error_global + sin(yaw_global) * y_error_global;
-    float y_error_local = -sin(yaw_global) * x_error_global + cos(yaw_global) * y_error_global;
+    float yaw_radians = vicon_position_[5] * M_PI / 180.0f; // Convert degrees to radians
+    float x_error_local = cos(yaw_radians) * x_error_global + sin(yaw_radians) * y_error_global;
+    float y_error_local = -sin(yaw_radians) * x_error_global + cos(yaw_radians) * y_error_global;
 
     std::cout << "Errors (global): x=" << x_error_global << ", y=" << y_error_global
           << ", z=" << z_error << std::endl;
@@ -242,15 +242,19 @@ void Controller::startGoalPositionThread(const std::array<float, 3>& goal_positi
 
             // Use the latest vicon_position_ directly
             std::cout << "Current Vicon position: x=" << vicon_position_[0]
-            << ", y=" << vicon_position_[1] << ", z=" << vicon_position_[2] << std::endl;
+            << ", y=" << vicon_position_[1] << ", z=" << vicon_position_[2] 
+            << ", yaw(deg)=" << vicon_position_[5] << std::endl;
+            
             float x_error_global = goal_position[0] - vicon_position_[0];
             float y_error_global = goal_position[1] - vicon_position_[1];
             float z_error = goal_position[2] - vicon_position_[2];
 
-            float yaw_global = vicon_position_[5];
-            float x_error_local = cos(yaw_global) * x_error_global + sin(yaw_global) * y_error_global;
-            float y_error_local = -sin(yaw_global) * x_error_global + cos(yaw_global) * y_error_global;
+            // Convert yaw from degrees to radians for trigonometric functions
+            float yaw_radians = vicon_position_[5] * M_PI / 180.0f;
+            float x_error_local = cos(yaw_radians) * x_error_global + sin(yaw_radians) * y_error_global;
+            float y_error_local = -sin(yaw_radians) * x_error_global + cos(yaw_radians) * y_error_global;
 
+            std::cout << "Yaw (degrees): " << vicon_position_[5] << ", Yaw (radians): " << yaw_radians << std::endl;
             std::cout << "Errors (global): x=" << x_error_global << ", y=" << y_error_global
             << ", z=" << z_error << std::endl;
             std::cout << "Errors (local): x=" << x_error_local << ", y=" << y_error_local << std::endl;

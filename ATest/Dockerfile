@@ -40,8 +40,8 @@ RUN mkdir -p ~/ros2_ws/src && cd ~/ros2_ws/src \
 
 # Build ROS 2 workspace
 WORKDIR /home/px4_user/ros2_ws
-RUN source /opt/ros/humble/setup.bash && \
-    colcon build
+RUN bash -c "source /opt/ros/humble/setup.bash && colcon build"
+
 
 # Set environment variables
 ENV ROS_DOMAIN_ID=0
