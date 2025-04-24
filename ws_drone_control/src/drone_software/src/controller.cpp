@@ -195,7 +195,7 @@ float Controller::zToThrust(float z_error) {
     float z_derivative = (z_error - prev_z_error) / dt;
     float thrust = (Kp_z * z_error + Kd_z * z_derivative);
     float thrust_clamped = std::clamp(thrust, 0.0f, 0.8f); // Clamp thrust to [0, 0.8]
-    std::cout << "Thrust (lim): " << thrust << " (" << thrust_clamped << ")" << std::endl;
+    std::cout << "Thrust (lim): " << thrust_clamped << " (" << thrust << ")" << std::endl;
 
     prev_z_error = z_error;
 
