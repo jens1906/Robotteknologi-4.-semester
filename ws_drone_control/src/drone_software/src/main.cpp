@@ -81,6 +81,7 @@ int main(int argc, char *argv[]) {
             controller.goalPosition({1.0f, 0.0f, 0.80f});  // Example setpoint
         } else if (input == "test") {
             if (!test_mode.load()) {
+                std::cout << "--------------------------------------------" << std::endl;
                 float x, y, z, yaw;
                 std::cout << "Enter x, y, z, and yaw values separated by spaces: ";
                 std::cin >> x >> y >> z >> yaw;
