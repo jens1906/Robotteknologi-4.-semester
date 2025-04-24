@@ -135,8 +135,8 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, flo
 
     static float prev_x_error = 0.0f;
     static float prev_y_error = 0.0f;
-    static float prev_vx_cmd = 0.0f;
-    static float prev_vy_cmd = 0.0f;
+    static float prev_vx_error = 0.0f;
+    static float prev_vy_error = 0.0f;
     static rclcpp::Time prev_time = rclcpp::Clock().now();
 
     rclcpp::Time current_time = rclcpp::Clock().now();
@@ -155,8 +155,8 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, flo
     float vy_error = vy_cmd - y_velocity;
 
     // Inner loop: velocity command to roll/pitch
-    float dx_inner = (vx_cmd - prev_vx_cmd) / dt;
-    float dy_inner = (vy_cmd - prev_vy_cmd) / dt;
+    float dx_inner = (vx_error - prev_vx_error) / dt;
+    float dy_inner = (vy_error - prev_vy_error) / dt;
     float roll_desired  = Kp_xy_inner * vy_error + Kd_xy_inner * dx_inner;
     float pitch_desired = -(Kp_xy_inner * vx_error + Kd_xy_inner * dy_inner);
 
