@@ -62,13 +62,13 @@ void Controller::vehicleAttitudeCallback(const px4_msgs::msg::VehicleAttitude::S
 }
 
 void Controller::publishVehicleAttitudeSetpoint(const std::array<float, 3>& xyz_error, float yaw) {
-    float vx_err, vy_err;
+    float x_vel, y_vel;
     {
         std::lock_guard<std::mutex> lock(vicon_mutex_);
         // Transform global velocity to local frame using yaw if needed
         float yaw_radians = vicon_position_[5] * M_PI / 180.0f; // Convert degrees to radians
-        float x_vel = cos(yaw_radians) * vicon_velocity_[0] + sin(yaw_radians) * vicon_velocity_[1];
-        float y_vel = -sin(yaw_radians) * vicon_velocity_[0] + cos(yaw_radians) * vicon_velocity_[1];
+        x_vel = cos(yaw_radians) * vicon_velocity_[0] + sin(yaw_radians) * vicon_velocity_[1];
+        y_vel = -sin(yaw_radians) * vicon_velocity_[0] + cos(yaw_radians) * vicon_velocity_[1];
     }
     auto roll_pitch = xyToRollPitch(xyz_error[0], xyz_error[1], x_vel, y_vel);
     float thrust = zToThrust(xyz_error[2]);
