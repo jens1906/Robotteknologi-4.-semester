@@ -43,6 +43,8 @@ int main(int argc, char *argv[]) {
     std::atomic<bool> test_mode(false);  // New atomic flag for test mode
     std::thread test_thread;
 
+    std::cout << "--------------------------------------------" << std::endl;
+
     while (rclcpp::ok()) {
         std::cout << "Enter command (turnon, turnoff, kill, setpoint, test, exit): ";
         std::getline(std::cin, input);
@@ -81,7 +83,6 @@ int main(int argc, char *argv[]) {
             controller.goalPosition({1.0f, 0.0f, 0.80f});  // Example setpoint
         } else if (input == "test") {
             if (!test_mode.load()) {
-                std::cout << "--------------------------------------------" << std::endl;
                 float x, y, z, yaw;
                 std::cout << "Enter x, y, z, and yaw values separated by spaces: ";
                 std::cin >> x >> y >> z >> yaw;
@@ -91,7 +92,6 @@ int main(int argc, char *argv[]) {
                 test_mode.store(true);
                 test_thread = std::thread([&]() {
                     controller.simulateDroneCommands({x, y, z}, yaw);  // Execute the command once
-                    RCLCPP_INFO(node->get_logger(), "Test mode execution completed.");
                     test_mode.store(false);  // Reset the test mode flag
                 });
                 if (test_thread.joinable()) {
@@ -103,6 +103,7 @@ int main(int argc, char *argv[]) {
         } else {
             RCLCPP_WARN(node->get_logger(), "Unknown command: %s", input.c_str());
         }
+        std::cout << "--------------------------------------------" << std::endl;
     }
 
     // Wait for the thread to finish
