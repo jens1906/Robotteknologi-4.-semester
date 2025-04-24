@@ -7,6 +7,7 @@
 #include <px4_msgs/msg/vehicle_command.hpp>
 #include <px4_msgs/msg/offboard_control_mode.hpp>
 #include <px4_msgs/msg/vehicle_control_mode.hpp>
+#include <atomic>
 
 //Next we set up which functinos are public and private
 //and which variables are public and private
@@ -19,12 +20,14 @@ public:
     void disarm(bool kill = false);// Setup for a diarm command aka kill
     void enable_offboard_mode();// Setup for the offboard mode
     void turn_on_drone();// Setup for the drone to turn on just to functions
+    void disablePublishing(); // Disable publishing to ROS topics
 
 private:
     rclcpp::Node::SharedPtr node_;// Connected to the ROS node
     rclcpp::Publisher<px4_msgs::msg::OffboardControlMode>::SharedPtr ros_offboard_control_mode_pub_;// Publisher for offboard control mode
+    std::atomic<bool> can_publish_{true}; // Flag to control whether publishing is allowed
     void arm();//Fucntion to arm the drone
     void publishOffboardControlMode();//Function to publish the offboard control mode
 };
 
-#endif  
+#endif

@@ -9,6 +9,11 @@ Initialize::Initialize(rclcpp::Node::SharedPtr node) : node_(node) {
 // By looking into the px4 message format we can find the layout to put vehicle commands. 
 // We only need the first 2 because of the first param1 is used for most, and param2 is used for mode.
 void Initialize::publishVehicleCommand(uint16_t command, float param1, float param2) {
+    if (!can_publish_.load()) {
+        RCLCPP_WARN(node_->get_logger(), "Publishing is disabled. Command not sent.");
+        return;
+    }
+
     px4_msgs::msg::VehicleCommand msg{}; // Declare the message format
     msg.timestamp = rclcpp::Clock().now().nanoseconds() / 1000;  // PX4 expects timestamp in microseconds
     msg.command = command;
@@ -108,6 +113,11 @@ void Initialize::enable_offboard_mode() {
 // The drone needs constant reassurance of which inputs it should take serious
 // so we need to send it a command to change the offboard control mode often
 void Initialize::publishOffboardControlMode() {
+    if (!can_publish_.load()) {
+        RCLCPP_WARN(node_->get_logger(), "Publishing is disabled. Offboard control mode not sent.");
+        return;
+    }
+
     px4_msgs::msg::OffboardControlMode msg{};  // Declare and initialize the message format
 
     msg.timestamp = rclcpp::Clock().now().nanoseconds() / 1000;  // PX4 expects timestamp in microseconds
@@ -126,6 +136,11 @@ void Initialize::publishOffboardControlMode() {
 void Initialize::turn_on_drone() {
     publishOffboardControlMode();
     arm();
+}
+
+void Initialize::disablePublishing() {
+    can_publish_.store(false);
+    RCLCPP_WARN(node_->get_logger(), "Publishing to ROS topics has been disabled for safety.");
 }
 
 

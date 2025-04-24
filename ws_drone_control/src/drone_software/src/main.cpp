@@ -67,6 +67,7 @@ int main(int argc, char *argv[]) {
             RCLCPP_INFO(node->get_logger(), "Exiting...");
             terminate.store(true);  // Signal the thread to terminate
             controller.stopGoalPositionThread();
+            initialize.disablePublishing(); // Disable publishing for safety
             if (test_thread.joinable()) {
                 test_mode.store(false);  // Stop the test thread
                 test_thread.join();
