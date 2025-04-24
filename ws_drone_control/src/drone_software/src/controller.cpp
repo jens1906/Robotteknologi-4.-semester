@@ -155,10 +155,10 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, flo
     float vy_error = vy_cmd - y_velocity;
 
     // Inner loop: velocity command to roll/pitch
-    float Kd_vx_inner = (vx_cmd - prev_vx_cmd) / dt;
-    float Kd_vy_inner = (vy_cmd - prev_vy_cmd) / dt;
-    float roll_desired  = Kp_xy_inner * vy_error + Kd_vy_inner * vy_error;
-    float pitch_desired = -(Kp_xy_inner * vx_error + Kd_vx_inner * vx_error);
+    float dx_inner = (vx_cmd - prev_vx_cmd) / dt;
+    float dy_inner = (vy_cmd - prev_vy_cmd) / dt;
+    float roll_desired  = Kp_xy_inner * vy_error + Kd_xy_inner * dx_inner;
+    float pitch_desired = -(Kp_xy_inner * vx_error + Kd_xy_inner * dy_inner);
 
     roll_desired = std::clamp(roll_desired, -0.2f, 0.2f);
     pitch_desired = std::clamp(pitch_desired, -0.2f, 0.2f);
