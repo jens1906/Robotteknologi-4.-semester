@@ -77,10 +77,29 @@ void Initialize::enable_offboard_mode() {
             }
         });
 
+    auto start_time = std::chrono::steady_clock::now();
+    const auto timeout = std::chrono::seconds(5);  // Set timeout duration
+
     // Wait until offboard mode is enabled
     while (!is_offboard_enabled.load() && rclcpp::ok()) {
         rclcpp::spin_some(node_); // Process callbacks
         std::this_thread::sleep_for(std::chrono::milliseconds(100));  // Avoid busy-waiting aka dont stress the pc
+
+        if (std::chrono::steady_clock::now() - start_time > timeout) {
+            std::cout << "Unable to enable offboard mode within the timeout period." << std::endl;
+            std::cout << "Do you want to continue in offline mode? (y/n): ";
+            std::string input;
+            std::getline(std::cin, input);
+
+            if (input == "y") {
+                RCLCPP_WARN(node_->get_logger(), "Continuing in offline mode.");
+                return;  // Exit the function and continue in offline mode
+            } else {
+                RCLCPP_ERROR(node_->get_logger(), "Exiting program as offboard mode could not be enabled.");
+                rclcpp::shutdown();
+                exit(1);  // Exit the program
+            }
+        }
     }
 
     RCLCPP_INFO(node_->get_logger(), "Offboard mode enabled!");
