@@ -85,8 +85,13 @@ int main(int argc, char *argv[]) {
             RCLCPP_INFO(node->get_logger(), "Stopping goal position thread...");
             controller.stopGoalPositionThread();
         } else if (input == "setpoint") {
-            RCLCPP_INFO(node->get_logger(), "Altitude setpoint command received.");
-            controller.goalPosition({1.0f, 0.0f, 0.80f});  // Example setpoint
+            float x, y, z;
+            std::cout << "Enter x, y, and z values separated by spaces: ";
+            std::cin >> x >> y >> z;
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
+
+            RCLCPP_INFO(node->get_logger(), "Altitude setpoint command received with x: %.2f, y: %.2f, z: %.2f", x, y, z);
+            controller.goalPosition({x, y, z});  // Use user-provided setpoint
         } else if (input == "test") {
             if (!test_mode.load()) {
                 float x, y, z, yaw;

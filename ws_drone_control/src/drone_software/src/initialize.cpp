@@ -142,5 +142,3 @@ void Initialize::disablePublishing() {
     can_publish_.store(false);
     RCLCPP_WARN(node_->get_logger(), "Publishing to ROS topics has been disabled for safety.");
 }
-
-
