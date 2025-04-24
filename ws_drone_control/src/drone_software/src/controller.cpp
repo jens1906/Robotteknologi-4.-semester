@@ -150,6 +150,7 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, flo
     float vx_cmd = Kp_xy_outer * x_error + Kd_xy_outer * dx;
     float vy_cmd = Kp_xy_outer * y_error + Kd_xy_outer * dy;
 
+    //Error calculation
     vx_error = vx_cmd - x_velocity;
     vy_error = vy_cmd - y_velocity;
 
