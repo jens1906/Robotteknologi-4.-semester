@@ -67,10 +67,10 @@ void Controller::publishVehicleAttitudeSetpoint(const std::array<float, 3>& xyz_
         std::lock_guard<std::mutex> lock(vicon_mutex_);
         // Transform global velocity to local frame using yaw if needed
         float yaw_radians = vicon_position_[5] * M_PI / 180.0f; // Convert degrees to radians
-        vx_err = cos(yaw_radians) * vicon_velocity_[0] + sin(yaw_radians) * vicon_velocity_[1];
-        vy_err = -sin(yaw_radians) * vicon_velocity_[0] + cos(yaw_radians) * vicon_velocity_[1];
+        x_vel = cos(yaw_radians) * vicon_velocity_[0] + sin(yaw_radians) * vicon_velocity_[1];
+        y_vel = -sin(yaw_radians) * vicon_velocity_[0] + cos(yaw_radians) * vicon_velocity_[1];
     }
-    auto roll_pitch = xyToRollPitch(xyz_error[0], xyz_error[1], vx_err, vy_err);
+    auto roll_pitch = xyToRollPitch(xyz_error[0], xyz_error[1], x_vel, y_vel);
     float thrust = zToThrust(xyz_error[2]);
     yaw = 0.0f;
 
@@ -125,7 +125,7 @@ std::array<float, 4> Controller::rpyToQuaternion(float roll, float pitch, float 
     return {w, x, y, z};
 }
 
-std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, float vx_err, float vy_err) {
+std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, float x_velocity, float y_velocity) {
     // Outer loop gains (position to velocity)
     float Kp_xy_outer = 0.111f;
     float Kd_xy_outer = 0.1804f;
@@ -150,11 +150,14 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, flo
     float vx_cmd = Kp_xy_outer * x_error + Kd_xy_outer * dx;
     float vy_cmd = Kp_xy_outer * y_error + Kd_xy_outer * dy;
 
+    vx_error = vx_cmd - x_velocity;
+    vy_error = vy_cmd - y_velocity;
+
     // Inner loop: velocity command to roll/pitch
     float dvx = (vx_cmd - prev_vx_cmd) / dt;
     float dvy = (vy_cmd - prev_vy_cmd) / dt;
-    float roll_desired  = Kp_xy_inner * (vy_cmd - vy_err) + Kd_xy_inner * dvy;
-    float pitch_desired = -(Kp_xy_inner * (vx_cmd - vx_err) + Kd_xy_inner * dvx);
+    float roll_desired  = Kp_xy_inner * vy_error + Kd_xy_inner * vy_error;
+    float pitch_desired = -(Kp_xy_inner * vx_error + Kd_xy_inner * vx_error);
 
     roll_desired = std::clamp(roll_desired, -0.2f, 0.2f);
     pitch_desired = std::clamp(pitch_desired, -0.2f, 0.2f);
