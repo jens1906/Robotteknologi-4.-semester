@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
     std::thread test_thread;
 
     while (rclcpp::ok()) {
-        std::cout << "Enter command (turnon, turnoff, kill, setpoint, test, stoptest): ";
+        std::cout << "Enter command (turnon, turnoff, kill, setpoint, test, exit): ";
         std::getline(std::cin, input);
 
         if (input == "turnon") {
@@ -98,16 +98,6 @@ int main(int argc, char *argv[]) {
                 }
             } else {
                 RCLCPP_WARN(node->get_logger(), "Test mode is already running.");
-            }
-        } else if (input == "stoptest") {
-            if (test_mode.load()) {
-                RCLCPP_INFO(node->get_logger(), "Stopping test mode...");
-                test_mode.store(false);
-                if (test_thread.joinable()) {
-                    test_thread.join();
-                }
-            } else {
-                RCLCPP_WARN(node->get_logger(), "Test mode is not running.");
             }
         } else {
             RCLCPP_WARN(node->get_logger(), "Unknown command: %s", input.c_str());

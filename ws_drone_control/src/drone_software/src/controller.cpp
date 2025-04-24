@@ -280,6 +280,9 @@ void Controller::stopGoalPositionThread() {
 
 void Controller::simulateDroneCommands(const std::array<float, 3>& xyz_error, float yaw) {
     std::cout << "--------------------------------------------" << std::endl;
+    // print vicon velocity
+    std::cout << "Vicon Velocity: vx=" << vicon_velocity_[0] << ", vy=" << vicon_velocity_[1]
+          << ", vz=" << vicon_velocity_[2] << std::endl;
     auto roll_pitch = xyToRollPitch(xyz_error[0], xyz_error[1], vicon_velocity_[0], vicon_velocity_[1]);
     float thrust = zToThrust(xyz_error[2]);
 
@@ -291,5 +294,4 @@ void Controller::simulateDroneCommands(const std::array<float, 3>& xyz_error, fl
           << ", Yaw=" << yaw << ", Thrust=" << thrust << std::endl;
     std::cout << "Simulated Quaternion: w=" << quaternion[0] << ", x=" << quaternion[1]
             << ", y=" << quaternion[2] << ", z=" << quaternion[3] << std::endl;
-
 }
