@@ -8,7 +8,7 @@ Controller::Controller(rclcpp::Node::SharedPtr node)
     node_ = node;
 
     // Set global precision for std::cout
-    std::cout << std::fixed << std::round(2) << std::setprecision(2);
+    std::cout << std::fixed << std::setprecision(2);
 }
 
 // Initialize ROS topics
