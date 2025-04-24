@@ -157,8 +157,8 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, flo
     // Inner loop: velocity command to roll/pitch
     float dx_inner = (vx_error - prev_vx_error) / dt;
     float dy_inner = (vy_error - prev_vy_error) / dt;
-    float roll_desired  = Kp_xy_inner * vy_error + Kd_xy_inner * dx_inner;
-    float pitch_desired = -(Kp_xy_inner * vx_error + Kd_xy_inner * dy_inner);
+    float roll_desired  = Kp_xy_inner * vy_error + Kd_xy_inner * dy_inner;
+    float pitch_desired = -(Kp_xy_inner * vx_error + Kd_xy_inner * dx_inner);
 
     roll_desired = std::clamp(roll_desired, -0.2f, 0.2f);
     pitch_desired = std::clamp(pitch_desired, -0.2f, 0.2f);
@@ -202,8 +202,6 @@ float Controller::zToThrust(float z_error) {
 
 //This is not in use
 void Controller::goalPosition(const std::array<float, 3>& goal_position) {
-
-
     // Wait for at least one Vicon update (optional: add a timeout)
     rclcpp::Time start_time = rclcpp::Clock().now();
     while (vicon_position_[0] == 0.0f && (rclcpp::Clock().now() - start_time).seconds() < 1.0) {
