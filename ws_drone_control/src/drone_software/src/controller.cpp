@@ -275,6 +275,7 @@ void Controller::stopGoalPositionThread() {
 }
 
 void Controller::simulateDroneCommands(const std::array<float, 3>& xyz_error, float yaw) {
+    std::cout << "--------------------------------------------" << std::endl;
     auto roll_pitch = xyToRollPitch(xyz_error[0], xyz_error[1], vicon_velocity_[0], vicon_velocity_[1]);
     float thrust = zToThrust(xyz_error[2]);
 
