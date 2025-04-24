@@ -1,10 +1,14 @@
 #include "controller.hpp"
+#include <iomanip> // For std::setprecision and std::fixed
 
 Controller::Controller(rclcpp::Node::SharedPtr node) 
     : vicon_position_{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
       vicon_velocity_{0.0f, 0.0f, 0.0f},
       prev_vicon_time_{0} {
     node_ = node;
+
+    // Set global precision for std::cout
+    std::cout << std::fixed << std::round(2) << std::setprecision(2);
 }
 
 // Initialize ROS topics
