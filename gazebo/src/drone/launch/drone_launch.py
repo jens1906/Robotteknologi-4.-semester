@@ -6,7 +6,7 @@ from launch.substitutions import FindPackageShare
 
 def generate_launch_description():
     # Path to the model directory where your URDF or SDF files are located
-    model_path = os.path.join(FindPackageShare('my_drone'), 'model')
+    model_path = os.path.join(FindPackageShare('drone'), 'model')
 
     return LaunchDescription([
         # Launch Gazebo simulation with your model
