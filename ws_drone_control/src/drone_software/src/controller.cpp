@@ -157,8 +157,8 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, flo
     // Inner loop: velocity command to roll/pitch
     float dvx = (vx_cmd - prev_vx_cmd) / dt;
     float dvy = (vy_cmd - prev_vy_cmd) / dt;
-    float roll_desired  = Kp_xy_inner * vy_error + Kd_xy_inner * vy_error;
-    float pitch_desired = -(Kp_xy_inner * vx_error + Kd_xy_inner * vx_error);
+    float roll_desired  = Kp_xy_inner * vy_error + Kd_xy_inner * dvy;
+    float pitch_desired = -(Kp_xy_inner * vx_error + Kd_xy_inner * dvx);
 
     roll_desired = std::clamp(roll_desired, -0.2f, 0.2f);
     pitch_desired = std::clamp(pitch_desired, -0.2f, 0.2f);
@@ -283,7 +283,6 @@ void Controller::stopGoalPositionThread() {
 }
 
 void Controller::simulateDroneCommands(const std::array<float, 3>& xyz_error, float yaw) {
-    std::cout << "--------------------------------------------" << std::endl;
     // print vicon velocity
     std::cout << "Vicon Velocity: vx=" << vicon_velocity_[0] << ", vy=" << vicon_velocity_[1]
           << ", vz=" << vicon_velocity_[2] << std::endl;
