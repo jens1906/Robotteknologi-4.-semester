@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
     std::cout << "--------------------------------------------" << std::endl;
 
     while (rclcpp::ok()) {
-        std::cout << "Enter command (turnon, turnoff, kill, setpoint, test, exit): ";
+        std::cout << "Enter command (turnon, turnoff, kill, start, stop, setpoint, test, exit): ";
         std::getline(std::cin, input);
 
         if (input == "turnon") {
@@ -73,8 +73,13 @@ int main(int argc, char *argv[]) {
             }
             break;
         } else if (input == "start") {
-            RCLCPP_INFO(node->get_logger(), "Starting goal position thread...");
-            controller.startGoalPositionThread({1.0f, 0.0f, 0.80f});  // Example goal position
+            float x, y, z;
+            std::cout << "Enter x, y, and z values separated by spaces: ";
+            std::cin >> x >> y >> z;
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
+
+            RCLCPP_INFO(node->get_logger(), "Starting goal position thread with x: %.2f, y: %.2f, z: %.2f", x, y, z);
+            controller.startGoalPositionThread({x, y, z});  // Use user-provided goal position
         } else if (input == "stop") {
             RCLCPP_INFO(node->get_logger(), "Stopping goal position thread...");
             controller.stopGoalPositionThread();
@@ -88,7 +93,6 @@ int main(int argc, char *argv[]) {
                 std::cin >> x >> y >> z >> yaw;
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
 
-                RCLCPP_INFO(node->get_logger(), "Executing test mode with x: %.2f, y: %.2f, z: %.2f, yaw: %.2f", x, y, z, yaw);
                 test_mode.store(true);
                 test_thread = std::thread([&]() {
                     controller.simulateDroneCommands({x, y, z}, yaw);  // Execute the command once
@@ -99,6 +103,18 @@ int main(int argc, char *argv[]) {
                 }
             } else {
                 RCLCPP_WARN(node->get_logger(), "Test mode is already running.");
+            }
+        } else if (input == "manual") {
+            float motor_power;
+            std::cout << "Enter motor power (e.g., between 0.0 and 1.0): ";
+            std::cin >> motor_power;
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
+
+            if (motor_power < 0.0f || motor_power > 1.0f) {
+                RCLCPP_WARN(node->get_logger(), "Invalid motor power value. Please enter a value between 0.0 and 1.0.");
+            } else {
+                RCLCPP_INFO(node->get_logger(), "Setting motor power to %.2f.", motor_power);
+                controller.manualMotorSet(motor_power);
             }
         } else {
             RCLCPP_WARN(node->get_logger(), "Unknown command: %s", input.c_str());

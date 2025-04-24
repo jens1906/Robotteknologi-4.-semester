@@ -160,18 +160,17 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, flo
     float roll_desired  = Kp_xy_inner * vy_error + Kd_xy_inner * dx_inner;
     float pitch_desired = -(Kp_xy_inner * vx_error + Kd_xy_inner * dy_inner);
 
-    roll_desired = std::clamp(roll_desired, -0.2f, 0.2f);
-    pitch_desired = std::clamp(pitch_desired, -0.2f, 0.2f);
+    float roll_desired_clamped = std::clamp(roll_desired, -0.2f, 0.2f);
+    float pitch_desired_clamped = std::clamp(pitch_desired, -0.2f, 0.2f);
 
     prev_x_error = x_error;
     prev_y_error = y_error;
     prev_vx_error = vx_error;
     prev_vy_error = vy_error;
 
-    // std::cout << "After Clamp Roll desired: " << roll_desired 
-    // << ", Pitch desired: " << pitch_desired << std::endl;
-
-    return {roll_desired, pitch_desired};
+    std::cout << "Roll desired (lim): " << roll_desired_clamped << " (" << roll_desired << "), "
+              << "Pitch desired (lim): " << pitch_desired_clamped << " (" << pitch_desired << ")" << std::endl; 
+    return {roll_desired_clamped, pitch_desired_clamped};
 }
 
 float Controller::zToThrust(float z_error) {
@@ -191,13 +190,12 @@ float Controller::zToThrust(float z_error) {
 
     float z_derivative = (z_error - prev_z_error) / dt;
     float thrust = (Kp_z * z_error + Kd_z * z_derivative);
-    // std::cout << "Thrust Before Clamp: " << thrust << std::endl;
-    // thrust = std::clamp(thrust, 0.0f, 0.8f);
-    // std::cout << "Thrust After Clamp: " << thrust << std::endl;
+    float thrust_clamped = std::clamp(thrust, 0.0f, 0.8f); // Clamp thrust to [0, 0.8]
+    std::cout << "Thrust (lim): " << thrust << " (" << thrust_clamped << ")" << std::endl;
 
     prev_z_error = z_error;
 
-    return thrust;
+    return thrust_clamped;
 }
 
 //This is not in use
@@ -297,4 +295,13 @@ void Controller::simulateDroneCommands(const std::array<float, 3>& xyz_error, fl
           << ", Yaw=" << yaw << ", Thrust=" << thrust << std::endl;
     std::cout << "Simulated Quaternion: w=" << quaternion[0] << ", x=" << quaternion[1]
             << ", y=" << quaternion[2] << ", z=" << quaternion[3] << std::endl;
+}
+
+void Controller::manualMotorSet(float T) {
+    px4_msgs::msg::VehicleAttitudeSetpoint msg{};
+    msg.timestamp = rclcpp::Clock().now().nanoseconds() / 1000; // PX4 expects µs
+    msg.q_d = {1.0f, 0.0f, 0.0f, 0.0f}; // No rotation
+    msg.thrust_body = std::array<float, 3>{0.0f, 0.0f, -T};
+    ros_attitude_setpoint_pub_->publish(msg);
+    std::cout << "Published manual motor setpoint: thrust=" << T << std::endl;
 }

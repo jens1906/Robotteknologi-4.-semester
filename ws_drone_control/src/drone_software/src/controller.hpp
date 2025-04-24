@@ -22,6 +22,7 @@ public:
     void startGoalPositionThread(const std::array<float, 3>& goal_position);
     void stopGoalPositionThread();
     void simulateDroneCommands(const std::array<float, 3>& xyz_error, float yaw);
+    void manualMotorSet(float T); // Set the motor thrust directly
 
 private:
     rclcpp::Node::SharedPtr node_;  // Store the shared node
