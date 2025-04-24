@@ -165,8 +165,8 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, flo
 
     prev_x_error = x_error;
     prev_y_error = y_error;
-    prev_vx_cmd = vx_cmd;
-    prev_vy_cmd = vy_cmd;
+    prev_vx_error = vx_error;
+    prev_vy_error = vy_error;
 
     std::cout << "After Clamp Roll desired: " << roll_desired
     << ", Pitch desired: " << pitch_desired << std::endl;
