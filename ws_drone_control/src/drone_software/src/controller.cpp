@@ -248,8 +248,8 @@ void Controller::startGoalPositionThread(const std::array<float, 3>& goal_positi
             float z_error = goal_position[2] - vicon_position_[2];
 
             float yaw_global = vicon_position_[5];
-            float x_error_local = cos(yaw_global) * x_error_global - sin(yaw_global) * y_error_global;
-            float y_error_local = sin(yaw_global) * x_error_global + cos(yaw_global) * y_error_global;
+            float x_error_local = cos(yaw_global) * x_error_global + sin(yaw_global) * y_error_global;
+            float y_error_local = -sin(yaw_global) * x_error_global + cos(yaw_global) * y_error_global;
 
             std::cout << "Errors (global): x=" << x_error_global << ", y=" << y_error_global
             << ", z=" << z_error << std::endl;
