@@ -1,0 +1,56 @@
+#Start ROS topics
+source /opt/ros/humble/setup.bash 
+export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+MicroXRCEAgent serial --dev /dev/serial0 -b 921600
+
+#ARM the drone
+ros2 topic pub /fmu/in/vehicle_command px4_msgs/msg/VehicleCommand "{command: 400, param1: 1.0, target_system: 1, target_component: 1}" --once
+
+#Change Mode to OFFBOARD
+ros2 topic pub /fmu/in/vehicle_command px4_msgs/msg/VehicleCommand "{command: 176, param1: 1.0,param2: 6.0, target_system: 1, target_component: 1}" --once
+
+#Set Offboard control mode inputs
+ros2 topic pub /fmu/in/offboard_control_mode px4_msgs/msg/OffboardControlMode "{
+  timestamp: 0,
+  position: false,
+  velocity: false,
+  acceleration: false,
+  attitude: true,
+  body_rate: false,
+  thrust_and_torque: true,
+  direct_actuator: false
+}" --rate 50
+
+#Set thrust of motors ot 100% aka in 1 direction
+
+ros2 topic pub /fmu/in/vehicle_attitude_setpoint px4_msgs/msg/VehicleAttitudeSetpoint "{
+  timestamp: 0, 
+  q_d: [0.7071, 0.0, 0.7071, 0.0],  # Quaternion [w, x, y, z]
+  thrust_body: [0.0, 0.0, -1.0]  # Thrust in body frame (x, y, z)
+}" --once
+
+
+#switch to cyclone
+export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+
+#Source build
+source /opt/ros/humble/setup.bash 
+source install/setup.bash
+ros2 run drone_software offboard_control_node
+
+#Simulated Vicon data
+source /opt/ros/humble/setup.bash 
+ros2 topic pub /Vicon std_msgs/msg/Float64MultiArray "{data: [43.0, 229.0, 0.862819, 0.193028, 0.113694, 0.0482, 0.0504, -0.2595]}"
+
+
+# update drone software from git repo
+cd 
+rm -rf Robotteknologi-4.-semester
+git clone https://github.com/jens1906/Robotteknologi-4.-semester.git
+cd 
+cp -r Robotteknologi-4.-semester/ws_drone_control/src/drone_software/* ws_drone_control/src/drone_software/
+cd ws_drone_control/
+colcon build
+
+
+

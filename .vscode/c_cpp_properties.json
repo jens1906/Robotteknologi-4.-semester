@@ -1,0 +1,20 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "C:\\Program Files\\Vicon\\DataStream SDK\\Win64\\CPP\\"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "compilerArgs": [
+                "C:\\MinGW\\bin\\g++.exe"
+            ]
+        }
+    ],
+    "version": 4
+}
