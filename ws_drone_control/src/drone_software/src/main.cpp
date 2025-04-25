@@ -32,19 +32,23 @@ int main(int argc, char *argv[]) {
             static auto last_drone_update = std::chrono::steady_clock::now();
         
             // Process incoming ROS 2 messages
-            rclcpp::spin_some(node);
+            try {
+                rclcpp::spin_some(node);
+            } catch (const std::exception& e) {
+                RCLCPP_ERROR(node->get_logger(), "Error during spin_some: %s", e.what());
+            }
         
             // Check if new Vicon data is available
             {
-                std::unique_lock<std::mutex> lock(controller.vicon_mutex_);
-                if (controller.vicon_updated_) {
+                if (controller.isViconUpdated()) {
                     // Process the new Vicon data
-                    std::cout << "New Vicon data received: x=" << controller.vicon_position_[0]
-                              << ", y=" << controller.vicon_position_[1]
-                              << ", z=" << controller.vicon_position_[2] << std::endl;
-        
+                    auto vicon_position = controller.getViconPosition();
+                    std::cout << "New Vicon data received: x=" << vicon_position[0]
+                              << ", y=" << vicon_position[1]
+                              << ", z=" << vicon_position[2] << std::endl;
+            
                     // Reset the flag
-                    controller.vicon_updated_ = false;
+                    controller.resetViconUpdated();
                 }
             }
         
