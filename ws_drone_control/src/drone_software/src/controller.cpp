@@ -340,8 +340,12 @@ void Controller::zControlMode(float z_offset, float max_z_thrust) {
             msg.timestamp = rclcpp::Clock().now().nanoseconds() / 1000;  // PX4 expects µs
             msg.q_d = {1.0f, 0.0f, 0.0f, 0.0f};  // Quaternion for no rotation
             msg.thrust_body = std::array<float, 3>{0.0f, 0.0f, -thrust};  // Apply thrust in the z direction
+            
+            // print vicon position and z thrust
+            std::cout << "Vicon Position: x=" << vicon_position_[0] << ", y=" << vicon_position_[1]
+                      << ", z=" << current_z << ", thrust=" << thrust << std::endl;
 
-            ros_attitude_setpoint_pub_->publish(msg);
+            // ros_attitude_setpoint_pub_->publish(msg);
 
             std::cout << "Published zcon setpoint: target_z=" << target_z
                       << ", current_z=" << current_z
