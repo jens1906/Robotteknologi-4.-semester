@@ -2,11 +2,11 @@
 #define CONTROLLER_HPP
 
 #include <memory>
-#include <array>  
+#include <array>
 #include <thread>
 #include <atomic>
-#include <iostream> 
-#include <std_msgs/msg/float64_multi_array.hpp>  
+#include <iostream>
+#include <std_msgs/msg/float64_multi_array.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <px4_msgs/msg/vehicle_attitude.hpp>
 #include <px4_msgs/msg/vehicle_attitude_setpoint.hpp>
@@ -23,14 +23,22 @@ public:
     void stopGoalPositionThread();
     void simulateDroneCommands(const std::array<float, 3>& xyz_error, float yaw);
     void manualMotorSet(float T); // Set the motor thrust directly
-    void zControlMode(float z_offset, float max_z_thrust); // Start or update zControlMode
-    void stopZControlMode(); // Stop the zControlMode thread
+    void viconCallback(const std_msgs::msg::Float64MultiArray::SharedPtr msg); // Callback for Vicon data
+
+    // Getter for vicon_position_
+    std::array<float, 6> getViconPosition() const;
+
+    // Getter for vicon_updated_
+    bool isViconUpdated() const;
+
+    // Setter for vicon_updated_
+    void resetViconUpdated();
 
 private:
     rclcpp::Node::SharedPtr node_;  // Store the shared node
     std::array<float, 6> vicon_position_;  // Store the latest Vicon position
-    std::array<float, 3> vicon_velocity_;  // Add this line
-    rclcpp::Time prev_vicon_time_;         // Add this line
+    std::array<float, 3> vicon_velocity_;  // Store the latest Vicon velocity
+    rclcpp::Time prev_vicon_time_;         // Store the previous Vicon timestamp
     std::array<float, 2> xyToRollPitch(float x_error, float y_error, float vx_err, float vy_err); // PID for XY roll pitch calculation
     float zToThrust(float z_error); // PID for thrust control
     rclcpp::Publisher<px4_msgs::msg::VehicleAttitudeSetpoint>::SharedPtr ros_attitude_setpoint_pub_; // Publisher for vehicle attitude setpoint
@@ -46,9 +54,9 @@ private:
     std::atomic<float> target_z_{0.0f}; // Target z position
     std::atomic<float> max_z_thrust_{0.0f}; // Maximum z thrust
 
+    mutable std::mutex vicon_mutex_; // Mutex for Vicon data synchronization
     std::condition_variable vicon_update_cv_; // Condition variable for Vicon updates
-    std::mutex vicon_mutex_;                 // Mutex for Vicon data synchronization
-    bool vicon_updated_ = false;             // Flag to indicate a new Vicon update
+    bool vicon_updated_ = false; // Flag to indicate a new Vicon update
 };
 
 #endif

@@ -28,13 +28,39 @@ int main(int argc, char *argv[]) {
     // we multithread and makes it so these commands are run in the background
     // depending on the atomic bools.
     std::thread drone_thread([&]() {
-        while (!terminate.load()) {
-            if (running.load()) {
-                initialize.turn_on_drone();
-                std::this_thread::sleep_for(std::chrono::milliseconds(20));  // Adjust loop frequency as needed
-            } else {
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));  // Avoid busy-waiting aka let the cpu chill
+        while (rclcpp::ok() && !terminate.load()) {
+            static auto last_drone_update = std::chrono::steady_clock::now();
+        
+            // Process incoming ROS 2 messages
+            try {
+                rclcpp::spin_some(node);
+            } catch (const std::exception& e) {
+                RCLCPP_ERROR(node->get_logger(), "Error during spin_some: %s", e.what());
             }
+        
+            // Check if new Vicon data is available
+            {
+                if (controller.isViconUpdated()) {
+                    // Process the new Vicon data
+                    auto vicon_position = controller.getViconPosition();
+                    std::cout << "New Vicon data received: x=" << vicon_position[0]
+                              << ", y=" << vicon_position[1]
+                              << ", z=" << vicon_position[2] << std::endl;
+            
+                    // Reset the flag
+                    controller.resetViconUpdated();
+                }
+            }
+        
+            // Check if it's time to call `initialize.turn_on_drone()`
+            auto now = std::chrono::steady_clock::now();
+            if (running.load() && std::chrono::duration_cast<std::chrono::milliseconds>(now - last_drone_update).count() >= 50) {
+                initialize.turn_on_drone();  // Send the keep-alive command
+                last_drone_update = now;    // Update the last execution time
+            }
+        
+            // Sleep for a short duration to avoid busy-waiting
+            std::this_thread::sleep_for(std::chrono::milliseconds(5));
         }
     });
 
@@ -151,4 +177,3 @@ int main(int argc, char *argv[]) {
     rclcpp::shutdown();
     return 0;
 }
-

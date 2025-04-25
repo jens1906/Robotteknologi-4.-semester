@@ -11,6 +11,40 @@ Controller::Controller(rclcpp::Node::SharedPtr node)
     std::cout << std::fixed << std::setprecision(2);
 }
 
+// Getter for vicon_position_
+std::array<float, 6> Controller::getViconPosition() const {
+    std::lock_guard<std::mutex> lock(vicon_mutex_); // Ensure thread-safe access
+    return vicon_position_;
+}
+
+// Getter for vicon_updated_
+bool Controller::isViconUpdated() const {
+    std::lock_guard<std::mutex> lock(vicon_mutex_); // Ensure thread-safe access
+    return vicon_updated_;
+}
+
+// Setter for vicon_updated_
+void Controller::resetViconUpdated() {
+    std::lock_guard<std::mutex> lock(vicon_mutex_); // Ensure thread-safe access
+    vicon_updated_ = false;
+}
+
+void Controller::viconCallback(const std_msgs::msg::Float64MultiArray::SharedPtr msg) {
+    if (msg->data.size() >= 8) {
+        std::unique_lock<std::mutex> lock(vicon_mutex_);
+        // Update Vicon position and velocity
+        vicon_position_[0] = msg->data[2];
+        vicon_position_[1] = msg->data[3];
+        vicon_position_[2] = msg->data[4];
+        vicon_position_[3] = msg->data[5];
+        vicon_position_[4] = msg->data[6];
+        vicon_position_[5] = msg->data[7];
+        vicon_updated_ = true;  // Set the flag to indicate new data
+        lock.unlock();
+        vicon_update_cv_.notify_one();  // Notify the waiting thread
+    }
+}
+
 // Initialize ROS topics
 void Controller::initialize(rclcpp::Node::SharedPtr node) {
     node_ = node;
@@ -238,15 +272,11 @@ void Controller::startGoalPositionThread(const std::array<float, 3>& goal_positi
 
         while (!stop_thread_.load()) {
             std::unique_lock<std::mutex> lock(vicon_mutex_);
-            
-            rclcpp::Time start_time = rclcpp::Clock().now();
-            while (vicon_position_[0] == 0.0f && (rclcpp::Clock().now() - start_time).seconds() < 1.0) {
-                rclcpp::spin_some(node_);
-
-                //std::this_thread::sleep_for(std::chrono::milliseconds(9));
+            vicon_update_cv_.wait(lock, [this]() { return vicon_updated_ || stop_thread_.load(); });
+            if (stop_thread_.load()) {
+                break; // Exit if the thread is stopped
             }
-            std::cout << "ViconUpdate" << std::endl;
-            rclcpp::spin_some(node_);
+            vicon_updated_ = false; // Reset the update flag
 
             // Use the latest vicon_position_ directly
             std::cout << "Current Vicon position: x=" << vicon_position_[0]

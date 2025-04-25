@@ -77,7 +77,8 @@
         "numbers": "cpp",
         "span": "cpp",
         "cinttypes": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "mutex": "cpp"
     },
     "idf.pythonInstallPath": "/usr/bin/python3"
 }
