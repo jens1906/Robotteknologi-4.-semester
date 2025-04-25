@@ -34,6 +34,10 @@ public:
     // Setter for vicon_updated_
     void resetViconUpdated();
 
+    // New methods for zControlMode
+    void zControlMode(float z_offset, float max_z_thrust); // Control z-axis position
+    void stopZControlMode(); // Stop zControlMode thread
+
 private:
     rclcpp::Node::SharedPtr node_;  // Store the shared node
     std::array<float, 6> vicon_position_;  // Store the latest Vicon position
