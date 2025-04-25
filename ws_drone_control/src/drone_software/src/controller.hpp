@@ -2,11 +2,11 @@
 #define CONTROLLER_HPP
 
 #include <memory>
-#include <array>  
+#include <array>
 #include <thread>
 #include <atomic>
-#include <iostream> 
-#include <std_msgs/msg/float64_multi_array.hpp>  
+#include <iostream>
+#include <std_msgs/msg/float64_multi_array.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <px4_msgs/msg/vehicle_attitude.hpp>
 #include <px4_msgs/msg/vehicle_attitude_setpoint.hpp>
@@ -24,6 +24,15 @@ public:
     void simulateDroneCommands(const std::array<float, 3>& xyz_error, float yaw);
     void manualMotorSet(float T); // Set the motor thrust directly
     void viconCallback(const std_msgs::msg::Float64MultiArray::SharedPtr msg); // Callback for Vicon data
+
+    // Getter for vicon_position_
+    std::array<float, 6> getViconPosition() const;
+
+    // Getter for vicon_updated_
+    bool isViconUpdated() const;
+
+    // Setter for vicon_updated_
+    void resetViconUpdated();
 
 private:
     rclcpp::Node::SharedPtr node_;  // Store the shared node
