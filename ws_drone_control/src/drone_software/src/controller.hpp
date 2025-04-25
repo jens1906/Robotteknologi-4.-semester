@@ -23,6 +23,8 @@ public:
     void stopGoalPositionThread();
     void simulateDroneCommands(const std::array<float, 3>& xyz_error, float yaw);
     void manualMotorSet(float T); // Set the motor thrust directly
+    void zControlMode(float z_offset, float max_z_thrust); // Start or update zControlMode
+    void stopZControlMode(); // Stop the zControlMode thread
 
 private:
     rclcpp::Node::SharedPtr node_;  // Store the shared node
@@ -39,6 +41,10 @@ private:
 
     std::thread goal_position_thread_;
     std::atomic<bool> stop_thread_;
+    std::thread z_control_thread_; // Thread for zControlMode
+    std::atomic<bool> stop_z_control_{false}; // Flag to stop zControlMode
+    std::atomic<float> target_z_{0.0f}; // Target z position
+    std::atomic<float> max_z_thrust_{0.0f}; // Maximum z thrust
 
     std::condition_variable vicon_update_cv_; // Condition variable for Vicon updates
     std::mutex vicon_mutex_;                 // Mutex for Vicon data synchronization

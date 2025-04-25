@@ -308,3 +308,52 @@ void Controller::manualMotorSet(float T) {
     ros_attitude_setpoint_pub_->publish(msg);
     std::cout << "Published manual motor setpoint: thrust=" << T << std::endl;
 }
+
+void Controller::zControlMode(float z_offset, float max_z_thrust) {
+    target_z_.store(z_offset); // Update the target z position
+    max_z_thrust_.store(max_z_thrust); // Update the maximum z thrust
+
+    if (z_control_thread_.joinable()) {
+        // If the thread is already running, just update the target and return
+        return;
+    }
+
+    stop_z_control_.store(false); // Reset the stop flag
+    z_control_thread_ = std::thread([this]() {
+        std::cout << "Starting zControlMode thread." << std::endl;
+
+        while (!stop_z_control_.load()) {
+            std::unique_lock<std::mutex> lock(vicon_mutex_);
+            float current_z = vicon_position_[2];  // Get current z position from Vicon
+            lock.unlock();
+
+            float target_z = target_z_.load();  // Load the current target z position
+            float z_error = target_z - current_z;
+
+            float thrust = zToThrust(z_error);  // Calculate thrust using z control system
+            thrust = std::clamp(thrust, 0.0f, max_z_thrust_.load());  // Clamp thrust to user-provided max value
+
+            px4_msgs::msg::VehicleAttitudeSetpoint msg{};
+            msg.timestamp = rclcpp::Clock().now().nanoseconds() / 1000;  // PX4 expects µs
+            msg.q_d = {1.0f, 0.0f, 0.0f, 0.0f};  // Quaternion for no rotation
+            msg.thrust_body = std::array<float, 3>{0.0f, 0.0f, -thrust};  // Apply thrust in the z direction
+
+            ros_attitude_setpoint_pub_->publish(msg);
+
+            std::cout << "Published zcon setpoint: target_z=" << target_z
+                      << ", current_z=" << current_z
+                      << ", thrust=" << thrust << std::endl;
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(20));  // Adjust loop frequency as needed
+        }
+
+        std::cout << "Exiting zControlMode thread." << std::endl;
+    });
+}
+
+void Controller::stopZControlMode() {
+    if (z_control_thread_.joinable()) {
+        stop_z_control_.store(true);  // Signal the thread to stop
+        z_control_thread_.join();  // Wait for the thread to finish
+    }
+}

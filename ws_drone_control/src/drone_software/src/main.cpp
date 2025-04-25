@@ -46,17 +46,29 @@ int main(int argc, char *argv[]) {
     std::cout << "--------------------------------------------" << std::endl;
 
     while (rclcpp::ok()) {
-        std::cout << "Enter command (turnon, turnoff, kill, start, stop, setpoint, test, exit): ";
+        std::cout << "Enter command (turnon, turnoff, kill, start, stop, setpoint, test, zcon, exit): ";
         std::getline(std::cin, input);
 
-        if (input == "turnon") {
+        if (input == "zcon") {
+            float max_z_thrust;
+            std::cout << "Enter maximum z thrust (e.g., between 0.0 and 1.0): ";
+            std::cin >> max_z_thrust;
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
+
+            if (max_z_thrust < 0.0f || max_z_thrust > 1.0f) {
+                RCLCPP_WARN(node->get_logger(), "Invalid max z thrust value. Please enter a value between 0.0 and 1.0.");
+            } else {
+                RCLCPP_INFO(node->get_logger(), "Running zcon mode with max z thrust: %.2f.", max_z_thrust);
+                controller.zControlMode(0.5f, max_z_thrust);  // Target 0.5m above current position
+            }
+        } else if (input == "turnon") {
             RCLCPP_INFO(node->get_logger(), "Turning on the drone...");
             running.store(true);  // Start the drone thread
-            controller.publishVehicleAttitudeSetpoint({0.0f, 0.0f, 0.0f}, 0.0f);  // Example setpoint
+            // controller.publishVehicleAttitudeSetpoint({0.0f, 0.0f, 0.0f}, 0.0f);  // Example setpoint
         } else if (input == "turnoff") {
             RCLCPP_INFO(node->get_logger(), "Turning off the drone...");
             controller.stopGoalPositionThread();
-            controller.publishVehicleAttitudeSetpoint({0.0f, 0.0f, 0.0f}, 0.0f);  // Example setpoint
+            // controller.publishVehicleAttitudeSetpoint({0.0f, 0.0f, 0.0f}, 0.0f);  // Example setpoint
             running.store(false);  // Stop the drone thread
         } else if (input == "kill") {
             RCLCPP_INFO(node->get_logger(), "Kill command received. Disarming...");
@@ -72,7 +84,7 @@ int main(int argc, char *argv[]) {
                 test_mode.store(false);  // Stop the test thread
                 test_thread.join();
             }
-            break;
+            break;  // Correctly placed within the while loop
         } else if (input == "start") {
             float x, y, z;
             std::cout << "Enter x, y, and z values separated by spaces: ";
@@ -111,7 +123,8 @@ int main(int argc, char *argv[]) {
                 RCLCPP_WARN(node->get_logger(), "Test mode is already running.");
             }
         } else if (input == "manual") {
-            float motor_power;
+            float motor_power;  // Declare motor_power within the correct scope
+            std::cout << "new version" << std::endl;
             std::cout << "Enter motor power (e.g., between 0.0 and 1.0): ";
             std::cin >> motor_power;
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
