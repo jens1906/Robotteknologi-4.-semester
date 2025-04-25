@@ -238,11 +238,12 @@ void Controller::startGoalPositionThread(const std::array<float, 3>& goal_positi
 
         while (!stop_thread_.load()) {
             std::unique_lock<std::mutex> lock(vicon_mutex_);
-            vicon_update_cv_.wait(lock, [this]() { return vicon_updated_ || stop_thread_.load(); });
-            if (stop_thread_.load()) {
-                break; // Exit if the thread is stopped
+            
+            rclcpp::Time start_time = rclcpp::Clock().now();
+            while (vicon_position_[0] == 0.0f && (rclcpp::Clock().now() - start_time).seconds() < 1.0) {
+                rclcpp::spin_some(node_);
+                std::this_thread::sleep_for(std::chrono::milliseconds(10));
             }
-            vicon_updated_ = false; // Reset the update flag
 
             // Use the latest vicon_position_ directly
             std::cout << "Current Vicon position: x=" << vicon_position_[0]
