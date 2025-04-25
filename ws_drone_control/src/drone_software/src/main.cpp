@@ -43,9 +43,9 @@ int main(int argc, char *argv[]) {
                 if (controller.isViconUpdated()) {
                     // Process the new Vicon data
                     auto vicon_position = controller.getViconPosition();
-                    std::cout << "New Vicon data received: x=" << vicon_position[0]
-                              << ", y=" << vicon_position[1]
-                              << ", z=" << vicon_position[2] << std::endl;
+                    //std::cout << "New Vicon data received: x=" << vicon_position[0]
+                    //          << ", y=" << vicon_position[1]
+                    //          << ", z=" << vicon_position[2] << std::endl;
             
                     // Reset the flag
                     controller.resetViconUpdated();
