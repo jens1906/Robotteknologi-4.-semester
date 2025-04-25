@@ -28,13 +28,35 @@ int main(int argc, char *argv[]) {
     // we multithread and makes it so these commands are run in the background
     // depending on the atomic bools.
     std::thread drone_thread([&]() {
-        while (!terminate.load()) {
-            if (running.load()) {
-                initialize.turn_on_drone();
-                std::this_thread::sleep_for(std::chrono::milliseconds(20));  // Adjust loop frequency as needed
-            } else {
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));  // Avoid busy-waiting aka let the cpu chill
+        while (rclcpp::ok() && !terminate.load()) {
+            static auto last_drone_update = std::chrono::steady_clock::now();
+        
+            // Process incoming ROS 2 messages
+            rclcpp::spin_some(node);
+        
+            // Check if new Vicon data is available
+            {
+                std::unique_lock<std::mutex> lock(controller.vicon_mutex_);
+                if (controller.vicon_updated_) {
+                    // Process the new Vicon data
+                    std::cout << "New Vicon data received: x=" << controller.vicon_position_[0]
+                              << ", y=" << controller.vicon_position_[1]
+                              << ", z=" << controller.vicon_position_[2] << std::endl;
+        
+                    // Reset the flag
+                    controller.vicon_updated_ = false;
+                }
             }
+        
+            // Check if it's time to call `initialize.turn_on_drone()`
+            auto now = std::chrono::steady_clock::now();
+            if (running.load() && std::chrono::duration_cast<std::chrono::milliseconds>(now - last_drone_update).count() >= 50) {
+                initialize.turn_on_drone();  // Send the keep-alive command
+                last_drone_update = now;    // Update the last execution time
+            }
+        
+            // Sleep for a short duration to avoid busy-waiting
+            std::this_thread::sleep_for(std::chrono::milliseconds(5));
         }
     });
 
@@ -138,4 +160,3 @@ int main(int argc, char *argv[]) {
     rclcpp::shutdown();
     return 0;
 }
-
