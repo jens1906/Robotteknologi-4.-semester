@@ -56,7 +56,7 @@ void Controller::initialize(rclcpp::Node::SharedPtr node) {
                 std::cout << "Vicon update: x=" << vicon_position_[0] << ", y=" << vicon_position_[1]
                 << ", z=" << vicon_position_[2] << ", vx=" << vicon_velocity_[0]
                 << ", vy=" << vicon_velocity_[1] << ", vz=" << vicon_velocity_[2] << std::endl;
-      
+                std::cout << "ViconUpdate" << std::endl;
             }
         });
 }
@@ -245,7 +245,7 @@ void Controller::startGoalPositionThread(const std::array<float, 3>& goal_positi
 
                 //std::this_thread::sleep_for(std::chrono::milliseconds(9));
             }
-            std:cout << "ViconUpdate" << std::endl;
+            std::cout << "ViconUpdate" << std::endl;
             rclcpp::spin_some(node_);
 
             // Use the latest vicon_position_ directly
