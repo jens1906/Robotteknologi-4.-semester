@@ -242,8 +242,11 @@ void Controller::startGoalPositionThread(const std::array<float, 3>& goal_positi
             rclcpp::Time start_time = rclcpp::Clock().now();
             while (vicon_position_[0] == 0.0f && (rclcpp::Clock().now() - start_time).seconds() < 1.0) {
                 rclcpp::spin_some(node_);
-                std::this_thread::sleep_for(std::chrono::milliseconds(9));
+
+                //std::this_thread::sleep_for(std::chrono::milliseconds(9));
             }
+            std:cout << "ViconUpdate" << std::endl;
+            rclcpp::spin_some(node_);
 
             // Use the latest vicon_position_ directly
             std::cout << "Current Vicon position: x=" << vicon_position_[0]
