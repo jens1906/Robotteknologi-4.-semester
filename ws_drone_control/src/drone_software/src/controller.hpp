@@ -23,6 +23,7 @@ public:
     void stopGoalPositionThread();
     void simulateDroneCommands(const std::array<float, 3>& xyz_error, float yaw);
     void manualMotorSet(float T); // Set the motor thrust directly
+    void viconCallback(const std_msgs::msg::Float64MultiArray::SharedPtr msg); // Callback for Vicon data
 
 private:
     rclcpp::Node::SharedPtr node_;  // Store the shared node
