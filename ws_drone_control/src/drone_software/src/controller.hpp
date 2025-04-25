@@ -37,8 +37,8 @@ public:
 private:
     rclcpp::Node::SharedPtr node_;  // Store the shared node
     std::array<float, 6> vicon_position_;  // Store the latest Vicon position
-    std::array<float, 3> vicon_velocity_;  // Add this line
-    rclcpp::Time prev_vicon_time_;         // Add this line
+    std::array<float, 3> vicon_velocity_;  // Store the latest Vicon velocity
+    rclcpp::Time prev_vicon_time_;         // Store the previous Vicon timestamp
     std::array<float, 2> xyToRollPitch(float x_error, float y_error, float vx_err, float vy_err); // PID for XY roll pitch calculation
     float zToThrust(float z_error); // PID for thrust control
     rclcpp::Publisher<px4_msgs::msg::VehicleAttitudeSetpoint>::SharedPtr ros_attitude_setpoint_pub_; // Publisher for vehicle attitude setpoint
@@ -53,9 +53,6 @@ private:
     mutable std::mutex vicon_mutex_; // Mutex for Vicon data synchronization
     std::condition_variable vicon_update_cv_; // Condition variable for Vicon updates
     bool vicon_updated_ = false; // Flag to indicate a new Vicon update
-    std::array<float, 6> vicon_position_; // Store the latest Vicon position
-    std::array<float, 3> vicon_velocity_; // Store the latest Vicon velocity
-    rclcpp::Time prev_vicon_time_; // Store the previous Vicon timestamp
 };
 
 #endif
