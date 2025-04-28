@@ -24,15 +24,6 @@ public:
     void manualMotorSet(float T); // Set the motor thrust directly
     void viconCallback(const std_msgs::msg::Float64MultiArray::SharedPtr msg); // Callback for Vicon data
 
-    // Getter for vicon_position_
-    std::array<float, 6> getViconPosition() const;
-
-    // Getter for vicon_updated_
-    bool isViconUpdated() const;
-
-    // Setter for vicon_updated_
-    void resetViconUpdated();
-
     // New methods for zControlMode
     void zControlMode(float z_offset, float max_z_thrust); // Control z-axis position
     void stopZControlMode(); // Stop zControlMode thread

@@ -38,20 +38,6 @@ int main(int argc, char *argv[]) {
                 RCLCPP_ERROR(node->get_logger(), "Error during spin_some: %s", e.what());
             }
         
-            // Check if new Vicon data is available
-            {
-                if (controller.isViconUpdated()) {
-                    // Process the new Vicon data
-                    auto vicon_position = controller.getViconPosition();
-                    //std::cout << "New Vicon data received: x=" << vicon_position[0]
-                    //          << ", y=" << vicon_position[1]
-                    //          << ", z=" << vicon_position[2] << std::endl;
-            
-                    // Reset the flag
-                    controller.resetViconUpdated();
-                }
-            }
-        
             // Check if it's time to call `initialize.turn_on_drone()`
             auto now = std::chrono::steady_clock::now();
             if (running.load() && std::chrono::duration_cast<std::chrono::milliseconds>(now - last_drone_update).count() >= 50) {
