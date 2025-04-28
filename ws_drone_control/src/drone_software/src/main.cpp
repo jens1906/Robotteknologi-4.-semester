@@ -98,7 +98,7 @@ int main(int argc, char *argv[]) {
             running.store(false);  // Stop the drone thread
         } else if (input == "kill") {
             RCLCPP_INFO(node->get_logger(), "Kill command received. Disarming...");
-            controller.publishVehicleAttitudeSetpoint({0.0f, 0.0f, 0.0f}, 0.0f);  // Example setpoint
+            controller.publishVehicleAttitudeSetpoint(0.0f, 0.0f, 0.0f, 0.0f); // Example setpoint
             running.store(false);  // Stop the drone thread
             initialize.disarm(true);  // Disarm the drone
         } else if (input == "exit") {
@@ -122,15 +122,15 @@ int main(int argc, char *argv[]) {
         } else if (input == "stop") {
             RCLCPP_INFO(node->get_logger(), "Stopping goal position thread...");
             controller.stopGoalPositionThread();
-        } else if (input == "setpoint") {
-            float x, y, z;
-            std::cout << "Enter x, y, and z values separated by spaces: ";
-            std::cin >> x >> y >> z;
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
+            //} else if (input == "setpoint") {
+            //    float x, y, z;
+            //    std::cout << "Enter x, y, and z values separated by spaces: ";
+            //    std::cin >> x >> y >> z;
+            //    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
 
-            RCLCPP_INFO(node->get_logger(), "Altitude setpoint command received with x: %.2f, y: %.2f, z: %.2f", x, y, z);
-            controller.goalPosition({x, y, z});  // Use user-provided setpoint
-        } else if (input == "test") {
+            //    RCLCPP_INFO(node->get_logger(), "Altitude setpoint command received with x: %.2f, y: %.2f, z: %.2f", x, y, z);
+            //    controller.goalPosition({x, y, z});  // Use user-provided setpoint
+            } else if (input == "test") {
             if (!test_mode.load()) {
                 float x, y, z, yaw;
                 std::cout << "Enter x, y, z, and yaw values separated by spaces: ";

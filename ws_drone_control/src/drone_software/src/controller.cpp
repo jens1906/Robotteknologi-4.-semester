@@ -32,16 +32,45 @@ void Controller::resetViconUpdated() {
 void Controller::viconCallback(const std_msgs::msg::Float64MultiArray::SharedPtr msg) {
     if (msg->data.size() >= 8) {
         std::unique_lock<std::mutex> lock(vicon_mutex_);
-        // Update Vicon position and velocity
+
+        // Save previous position and time
+        std::array<float, 3> prev_pos = {vicon_position_[0], vicon_position_[1], vicon_position_[2]};
+        rclcpp::Time prev_time = prev_vicon_time_;
+
+        // Extract the timestamp from the message (assuming it's in the first two elements)
+        int current_seconds = static_cast<int>(msg->data[0]);  // Seconds part of the timestamp
+        int current_milliseconds = static_cast<int>(msg->data[1]);  // Milliseconds part of the timestamp
+        rclcpp::Time current_time(current_seconds, current_milliseconds * 1e6);  // Convert to rclcpp::Time
+
+        // Update position
         vicon_position_[0] = msg->data[2];
         vicon_position_[1] = msg->data[3];
         vicon_position_[2] = msg->data[4];
+
+        // Compute velocity and update dt
+        float dt = (current_time - prev_time).seconds();  // Use the timestamp difference
+        if (dt > 0.001f && prev_time.nanoseconds() != 0) {
+            vicon_velocity_[0] = (vicon_position_[0] - prev_pos[0]) / dt;
+            vicon_velocity_[1] = (vicon_position_[1] - prev_pos[1]) / dt;
+            vicon_velocity_[2] = (vicon_position_[2] - prev_pos[2]) / dt;
+            prev_vicon_time_ = current_time;  // Update previous time
+            vicon_dt_ = dt;  // Update the shared dt
+        } else {
+            std::cerr << "Invalid dt detected: " << dt << " seconds. Skipping velocity update." << std::endl;
+        }
+
+        // Update orientation
         vicon_position_[3] = msg->data[5];
         vicon_position_[4] = msg->data[6];
         vicon_position_[5] = msg->data[7];
-        vicon_updated_ = true;  // Set the flag to indicate new data
+
+        vicon_updated_ = true; // Set the update flag
         lock.unlock();
-        vicon_update_cv_.notify_one();  // Notify the waiting thread
+        vicon_update_cv_.notify_one(); // Notify the waiting thread
+
+        std::cout << "Vicon update: x=" << vicon_position_[0] << ", y=" << vicon_position_[1]
+                  << ", z=" << vicon_position_[2] << ", vx=" << vicon_velocity_[0]
+                  << ", vy=" << vicon_velocity_[1] << ", vz=" << vicon_velocity_[2] << std::endl;
     }
 }
 
@@ -58,91 +87,29 @@ void Controller::initialize(rclcpp::Node::SharedPtr node) {
         "/fmu/out/vehicle_attitude", qos,
         std::bind(&Controller::vehicleAttitudeCallback, this, std::placeholders::_1));
 
-    // Create the Vicon subscription ONCE here
+    // Create the Vicon subscription and use the viconCallback function
     ros_vicon_sub_ = node_->create_subscription<std_msgs::msg::Float64MultiArray>(
         "/Vicon", qos,
-        [this](const std_msgs::msg::Float64MultiArray::SharedPtr msg) {
-            if (msg->data.size() >= 8) {
-                std::unique_lock<std::mutex> lock(vicon_mutex_);
-                // Save previous position and time
-                std::array<float, 3> prev_pos = {vicon_position_[0], vicon_position_[1], vicon_position_[2]};
-                rclcpp::Time prev_time = prev_vicon_time_;
-                // Update position
-                vicon_position_[0] = msg->data[2];
-                vicon_position_[1] = msg->data[3];
-                vicon_position_[2] = msg->data[4];
-                // Compute velocity
-                rclcpp::Time now = rclcpp::Clock().now();
-                float dt = (now - prev_time).seconds();
-                if (dt > 0.001f && prev_time.nanoseconds() != 0) {
-                    vicon_velocity_[0] = (vicon_position_[0] - prev_pos[0]) / dt;
-                    vicon_velocity_[1] = (vicon_position_[1] - prev_pos[1]) / dt;
-                    vicon_velocity_[2] = (vicon_position_[2] - prev_pos[2]) / dt;
-                }
-                prev_vicon_time_ = now;
-                // Update orientation
-                vicon_position_[3] = msg->data[5];
-                vicon_position_[4] = msg->data[6];
-                vicon_position_[5] = msg->data[7];
-                vicon_updated_ = true; // Set the update flag
-                lock.unlock();
-                vicon_update_cv_.notify_one(); // Notify the waiting thread
-                std::cout << "Vicon update: x=" << vicon_position_[0] << ", y=" << vicon_position_[1]
-                << ", z=" << vicon_position_[2] << ", vx=" << vicon_velocity_[0]
-                << ", vy=" << vicon_velocity_[1] << ", vz=" << vicon_velocity_[2] << std::endl;
-                std::cout << "ViconUpdate" << std::endl;
-            }
-        });
+        std::bind(&Controller::viconCallback, this, std::placeholders::_1));
 }
 
 void Controller::vehicleAttitudeCallback(const px4_msgs::msg::VehicleAttitude::SharedPtr msg) {
     RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Received VehicleAttitude message");
 }
 
-void Controller::publishVehicleAttitudeSetpoint(const std::array<float, 3>& xyz_error, float yaw) {
-    float x_vel, y_vel;
-    {
-        std::lock_guard<std::mutex> lock(vicon_mutex_);
-        // Transform global velocity to local frame using yaw if needed
-        float yaw_radians = vicon_position_[5] * M_PI / 180.0f; // Convert degrees to radians
-        x_vel = cos(yaw_radians) * vicon_velocity_[0] + sin(yaw_radians) * vicon_velocity_[1];
-        y_vel = -sin(yaw_radians) * vicon_velocity_[0] + cos(yaw_radians) * vicon_velocity_[1];
-    }
-    auto roll_pitch = xyToRollPitch(xyz_error[0], xyz_error[1], x_vel, y_vel);
-    float thrust = zToThrust(xyz_error[2]);
-    yaw = 0.0f;
-
+void Controller::publishVehicleAttitudeSetpoint(float roll, float pitch, float thrust, float yaw) {
     px4_msgs::msg::VehicleAttitudeSetpoint msg{};
     msg.timestamp = rclcpp::Clock().now().nanoseconds() / 1000; // PX4 expects µs
-    msg.q_d = rpyToQuaternion(roll_pitch[0], roll_pitch[1], yaw);
-    msg.thrust_body = std::array<float, 3>{0.0f, 0.0f, -thrust};
-    // std::cout << "Publishing VehicleAttitudeSetpoint: roll=" << roll_pitch[0]
-    // << ", pitch=" << roll_pitch[1] << ", thrust=" << thrust << std::endl;
+    msg.q_d = rpyToQuaternion(roll, pitch, yaw); // Convert roll, pitch, yaw to quaternion
+    msg.thrust_body = std::array<float, 3>{0.0f, 0.0f, -thrust}; // Apply thrust in the z direction
 
-    // --- Compute and log motor outputs (custom order) ---
-    // M1 = Front right, M2 = behind Left, M3 = Front left, M4 = Behind right
-    float roll = roll_pitch[0];
-    float pitch = roll_pitch[1];
-    float yaw_rate = 0.0f; // If you have yaw control, use it here
-
-    float m1 = thrust + pitch - roll + yaw_rate; // Front right
-    float m2 = thrust - pitch + roll + yaw_rate; // Behind left
-    float m3 = thrust + pitch + roll - yaw_rate; // Front left
-    float m4 = thrust - pitch - roll - yaw_rate; // Behind right
-
-    m1 = std::clamp(m1, 0.0f, 1.0f);
-    m2 = std::clamp(m2, 0.0f, 1.0f);
-    m3 = std::clamp(m3, 0.0f, 1.0f);
-    m4 = std::clamp(m4, 0.0f, 1.0f);
-
-    // std::cout << "Motor outputs: M1=" << m1 << " (Front right), M2=" << m2
-    //       << " (Behind left), M3=" << m3 << " (Front left), M4=" << m4
-    //       << " (Behind right)" << std::endl;
-
-    // ---------------------------------------------------
-
+    // Publish the message
     ros_attitude_setpoint_pub_->publish(msg);
-    // std::cout << "Published VehicleAttitudeSetpoint: thrust=" << thrust << std::endl;
+
+    // Log the published values
+    std::cout << "Published VehicleAttitudeSetpoint: roll=" << roll
+              << ", pitch=" << pitch << ", yaw=" << yaw
+              << ", thrust=" << thrust << std::endl;
 }
 
 std::array<float, 4> Controller::rpyToQuaternion(float roll, float pitch, float yaw) {
@@ -163,11 +130,9 @@ std::array<float, 4> Controller::rpyToQuaternion(float roll, float pitch, float 
     return {w, x, y, z};
 }
 
-std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, float x_velocity, float y_velocity) {
-    // Outer loop gains (position to velocity)
+std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, float x_velocity, float y_velocity, float dt) {
     float Kp_xy_outer = 0.111f;
     float Kd_xy_outer = 0.1804f;
-    // Inner loop gains (velocity to attitude)
     float Kp_xy_inner = 0.1f;
     float Kd_xy_inner = 0.05f;
 
@@ -175,12 +140,6 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, flo
     static float prev_y_error = 0.0f;
     static float prev_vx_error = 0.0f;
     static float prev_vy_error = 0.0f;
-    static rclcpp::Time prev_time = rclcpp::Clock().now();
-
-    rclcpp::Time current_time = rclcpp::Clock().now();
-    float dt = (current_time - prev_time).seconds();
-    if (dt < 0.01f) { dt = 0.01f; }
-    prev_time = current_time;
 
     // Outer loop: position error to velocity command
     float dx = (x_error - prev_x_error) / dt;
@@ -188,14 +147,14 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, flo
     float vx_cmd = Kp_xy_outer * x_error + Kd_xy_outer * dx;
     float vy_cmd = Kp_xy_outer * y_error + Kd_xy_outer * dy;
 
-    //Error calculation
+    // Error calculation
     float vx_error = vx_cmd - x_velocity;
     float vy_error = vy_cmd - y_velocity;
 
     // Inner loop: velocity command to roll/pitch
     float dx_inner = (vx_error - prev_vx_error) / dt;
     float dy_inner = (vy_error - prev_vy_error) / dt;
-    float roll_desired  = -(Kp_xy_inner * vy_error + Kd_xy_inner * dy_inner);
+    float roll_desired = -(Kp_xy_inner * vy_error + Kd_xy_inner * dy_inner);
     float pitch_desired = Kp_xy_inner * vx_error + Kd_xy_inner * dx_inner;
 
     float roll_desired_clamped = std::clamp(roll_desired, -0.2f, 0.2f);
@@ -206,29 +165,18 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, flo
     prev_vx_error = vx_error;
     prev_vy_error = vy_error;
 
-    std::cout << "Roll desired (lim): " << roll_desired_clamped << " (" << roll_desired << "), "
-              << "Pitch desired (lim): " << pitch_desired_clamped << " (" << pitch_desired << ")" << std::endl; 
     return {roll_desired_clamped, pitch_desired_clamped};
 }
 
-float Controller::zToThrust(float z_error) {
+float Controller::zToThrust(float z_error, float dt) {
     float Kp_z = 0.8173f;
     float Kd_z = 2.214f;
 
     static float prev_z_error = 0.0f;
-    static rclcpp::Time prev_time = rclcpp::Clock().now();
-
-    rclcpp::Time current_time = rclcpp::Clock().now();
-    float dt = (current_time - prev_time).seconds();
-    if (dt < 0.01f) {
-        std::cout << "Invalid dt detected, using fallback value." << std::endl;
-        dt = 0.01f;
-    } // Avoid division by zero
-    prev_time = current_time;
 
     float z_derivative = (z_error - prev_z_error) / dt;
     float thrust = (Kp_z * z_error + Kd_z * z_derivative);
-    float thrust_clamped = std::clamp(thrust, 0.0f, 0.8f); // Clamp thrust to [0, 0.8]
+    float thrust_clamped = std::clamp(thrust, 0.0f, 1.0f); // Clamp thrust to [0, 1.0]
     std::cout << "Thrust (lim): " << thrust_clamped << " (" << thrust << ")" << std::endl;
 
     prev_z_error = z_error;
@@ -236,68 +184,45 @@ float Controller::zToThrust(float z_error) {
     return thrust_clamped;
 }
 
-//This is not in use
-void Controller::goalPosition(const std::array<float, 3>& goal_position) {
-    // Wait for at least one Vicon update (optional: add a timeout)
-    rclcpp::Time start_time = rclcpp::Clock().now();
-    while (vicon_position_[0] == 0.0f && (rclcpp::Clock().now() - start_time).seconds() < 1.0) {
-        rclcpp::spin_some(node_);
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    }
-    rclcpp::spin_some(node_);
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    std::cout << "goalPosition called with goal: x=" << goal_position[0]
-          << ", y=" << goal_position[1] << ", z=" << goal_position[2] << std::endl;
-
-    float x_error_global = goal_position[0] - vicon_position_[0];
-    float y_error_global = goal_position[1] - vicon_position_[1];
-    float z_error = goal_position[2] - vicon_position_[2];
-
-    float yaw_radians = vicon_position_[5] * M_PI / 180.0f; // Convert degrees to radians
-    float x_error_local = cos(yaw_radians) * x_error_global + sin(yaw_radians) * y_error_global;
-    float y_error_local = -sin(yaw_radians) * x_error_global + cos(yaw_radians) * y_error_global;
-
-    std::cout << "Errors (global): x=" << x_error_global << ", y=" << y_error_global
-          << ", z=" << z_error << std::endl;
-    std::cout << "Errors (local): x=" << x_error_local << ", y=" << y_error_local << std::endl;
-
-    publishVehicleAttitudeSetpoint({x_error_local, y_error_local, z_error}, 0.0f);
-}
- 
-
 void Controller::startGoalPositionThread(const std::array<float, 3>& goal_position) {
     stop_thread_.store(false);
     goal_position_thread_ = std::thread([this, goal_position]() {
         std::cout << "Starting goalPosition thread." << std::endl;
 
         while (!stop_thread_.load()) {
-            std::unique_lock<std::mutex> lock(vicon_mutex_);
-            vicon_update_cv_.wait(lock, [this]() { return vicon_updated_ || stop_thread_.load(); });
-            if (stop_thread_.load()) {
-                break; // Exit if the thread is stopped
-            }
-            vicon_updated_ = false; // Reset the update flag
+            // Local copies of Vicon data
+            std::array<float, 6> l_vicon_position;
+            std::array<float, 3> l_vicon_velocity;
+            float l_vicon_dt;
 
-            // Use the latest vicon_position_ directly
-            std::cout << "Current Vicon position: x=" << vicon_position_[0]
-            << ", y=" << vicon_position_[1] << ", z=" << vicon_position_[2] 
-            << ", yaw(deg)=" << vicon_position_[5] << std::endl;
-            
-            float x_error_global = goal_position[0] - vicon_position_[0];
-            float y_error_global = goal_position[1] - vicon_position_[1];
-            float z_error = goal_position[2] - vicon_position_[2];
+            // Lock the mutex only to copy the shared data
+            {
+                std::unique_lock<std::mutex> lock(vicon_mutex_);
+                vicon_update_cv_.wait(lock, [this]() { return vicon_updated_ || stop_thread_.load(); });
+                if (stop_thread_.load()) {
+                    break; // Exit if the thread is stopped
+                }
+                vicon_updated_ = false; // Reset the update flag
+                l_vicon_position = vicon_position_; // Copy the shared Vicon position
+                l_vicon_velocity = vicon_velocity_; // Copy the shared Vicon velocity
+                l_vicon_dt = vicon_dt_;             // Copy the shared dt
+            }
+
+            // Perform calculations using the local copies
+            float x_error_global = goal_position[0] - l_vicon_position[0];
+            float y_error_global = goal_position[1] - l_vicon_position[1];
+            float z_error = goal_position[2] - l_vicon_position[2];
 
             // Convert yaw from degrees to radians for trigonometric functions
-            float yaw_radians = vicon_position_[5] * M_PI / 180.0f;
+            float yaw_radians = l_vicon_position[5] * M_PI / 180.0f;
             float x_error_local = cos(yaw_radians) * x_error_global + sin(yaw_radians) * y_error_global;
             float y_error_local = -sin(yaw_radians) * x_error_global + cos(yaw_radians) * y_error_global;
 
-            std::cout << "Yaw (degrees): " << vicon_position_[5] << ", Yaw (radians): " << yaw_radians << std::endl;
-            std::cout << "Errors (global): x=" << x_error_global << ", y=" << y_error_global
-            << ", z=" << z_error << std::endl;
-            std::cout << "Errors (local): x=" << x_error_local << ", y=" << y_error_local << std::endl;
+            auto roll_pitch = xyToRollPitch(x_error_local, y_error_local, l_vicon_velocity[0], l_vicon_velocity[1], l_vicon_dt);
+            float thrust = zToThrust(z_error, l_vicon_dt);
 
-            publishVehicleAttitudeSetpoint({x_error_local, y_error_local, z_error}, 0.0f);
+            // Publish the calculated setpoint
+            publishVehicleAttitudeSetpoint(roll_pitch[0], roll_pitch[1], thrust, 0.0f);
 
             if (std::abs(x_error_local) < 0.01f && std::abs(y_error_local) < 0.01f && std::abs(z_error) < 0.01f) {
                 std::cout << "Goal position reached." << std::endl;
@@ -317,20 +242,26 @@ void Controller::stopGoalPositionThread() {
 }
 
 void Controller::simulateDroneCommands(const std::array<float, 3>& xyz_error, float yaw) {
-    // print vicon velocity
+    // Print Vicon velocity
     std::cout << "Vicon Velocity: vx=" << vicon_velocity_[0] << ", vy=" << vicon_velocity_[1]
-          << ", vz=" << vicon_velocity_[2] << std::endl;
-    auto roll_pitch = xyToRollPitch(xyz_error[0], xyz_error[1], vicon_velocity_[0], vicon_velocity_[1]);
-    float thrust = zToThrust(xyz_error[2]);
+              << ", vz=" << vicon_velocity_[2] << std::endl;
+
+    float dt = vicon_dt_; // Use the shared dt or a local copy
+
+    // Calculate roll and pitch
+    auto roll_pitch = xyToRollPitch(xyz_error[0], xyz_error[1], vicon_velocity_[0], vicon_velocity_[1], dt);
+
+    // Calculate thrust
+    float thrust = zToThrust(xyz_error[2], dt);
 
     // Simulate the quaternion calculation for roll, pitch, and yaw
     auto quaternion = rpyToQuaternion(roll_pitch[0], roll_pitch[1], yaw);
 
     // Log the simulated commands
     std::cout << "Simulated Commands: Roll=" << roll_pitch[0] << ", Pitch=" << roll_pitch[1]
-          << ", Yaw=" << yaw << ", Thrust=" << thrust << std::endl;
+              << ", Yaw=" << yaw << ", Thrust=" << thrust << std::endl;
     std::cout << "Simulated Quaternion: w=" << quaternion[0] << ", x=" << quaternion[1]
-            << ", y=" << quaternion[2] << ", z=" << quaternion[3] << std::endl;
+              << ", y=" << quaternion[2] << ", z=" << quaternion[3] << std::endl;
 }
 
 void Controller::manualMotorSet(float T) {
@@ -363,7 +294,8 @@ void Controller::zControlMode(float z_offset, float max_z_thrust) {
             float target_z = target_z_.load();  // Load the current target z position
             float z_error = target_z - current_z;
 
-            float thrust = zToThrust(z_error);  // Calculate thrust using z control system
+            float dt = vicon_dt_; // Use the shared dt or a local copy
+            float thrust = zToThrust(z_error, dt); // Pass the second argument
             thrust = std::clamp(thrust, 0.0f, max_z_thrust_.load());  // Clamp thrust to user-provided max value
 
             px4_msgs::msg::VehicleAttitudeSetpoint msg{};

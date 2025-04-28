@@ -17,11 +17,10 @@ class Controller {
 public:
     Controller(rclcpp::Node::SharedPtr node); // Constructor to initialize the node
     void initialize(rclcpp::Node::SharedPtr node); // Activation of ROS topics
-    void publishVehicleAttitudeSetpoint(const std::array<float, 3>& xyz_error, float yaw); // Control the format of the attitude setpoint commands
-    void goalPosition(const std::array<float, 3>& goal_position); // Get the goal position
-    void startGoalPositionThread(const std::array<float, 3>& goal_position);
-    void stopGoalPositionThread();
-    void simulateDroneCommands(const std::array<float, 3>& xyz_error, float yaw);
+    void publishVehicleAttitudeSetpoint(float roll, float pitch, float thrust, float yaw); // Publish attitude setpoint
+    void startGoalPositionThread(const std::array<float, 3>& goal_position); // Start thread for goal position control
+    void stopGoalPositionThread(); // Stop the goal position thread
+    void simulateDroneCommands(const std::array<float, 3>& xyz_error, float yaw); // Simulate drone commands
     void manualMotorSet(float T); // Set the motor thrust directly
     void viconCallback(const std_msgs::msg::Float64MultiArray::SharedPtr msg); // Callback for Vicon data
 
@@ -43,16 +42,18 @@ private:
     std::array<float, 6> vicon_position_;  // Store the latest Vicon position
     std::array<float, 3> vicon_velocity_;  // Store the latest Vicon velocity
     rclcpp::Time prev_vicon_time_;         // Store the previous Vicon timestamp
-    std::array<float, 2> xyToRollPitch(float x_error, float y_error, float vx_err, float vy_err); // PID for XY roll pitch calculation
-    float zToThrust(float z_error); // PID for thrust control
+    float vicon_dt_;  // Time difference between Vicon readings
+
+    std::array<float, 2> xyToRollPitch(float x_error, float y_error, float vx_err, float vy_err, float dt); // PID for XY roll pitch calculation
+    float zToThrust(float z_error, float dt); // PID for thrust control
     rclcpp::Publisher<px4_msgs::msg::VehicleAttitudeSetpoint>::SharedPtr ros_attitude_setpoint_pub_; // Publisher for vehicle attitude setpoint
     rclcpp::Subscription<px4_msgs::msg::VehicleAttitude>::SharedPtr ros_vehicle_attitude_sub_; // Subscription for vehicle attitude
     rclcpp::Subscription<std_msgs::msg::Float64MultiArray>::SharedPtr ros_vicon_sub_; // Subscription for Vicon data
     void vehicleAttitudeCallback(const px4_msgs::msg::VehicleAttitude::SharedPtr msg); // Callback for vehicle attitude
     std::array<float, 4> rpyToQuaternion(float roll, float pitch, float yaw); // Convert roll, pitch, yaw to quaternion because of the PX4 message format
 
-    std::thread goal_position_thread_;
-    std::atomic<bool> stop_thread_;
+    std::thread goal_position_thread_; // Thread for goal position control
+    std::atomic<bool> stop_thread_; // Flag to stop the goal position thread
     std::thread z_control_thread_; // Thread for zControlMode
     std::atomic<bool> stop_z_control_{false}; // Flag to stop zControlMode
     std::atomic<float> target_z_{0.0f}; // Target z position
