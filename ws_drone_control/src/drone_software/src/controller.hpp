@@ -43,6 +43,7 @@ private:
     std::array<float, 3> vicon_velocity_;  // Store the latest Vicon velocity
     rclcpp::Time prev_vicon_time_;         // Store the previous Vicon timestamp
     float vicon_dt_;  // Time difference between Vicon readings
+    std::array<float, 3> prev_pos_ = {0.0f, 0.0f, 0.0f}; // Store the previous position for velocity calculation
 
     std::array<float, 2> xyToRollPitch(float x_error, float y_error, float vx_err, float vy_err, float dt); // PID for XY roll pitch calculation
     float zToThrust(float z_error, float dt); // PID for thrust control

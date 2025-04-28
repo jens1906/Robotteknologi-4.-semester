@@ -33,8 +33,7 @@ void Controller::viconCallback(const std_msgs::msg::Float64MultiArray::SharedPtr
     if (msg->data.size() >= 8) {
         std::unique_lock<std::mutex> lock(vicon_mutex_);
 
-        // Save previous position and time
-        std::array<float, 3> prev_pos = {vicon_position_[0], vicon_position_[1], vicon_position_[2]};
+        // Save previous time
         rclcpp::Time prev_time = prev_vicon_time_;
 
         // Extract the timestamp from the message (assuming it's in the first two elements)
@@ -50,9 +49,12 @@ void Controller::viconCallback(const std_msgs::msg::Float64MultiArray::SharedPtr
         // Compute velocity and update dt
         float dt = (current_time - prev_time).seconds();  // Use the timestamp difference
         if (dt > 0.001f && prev_time.nanoseconds() != 0) {
-            vicon_velocity_[0] = (vicon_position_[0] - prev_pos[0]) / dt;
-            vicon_velocity_[1] = (vicon_position_[1] - prev_pos[1]) / dt;
-            vicon_velocity_[2] = (vicon_position_[2] - prev_pos[2]) / dt;
+            vicon_velocity_[0] = (vicon_position_[0] - prev_pos_[0]) / dt;
+            vicon_velocity_[1] = (vicon_position_[1] - prev_pos_[1]) / dt;
+            vicon_velocity_[2] = (vicon_position_[2] - prev_pos_[2]) / dt;
+
+            // Update previous position and time
+            prev_pos_ = {vicon_position_[0], vicon_position_[1], vicon_position_[2]};
             prev_vicon_time_ = current_time;  // Update previous time
             vicon_dt_ = dt;  // Update the shared dt
         } else {
