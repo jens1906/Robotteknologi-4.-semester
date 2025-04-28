@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+<sdf version="1.7">
+  <model name="drone">
+    <static>false</static>
+
+    <!-- Base Link -->
+    <link name="base_link">
+      <inertial>
+        <!-- Mass in kilograms -->
+        <mass>1.692483</mass>
+        <!-- Moments of inertia at the center of mass (converted g·cm² to kg·m²) -->
+        <inertia>
+          <ixx>0.04304</ixx>
+          <iyy>0.04288</iyy>
+          <izz>0.06955</izz>
+          <ixy>0.000007835</ixy>
+          <ixz>-0.000050777918</ixz>
+          <iyz>0.00000387923</iyz>
+        </inertia>
+
+        <!-- Center of mass (converted from mm to m) -->
+        <pose>0.002531 -0.000142 -0.022411 0 0 0</pose>
+      </inertial>
+
+      <!-- Visual with STL Mesh -->
+      <visual name="base_visual">
+        <geometry>
+          <mesh>
+            <uri>file://./drone.stl</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <ambient>0.2 0.2 0.2 1</ambient>
+        </material>
+      </visual>
+
+      <!-- Collision with STL Mesh -->
+      <collision name="base_collision">
+        <geometry>
+          <mesh>
+            <uri>file://./drone.stl</uri>
+          </mesh>
+        </geometry>
+      </collision>
+    </link>
+
+  </model>
+</sdf>

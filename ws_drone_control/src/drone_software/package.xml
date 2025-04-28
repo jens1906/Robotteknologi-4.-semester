@@ -4,7 +4,7 @@
   <version>0.1.0</version>
   <description>Drone control software for offboard mode</description>
 
-  <maintainer email="your_email@example.com">Your Name</maintainer>
+  <maintainer email="es-25-rob-4-461@student.aau.dk">GRP461</maintainer>
   <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<world name="world_drone">
+  <!-- Define the world settings -->
+  <physics name="default_physics" type="ode">
+    <gravity>0 0 -9.8</gravity>
+  </physics>
+
+  <!-- Define the sun -->
+  <include>
+    <uri>model://sun</uri>
+  </include>
+
+  <!-- Define the ground plane -->
+  <include>
+    <uri>model://ground_plane</uri>
+  </include>
+
+  <!-- Define your drone model -->
+  <include>
+    <uri>model://drone.sdf</uri>
+    <pose>0 0 1 0 0 0</pose> <!-- Place the drone 1 meter above the ground -->
+  </include>
+</world>
