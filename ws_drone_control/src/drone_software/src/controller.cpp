@@ -42,7 +42,7 @@ void Controller::viconCallback(const std_msgs::msg::Float64MultiArray::SharedPtr
         } else {
             std::cerr << "Invalid dt detected: " << dt << " seconds. Skipping velocity update." << std::endl;
         }
-        std::cout << "prev_time: " << prev_time.nanoseconds() << ", current_time: " << current_time.nanoseconds() << ", dt: " << dt << std::endl;
+        std::cerr << "prev_time: " << prev_time.nanoseconds() << ", current_time: " << current_time.nanoseconds() << ", dt: " << dt << std::endl;
 
         // Update orientation
         vicon_position_[3] = msg->data[5];
