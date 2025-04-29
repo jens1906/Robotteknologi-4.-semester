@@ -73,38 +73,7 @@ void Controller::initialize(rclcpp::Node::SharedPtr node) {
     // Create the Vicon subscription and use the viconCallback function
     ros_vicon_sub_ = node_->create_subscription<std_msgs::msg::Float64MultiArray>(
         "/Vicon", qos,
-        [this](const std_msgs::msg::Float64MultiArray::SharedPtr msg) {
-            if (msg->data.size() >= 8) {
-                std::unique_lock<std::mutex> lock(vicon_mutex_);
-                // Save previous position and time
-                std::array<float, 3> prev_pos = {vicon_position_[0], vicon_position_[1], vicon_position_[2]};
-                rclcpp::Time prev_time = prev_vicon_time_;
-                // Update position
-                vicon_position_[0] = msg->data[2];
-                vicon_position_[1] = msg->data[3];
-                vicon_position_[2] = msg->data[4];
-                // Compute velocity
-                rclcpp::Time now = rclcpp::Clock().now();
-                float dt = (now - prev_time).seconds();
-                if (dt > 0.001f && prev_time.nanoseconds() != 0) {
-                    vicon_velocity_[0] = (vicon_position_[0] - prev_pos[0]) / dt;
-                    vicon_velocity_[1] = (vicon_position_[1] - prev_pos[1]) / dt;
-                    vicon_velocity_[2] = (vicon_position_[2] - prev_pos[2]) / dt;
-                }
-                prev_vicon_time_ = now;
-                // Update orientation
-                vicon_position_[3] = msg->data[5];
-                vicon_position_[4] = msg->data[6];
-                vicon_position_[5] = msg->data[7];
-                vicon_updated_ = true; // Set the update flag
-                lock.unlock();
-                vicon_update_cv_.notify_one(); // Notify the waiting thread
-                // std::cout << "Vicon update: x=" << vicon_position_[0] << ", y=" << vicon_position_[1]
-                // << ", z=" << vicon_position_[2] << ", vx=" << vicon_velocity_[0]
-                // << ", vy=" << vicon_velocity_[1] << ", vz=" << vicon_velocity_[2] << std::endl;
-                // std::cout << "ViconUpdate" << std::endl;
-            }
-        });
+        std::bind(&Controller::viconCallback, this, std::placeholders::_1));
 }
 
 void Controller::vehicleAttitudeCallback(const px4_msgs::msg::VehicleAttitude::SharedPtr msg) {
