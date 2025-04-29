@@ -113,10 +113,10 @@ std::array<float, 4> Controller::rpyToQuaternion(float roll, float pitch, float 
 }
 
 std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, float x_velocity, float y_velocity, float dt) {
-    float Kp_xy_outer = 0.111f;
-    float Kd_xy_outer = 0.1804f;
-    float Kp_xy_inner = 0.1f;
-    float Kd_xy_inner = 0.05f;
+    float Kp_xy_outer = 0.111f; //Måske prøve 0.9804f   ?
+    float Kd_xy_outer = 0.1804f; //Måske prøve 0.6128f   ?
+    float Kp_xy_inner = 0.1f; //Måske prøve 0.2788f   ?
+    float Kd_xy_inner = 0.05f; //Måske prøve 0.0523f   ?
 
     static float prev_x_error = 0.0f;
     static float prev_y_error = 0.0f;
