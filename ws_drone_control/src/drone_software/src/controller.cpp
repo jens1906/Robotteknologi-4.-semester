@@ -32,14 +32,13 @@ void Controller::viconCallback(const std_msgs::msg::Float64MultiArray::SharedPtr
             vicon_velocity_[0] = (vicon_position_[0] - prev_pos_[0]) / dt;
             vicon_velocity_[1] = (vicon_position_[1] - prev_pos_[1]) / dt;
             vicon_velocity_[2] = (vicon_position_[2] - prev_pos_[2]) / dt;
-
-            // Update previous position and time
-            prev_pos_ = {vicon_position_[0], vicon_position_[1], vicon_position_[2]};
-            prev_vicon_time_ = current_time;  // Update previous time
-            vicon_dt_ = dt;  // Update the shared dt
         } else {
             std::cerr << "Invalid dt detected: " << dt << " seconds. Skipping velocity update." << std::endl;
         }
+        // Update previous position and time
+        prev_pos_ = {vicon_position_[0], vicon_position_[1], vicon_position_[2]};
+        prev_vicon_time_ = current_time;  // Update previous time
+        vicon_dt_ = dt;  // Update the shared dt
         std::cerr << "prev_time: " << prev_time.nanoseconds() << ", current_time: " << current_time.nanoseconds() << ", dt: " << dt << std::endl;
 
         // Update orientation
