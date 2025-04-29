@@ -197,11 +197,14 @@ void Controller::startGoalPositionThread(const std::array<float, 3>& goal_positi
             float z_error = goal_position[2] - l_vicon_position[2];
 
             // Convert yaw from degrees to radians for trigonometric functions
-            float yaw_radians = l_vicon_position[5] * M_PI / 180.0f;
+            float yaw_radians = l_vicon_position[5];
             float x_error_local = cos(yaw_radians) * x_error_global + sin(yaw_radians) * y_error_global;
             float y_error_local = -sin(yaw_radians) * x_error_global + cos(yaw_radians) * y_error_global;
 
-            auto roll_pitch = xyToRollPitch(x_error_local, y_error_local, l_vicon_velocity[0], l_vicon_velocity[1], l_vicon_dt);
+            float x_velocity_local = cos(yaw_radians) * l_vicon_velocity[0] + sin(yaw_radians) * l_vicon_velocity[1];
+            float y_velocity_local = -sin(yaw_radians) * l_vicon_velocity[0] + cos(yaw_radians) * l_vicon_velocity[1];
+
+            auto roll_pitch = xyToRollPitch(x_error_local, y_error_local, x_velocity_local, y_velocity_local, l_vicon_dt);
             float thrust = zToThrust(z_error, l_vicon_dt);
 
             // Publish the calculated setpoint
