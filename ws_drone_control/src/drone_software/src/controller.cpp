@@ -11,22 +11,52 @@ Controller::Controller(rclcpp::Node::SharedPtr node)
     std::cout << std::fixed << std::setprecision(2);
 }
 
-// Getter for vicon_position_
-std::array<float, 6> Controller::getViconPosition() const {
-    std::lock_guard<std::mutex> lock(vicon_mutex_); // Ensure thread-safe access
-    return vicon_position_;
-}
+void Controller::viconCallback(const std_msgs::msg::Float64MultiArray::SharedPtr msg) {
+    if (msg->data.size() >= 8) {
+        std::unique_lock<std::mutex> lock(vicon_mutex_);
 
-// Getter for vicon_updated_
-bool Controller::isViconUpdated() const {
-    std::lock_guard<std::mutex> lock(vicon_mutex_); // Ensure thread-safe access
-    return vicon_updated_;
-}
+        // Save previous time
+        rclcpp::Time prev_time = prev_vicon_time_;
 
-// Setter for vicon_updated_
-void Controller::resetViconUpdated() {
-    std::lock_guard<std::mutex> lock(vicon_mutex_); // Ensure thread-safe access
-    vicon_updated_ = false;
+        // Extract the timestamp from the message (assuming it's in the first two elements)
+        int current_seconds = static_cast<int>(msg->data[0]);  // Seconds part of the timestamp
+        int current_milliseconds = static_cast<int>(msg->data[1]);  // Milliseconds part of the timestamp
+        rclcpp::Time current_time(current_seconds, current_milliseconds * 1e6);  // Convert to rclcpp::Time
+
+        // Update position
+        vicon_position_[0] = msg->data[2];
+        vicon_position_[1] = msg->data[3];
+        vicon_position_[2] = msg->data[4];
+
+        // Compute velocity and update dt
+        float dt = (current_time - prev_time).seconds();  // Use the timestamp difference
+        if (dt > 0.001f && prev_time.nanoseconds() != 0) {
+            vicon_velocity_[0] = (vicon_position_[0] - prev_pos_[0]) / dt;
+            vicon_velocity_[1] = (vicon_position_[1] - prev_pos_[1]) / dt;
+            vicon_velocity_[2] = (vicon_position_[2] - prev_pos_[2]) / dt;
+
+            // Update previous position and time
+            prev_pos_ = {vicon_position_[0], vicon_position_[1], vicon_position_[2]};
+            prev_vicon_time_ = current_time;  // Update previous time
+            vicon_dt_ = dt;  // Update the shared dt
+        } else {
+            std::cerr << "Invalid dt detected: " << dt << " seconds. Skipping velocity update." << std::endl;
+        }
+        std::cout << "prev_time: " << prev_time.nanoseconds() << ", current_time: " << current_time.nanoseconds() << ", dt: " << dt << std::endl;
+
+        // Update orientation
+        vicon_position_[3] = msg->data[5];
+        vicon_position_[4] = msg->data[6];
+        vicon_position_[5] = msg->data[7];
+
+        vicon_updated_ = true; // Set the update flag
+        lock.unlock();
+        vicon_update_cv_.notify_one(); // Notify the waiting thread
+
+        //std::cout << "Vicon update: x=" << vicon_position_[0] << ", y=" << vicon_position_[1]
+        //          << ", z=" << vicon_position_[2] << ", vx=" << vicon_velocity_[0]
+        //          << ", vy=" << vicon_velocity_[1] << ", vz=" << vicon_velocity_[2] << std::endl;
+    }
 }
 
 // Initialize ROS topics
