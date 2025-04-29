@@ -201,6 +201,14 @@ void Controller::startGoalPositionThread(const std::array<float, 3>& goal_positi
             float x_error_local = cos(yaw_radians) * x_error_global + sin(yaw_radians) * y_error_global;
             float y_error_local = -sin(yaw_radians) * x_error_global + cos(yaw_radians) * y_error_global;
 
+            std::cout << "local errors: x=" << x_error_local
+                      << ", y=" << y_error_local
+                      << ", z=" << z_error
+                      << ", vx=" << l_vicon_velocity[0]
+                      << ", vy=" << l_vicon_velocity[1]
+                      << ", dt=" << l_vicon_dt
+                      << std::endl;
+
             float x_velocity_local = cos(yaw_radians) * l_vicon_velocity[0] + sin(yaw_radians) * l_vicon_velocity[1];
             float y_velocity_local = -sin(yaw_radians) * l_vicon_velocity[0] + cos(yaw_radians) * l_vicon_velocity[1];
 
