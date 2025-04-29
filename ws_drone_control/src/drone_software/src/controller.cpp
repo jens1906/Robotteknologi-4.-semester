@@ -11,51 +11,22 @@ Controller::Controller(rclcpp::Node::SharedPtr node)
     std::cout << std::fixed << std::setprecision(2);
 }
 
-void Controller::viconCallback(const std_msgs::msg::Float64MultiArray::SharedPtr msg) {
-    if (msg->data.size() >= 8) {
-        std::unique_lock<std::mutex> lock(vicon_mutex_);
+// Getter for vicon_position_
+std::array<float, 6> Controller::getViconPosition() const {
+    std::lock_guard<std::mutex> lock(vicon_mutex_); // Ensure thread-safe access
+    return vicon_position_;
+}
 
-        // Save previous time
-        rclcpp::Time prev_time = prev_vicon_time_;
+// Getter for vicon_updated_
+bool Controller::isViconUpdated() const {
+    std::lock_guard<std::mutex> lock(vicon_mutex_); // Ensure thread-safe access
+    return vicon_updated_;
+}
 
-        // Extract the timestamp from the message (assuming it's in the first two elements)
-        int current_seconds = static_cast<int>(msg->data[0]);  // Seconds part of the timestamp
-        int current_milliseconds = static_cast<int>(msg->data[1]);  // Milliseconds part of the timestamp
-        rclcpp::Time current_time(current_seconds, current_milliseconds * 1e6);  // Convert to rclcpp::Time
-
-        // Update position
-        vicon_position_[0] = msg->data[2];
-        vicon_position_[1] = msg->data[3];
-        vicon_position_[2] = msg->data[4];
-
-        // Compute velocity and update dt
-        float dt = (current_time - prev_time).seconds();  // Use the timestamp difference
-        if (dt > 0.001f && prev_time.nanoseconds() != 0) {
-            vicon_velocity_[0] = (vicon_position_[0] - prev_pos_[0]) / dt;
-            vicon_velocity_[1] = (vicon_position_[1] - prev_pos_[1]) / dt;
-            vicon_velocity_[2] = (vicon_position_[2] - prev_pos_[2]) / dt;
-
-            // Update previous position and time
-            prev_pos_ = {vicon_position_[0], vicon_position_[1], vicon_position_[2]};
-            prev_vicon_time_ = current_time;  // Update previous time
-            vicon_dt_ = dt;  // Update the shared dt
-        } else {
-            std::cerr << "Invalid dt detected: " << dt << " seconds. Skipping velocity update." << std::endl;
-        }
-
-        // Update orientation
-        vicon_position_[3] = msg->data[5];
-        vicon_position_[4] = msg->data[6];
-        vicon_position_[5] = msg->data[7];
-
-        vicon_updated_ = true; // Set the update flag
-        lock.unlock();
-        vicon_update_cv_.notify_one(); // Notify the waiting thread
-
-        std::cout << "Vicon update: x=" << vicon_position_[0] << ", y=" << vicon_position_[1]
-                  << ", z=" << vicon_position_[2] << ", vx=" << vicon_velocity_[0]
-                  << ", vy=" << vicon_velocity_[1] << ", vz=" << vicon_velocity_[2] << std::endl;
-    }
+// Setter for vicon_updated_
+void Controller::resetViconUpdated() {
+    std::lock_guard<std::mutex> lock(vicon_mutex_); // Ensure thread-safe access
+    vicon_updated_ = false;
 }
 
 // Initialize ROS topics
@@ -74,11 +45,42 @@ void Controller::initialize(rclcpp::Node::SharedPtr node) {
     // Create the Vicon subscription and use the viconCallback function
     ros_vicon_sub_ = node_->create_subscription<std_msgs::msg::Float64MultiArray>(
         "/Vicon", qos,
-        std::bind(&Controller::viconCallback, this, std::placeholders::_1));
+        [this](const std_msgs::msg::Float64MultiArray::SharedPtr msg) {
+            if (msg->data.size() >= 8) {
+                std::unique_lock<std::mutex> lock(vicon_mutex_);
+                // Save previous position and time
+                std::array<float, 3> prev_pos = {vicon_position_[0], vicon_position_[1], vicon_position_[2]};
+                rclcpp::Time prev_time = prev_vicon_time_;
+                // Update position
+                vicon_position_[0] = msg->data[2];
+                vicon_position_[1] = msg->data[3];
+                vicon_position_[2] = msg->data[4];
+                // Compute velocity
+                rclcpp::Time now = rclcpp::Clock().now();
+                float dt = (now - prev_time).seconds();
+                if (dt > 0.001f && prev_time.nanoseconds() != 0) {
+                    vicon_velocity_[0] = (vicon_position_[0] - prev_pos[0]) / dt;
+                    vicon_velocity_[1] = (vicon_position_[1] - prev_pos[1]) / dt;
+                    vicon_velocity_[2] = (vicon_position_[2] - prev_pos[2]) / dt;
+                }
+                prev_vicon_time_ = now;
+                // Update orientation
+                vicon_position_[3] = msg->data[5];
+                vicon_position_[4] = msg->data[6];
+                vicon_position_[5] = msg->data[7];
+                vicon_updated_ = true; // Set the update flag
+                lock.unlock();
+                vicon_update_cv_.notify_one(); // Notify the waiting thread
+                // std::cout << "Vicon update: x=" << vicon_position_[0] << ", y=" << vicon_position_[1]
+                // << ", z=" << vicon_position_[2] << ", vx=" << vicon_velocity_[0]
+                // << ", vy=" << vicon_velocity_[1] << ", vz=" << vicon_velocity_[2] << std::endl;
+                // std::cout << "ViconUpdate" << std::endl;
+            }
+        });
 }
 
 void Controller::vehicleAttitudeCallback(const px4_msgs::msg::VehicleAttitude::SharedPtr msg) {
-    RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Received VehicleAttitude message");
+    // RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Received VehicleAttitude message");
 }
 
 void Controller::publishVehicleAttitudeSetpoint(float roll, float pitch, float thrust, float yaw) {
@@ -263,7 +265,7 @@ void Controller::zControlMode(float z_offset, float max_z_thrust) {
     max_z_thrust_.store(max_z_thrust); // Update the maximum z thrust
 
     if (z_control_thread_.joinable()) {
-        // If the thread is already running, just update the target and return
+        // If the thread is already running, just update the target and max thrust and return
         return;
     }
 
@@ -279,32 +281,32 @@ void Controller::zControlMode(float z_offset, float max_z_thrust) {
             float target_z = target_z_.load();  // Load the current target z position
             float z_error = target_z - current_z;
 
-            float dt = vicon_dt_; // Use the shared dt or a local copy
-            float thrust = zToThrust(z_error, dt); // Pass the second argument
-            thrust = std::clamp(thrust, 0.0f, max_z_thrust_.load());  // Clamp thrust to user-provided max value
+            float thrust = zToThrust(z_error);  // Calculate thrust using z control system
+            thrust = std::clamp(thrust, 0.0f, max_z_thrust_.load());  // Clamp thrust to the current max thrust
 
             px4_msgs::msg::VehicleAttitudeSetpoint msg{};
             msg.timestamp = rclcpp::Clock().now().nanoseconds() / 1000;  // PX4 expects µs
             msg.q_d = {1.0f, 0.0f, 0.0f, 0.0f};  // Quaternion for no rotation
             msg.thrust_body = std::array<float, 3>{0.0f, 0.0f, -thrust};  // Apply thrust in the z direction
             
-            // print vicon position and z thrust
+            // Print Vicon position and z thrust
             std::cout << "Vicon Position: x=" << vicon_position_[0] << ", y=" << vicon_position_[1]
                       << ", z=" << current_z << ", thrust=" << thrust << std::endl;
 
-            // ros_attitude_setpoint_pub_->publish(msg);
+            ros_attitude_setpoint_pub_->publish(msg);
 
             std::cout << "Published zcon setpoint: target_z=" << target_z
                       << ", current_z=" << current_z
                       << ", thrust=" << thrust << std::endl;
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(20));  // Adjust loop frequency as needed
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));  // Adjust loop frequency as needed
         }
 
         std::cout << "Exiting zControlMode thread." << std::endl;
     });
 }
 
+// Stop the zControlMode thread
 void Controller::stopZControlMode() {
     if (z_control_thread_.joinable()) {
         stop_z_control_.store(true);  // Signal the thread to stop
