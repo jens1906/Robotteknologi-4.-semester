@@ -209,7 +209,6 @@ void Controller::startGoalPositionThread(const std::array<float, 3>& goal_positi
                       << ", dt=" << l_vicon_dt
                       << std::endl;
 
-            auto roll_pitch = xyToRollPitch(x_error_local, y_error_local, l_vicon_velocity[0], l_vicon_velocity[1], l_vicon_dt);
             float x_velocity_local = cos(yaw_radians) * l_vicon_velocity[0] + sin(yaw_radians) * l_vicon_velocity[1];
             float y_velocity_local = -sin(yaw_radians) * l_vicon_velocity[0] + cos(yaw_radians) * l_vicon_velocity[1];
 
