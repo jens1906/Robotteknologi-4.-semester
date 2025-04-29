@@ -53,7 +53,11 @@ private:
             px4_msgs::msg::VehicleAttitudeSetpoint attitude_msg{};
             attitude_msg.timestamp = this->get_clock()->now().nanoseconds() / 1000;
             attitude_msg.q_d = {1.0, 0.0, 0.0, 0.0};  // Quaternion: no rotation
+<<<<<<< Updated upstream
             attitude_msg.thrust_body = {0.0, 0.0, -0.5};  // Thrust of 0.5
+=======
+            attitude_msg.thrust_body = {0.0, 0.0, -0.1};  // Thrust of 0.5
+>>>>>>> Stashed changes
             attitude_setpoint_publisher_->publish(attitude_msg);
         }
 
