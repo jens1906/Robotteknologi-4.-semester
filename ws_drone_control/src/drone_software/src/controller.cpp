@@ -11,6 +11,7 @@ Controller::Controller(rclcpp::Node::SharedPtr node)
     std::cout << std::fixed << std::setprecision(2);
 }
 
+<<<<<<< Updated upstream
 void Controller::viconCallback(const std_msgs::msg::Float64MultiArray::SharedPtr msg) {
     if (msg->data.size() >= 8) {
         std::unique_lock<std::mutex> lock(vicon_mutex_);
@@ -57,6 +58,24 @@ void Controller::viconCallback(const std_msgs::msg::Float64MultiArray::SharedPtr
         //          << ", z=" << vicon_position_[2] << ", vx=" << vicon_velocity_[0]
         //          << ", vy=" << vicon_velocity_[1] << ", vz=" << vicon_velocity_[2] << std::endl;
     }
+=======
+// Getter for vicon_position_
+std::array<float, 6> Controller::getViconPosition() const {
+    std::lock_guard<std::mutex> lock(vicon_mutex_); // Ensure thread-safe access
+    return vicon_position_;
+}
+
+// Getter for vicon_updated_
+bool Controller::isViconUpdated() const {
+    std::lock_guard<std::mutex> lock(vicon_mutex_); // Ensure thread-safe access
+    return vicon_updated_;
+}
+
+// Setter for vicon_updated_
+void Controller::resetViconUpdated() {
+    std::lock_guard<std::mutex> lock(vicon_mutex_); // Ensure thread-safe access
+    vicon_updated_ = false;
+>>>>>>> Stashed changes
 }
 
 // Initialize ROS topics
