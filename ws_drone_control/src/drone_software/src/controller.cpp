@@ -4,7 +4,7 @@
 Controller::Controller(rclcpp::Node::SharedPtr node)
     : vicon_position_{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
       vicon_velocity_{0.0f, 0.0f, 0.0f},
-      prev_vicon_time_(node->get_clock()->now()) { // Initialize to current time
+      prev_vicon_time_(rclcpp::Time(0, 0)) { // Initialize to 0 seconds
     node_ = node;
     std::cout << std::fixed << std::setprecision(2); // Set precision for output
 }
