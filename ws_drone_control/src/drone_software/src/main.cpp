@@ -54,26 +54,16 @@ int main(int argc, char *argv[]) {
     std::string input;
     std::atomic<bool> test_mode(false);  // New atomic flag for test mode
     std::thread test_thread;
+    std::atomic<bool> vicon_test_mode(false);  // New atomic flag for Vicon test mode
+    std::thread vicon_test_thread;
 
     std::cout << "--------------------------------------------" << std::endl;
 
     while (rclcpp::ok()) {
-        std::cout << "Enter command (turnon, turnoff, kill, start, stop, setpoint, test, zcon, exit): ";
+        std::cout << "Enter command (turnon, turnoff, kill, start, stop, setpoint, test, manual, zcon, vicontest, exit): ";
         std::getline(std::cin, input);
 
-        if (input == "zcon") {
-            float max_z_thrust;
-            std::cout << "Enter maximum z thrust (e.g., between 0.0 and 1.0): ";
-            std::cin >> max_z_thrust;
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
-
-            if (max_z_thrust < 0.0f || max_z_thrust > 1.0f) {
-                RCLCPP_WARN(node->get_logger(), "Invalid max z thrust value. Please enter a value between 0.0 and 1.0.");
-            } else {
-                RCLCPP_INFO(node->get_logger(), "Running zcon mode with max z thrust: %.2f.", max_z_thrust);
-                controller.zControlMode(0.5f, max_z_thrust);  // Target 0.5m above current position
-            }
-        } else if (input == "turnon") {
+        if (input == "turnon") {
             RCLCPP_INFO(node->get_logger(), "Turning on the drone...");
             running.store(true);  // Start the drone thread
             // controller.publishVehicleAttitudeSetpoint({0.0f, 0.0f, 0.0f}, 0.0f);  // Example setpoint
@@ -95,6 +85,10 @@ int main(int argc, char *argv[]) {
             if (test_thread.joinable()) {
                 test_mode.store(false);  // Stop the test thread
                 test_thread.join();
+            }
+            if (vicon_test_thread.joinable()) {
+                vicon_test_mode.store(false);  // Stop the Vicon test thread
+                vicon_test_thread.join();
             }
             break;  // Correctly placed within the while loop
         } else if (input == "start") {
@@ -136,7 +130,7 @@ int main(int argc, char *argv[]) {
             }
         } else if (input == "manual") {
             float motor_power;  // Declare motor_power within the correct scope
-            std::cout << "new version" << std::endl;
+            std::cout << "new version 2" << std::endl;
             std::cout << "Enter motor power (e.g., between 0.0 and 1.0): ";
             std::cin >> motor_power;
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
@@ -146,6 +140,49 @@ int main(int argc, char *argv[]) {
             } else {
                 RCLCPP_INFO(node->get_logger(), "Setting motor power to %.2f.", motor_power);
                 controller.manualMotorSet(motor_power);
+            }
+        } else if (input == "zcon") {
+            float max_z_thrust;
+            std::cout << "Enter maximum z thrust (e.g., between 0.0 and 1.0): ";
+            std::cin >> max_z_thrust;
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
+
+            if (max_z_thrust < 0.0f || max_z_thrust > 1.0f) {
+                RCLCPP_WARN(node->get_logger(), "Invalid max z thrust value. Please enter a value between 0.0 and 1.0.");
+            } else {
+                RCLCPP_INFO(node->get_logger(), "Running zcon mode with max z thrust: %.2f.", max_z_thrust);
+                controller.zControlMode(1.0f, max_z_thrust);  // Target 0.5m above current position
+            }
+        } else if (input == "zconstop") {
+            RCLCPP_INFO(node->get_logger(), "Stopping zcon mode...");
+            controller.stopZControlMode();  // Stop the zControlMode thread
+        } else if (input == "vicontest") {
+            if (!vicon_test_mode.load()) {
+                vicon_test_mode.store(true);
+                vicon_test_thread = std::thread([&]() {
+                    while (vicon_test_mode.load() && rclcpp::ok()) {
+                        auto vicon_position = controller.getViconPosition();
+                        std::cout << "Vicon Data: x=" << vicon_position[0]
+                                  << ", y=" << vicon_position[1]
+                                  << ", z=" << vicon_position[2]
+                                  << ", roll=" << vicon_position[3]
+                                  << ", pitch=" << vicon_position[4]
+                                  << ", yaw=" << vicon_position[5] << std::endl;
+                        std::this_thread::sleep_for(std::chrono::milliseconds(500));  // Adjust frequency as needed
+                    }
+                });
+            } else {
+                RCLCPP_WARN(node->get_logger(), "Vicon test mode is already running.");
+            }
+        } else if (input == "stopvicontest") {
+            if (vicon_test_mode.load()) {
+                RCLCPP_INFO(node->get_logger(), "Stopping Vicon test mode...");
+                vicon_test_mode.store(false);  // Stop the Vicon test thread
+                if (vicon_test_thread.joinable()) {
+                    vicon_test_thread.join();
+                }
+            } else {
+                RCLCPP_WARN(node->get_logger(), "Vicon test mode is not running.");
             }
         } else {
             RCLCPP_WARN(node->get_logger(), "Unknown command: %s", input.c_str());
@@ -157,6 +194,9 @@ int main(int argc, char *argv[]) {
     drone_thread.join();
     if (test_thread.joinable()) {
         test_thread.join();
+    }
+    if (vicon_test_thread.joinable()) {
+        vicon_test_thread.join();
     }
 
     // Shutdown ROS 2
