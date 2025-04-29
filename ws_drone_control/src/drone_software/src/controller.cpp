@@ -4,7 +4,7 @@
 Controller::Controller(rclcpp::Node::SharedPtr node)
     : vicon_position_{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
       vicon_velocity_{0.0f, 0.0f, 0.0f},
-      prev_vicon_time_(rclcpp::Time(0, 0)) { // Initialize to 0 seconds
+      prev_vicon_time_(rclcpp::Time(0, 0)) { // Initialize to 0 seconds and 0 milliseconds
     node_ = node;
     std::cout << std::fixed << std::setprecision(2); // Set precision for output
 }
@@ -207,10 +207,10 @@ void Controller::startGoalPositionThread(const std::array<float, 3>& goal_positi
             // Publish the calculated setpoint
             publishVehicleAttitudeSetpoint(roll_pitch[0], roll_pitch[1], thrust, 0.0f);
 
-            if (std::abs(x_error_local) < 0.01f && std::abs(y_error_local) < 0.01f && std::abs(z_error) < 0.01f) {
-                std::cout << "Goal position reached." << std::endl;
-                break;
-            }
+            //if (std::abs(x_error_local) < 0.01f && std::abs(y_error_local) < 0.01f && std::abs(z_error) < 0.01f) {
+            //    std::cout << "Goal position reached." << std::endl;
+            //    break;
+            //}
         }
 
         std::cout << "Exiting goalPosition thread." << std::endl;
