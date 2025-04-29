@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
     initialize.enable_offboard_mode();
     controller.initialize(node);
 
-    // The next to are used to control if the drone are turned on or off
+    // The next to are used to control if the drone ar<<<<<<< Updated upstream
     std::atomic<bool> running(false);
     std::atomic<bool> terminate(false);
 
