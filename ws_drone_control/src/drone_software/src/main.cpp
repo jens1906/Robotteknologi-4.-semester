@@ -161,14 +161,14 @@ int main(int argc, char *argv[]) {
                 vicon_test_mode.store(true);
                 vicon_test_thread = std::thread([&]() {
                     while (vicon_test_mode.load() && rclcpp::ok()) {
-                        auto vicon_position = controller.getViconPosition();
-                        std::cout << "Vicon Data: x=" << vicon_position[0]
-                                  << ", y=" << vicon_position[1]
-                                  << ", z=" << vicon_position[2]
-                                  << ", roll=" << vicon_position[3]
-                                  << ", pitch=" << vicon_position[4]
-                                  << ", yaw=" << vicon_position[5] << std::endl;
-                        std::this_thread::sleep_for(std::chrono::milliseconds(500));  // Adjust frequency as needed
+                        //auto vicon_position = controller.getViconPosition();
+                        //std::cout << "Vicon Data: x=" << vicon_position[0]
+                        //          << ", y=" << vicon_position[1]
+                        //          << ", z=" << vicon_position[2]
+                        //          << ", roll=" << vicon_position[3]
+                        //          << ", pitch=" << vicon_position[4]
+                        //          << ", yaw=" << vicon_position[5] << std::endl;
+                        //std::this_thread::sleep_for(std::chrono::milliseconds(500));  // Adjust frequency as needed
                     }
                 });
             } else {

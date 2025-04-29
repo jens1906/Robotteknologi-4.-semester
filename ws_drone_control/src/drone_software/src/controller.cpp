@@ -304,14 +304,30 @@ void Controller::zControlMode(float z_offset, float max_z_thrust) {
         std::cout << "Starting zControlMode thread." << std::endl;
 
         while (!stop_z_control_.load()) {
-            std::unique_lock<std::mutex> lock(vicon_mutex_);
-            float current_z = vicon_position_[2];  // Get current z position from Vicon
-            lock.unlock();
+            // Local copies of Vicon data
+            std::array<float, 6> l_vicon_position;
+            std::array<float, 3> l_vicon_velocity;
+            float l_vicon_dt;
+
+            // Lock the mutex only to copy the shared data
+            {
+                std::unique_lock<std::mutex> lock(vicon_mutex_);
+                vicon_update_cv_.wait(lock, [this]() { return vicon_updated_ || stop_thread_.load(); });
+                if (stop_thread_.load()) {
+                    break; // Exit if the thread is stopped
+                }
+                vicon_updated_ = false; // Reset the update flag
+                l_vicon_position = vicon_position_; // Copy the shared Vicon position
+                l_vicon_velocity = vicon_velocity_; // Copy the shared Vicon velocity
+                l_vicon_dt = vicon_dt_;             // Copy the shared dt
+            }
+            
+            float current_z = l_vicon_position[2];  // Get current z position from Vicon
 
             float target_z = target_z_.load();  // Load the current target z position
             float z_error = target_z - current_z;
 
-            float thrust = zToThrust(z_error);  // Calculate thrust using z control system
+            float thrust = zToThrust(z_error, l_vicon_dt);  // Calculate thrust using z control system
             thrust = std::clamp(thrust, 0.0f, max_z_thrust_.load());  // Clamp thrust to the current max thrust
 
             px4_msgs::msg::VehicleAttitudeSetpoint msg{};
@@ -320,7 +336,7 @@ void Controller::zControlMode(float z_offset, float max_z_thrust) {
             msg.thrust_body = std::array<float, 3>{0.0f, 0.0f, -thrust};  // Apply thrust in the z direction
             
             // Print Vicon position and z thrust
-            std::cout << "Vicon Position: x=" << vicon_position_[0] << ", y=" << vicon_position_[1]
+            std::cout << "Vicon Position: x=" << l_vicon_position[0] << ", y=" << l_vicon_position[1]
                       << ", z=" << current_z << ", thrust=" << thrust << std::endl;
 
             ros_attitude_setpoint_pub_->publish(msg);
@@ -329,7 +345,7 @@ void Controller::zControlMode(float z_offset, float max_z_thrust) {
                       << ", current_z=" << current_z
                       << ", thrust=" << thrust << std::endl;
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));  // Adjust loop frequency as needed
+            //std::this_thread::sleep_for(std::chrono::milliseconds(100));  // Adjust loop frequency as needed
         }
 
         std::cout << "Exiting zControlMode thread." << std::endl;
