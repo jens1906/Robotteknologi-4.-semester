@@ -113,10 +113,10 @@ std::array<float, 4> Controller::rpyToQuaternion(float roll, float pitch, float 
 }
 
 std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, float x_velocity, float y_velocity, float dt) {
-    float Kp_xy_outer = 0.111f;
-    float Kd_xy_outer = 0.1804f;
-    float Kp_xy_inner = 0.1f;
-    float Kd_xy_inner = 0.05f;
+    float Kp_xy_outer = 0.111f; //Måske prøve 0.9804f   ?
+    float Kd_xy_outer = 0.1804f; //Måske prøve 0.6128f   ?
+    float Kp_xy_inner = 0.1f; //Måske prøve 0.2788f   ?
+    float Kd_xy_inner = 0.05f; //Måske prøve 0.0523f   ?
 
     static float prev_x_error = 0.0f;
     static float prev_y_error = 0.0f;
@@ -210,6 +210,10 @@ void Controller::startGoalPositionThread(const std::array<float, 3>& goal_positi
                       << std::endl;
 
             auto roll_pitch = xyToRollPitch(x_error_local, y_error_local, l_vicon_velocity[0], l_vicon_velocity[1], l_vicon_dt);
+            float x_velocity_local = cos(yaw_radians) * l_vicon_velocity[0] + sin(yaw_radians) * l_vicon_velocity[1];
+            float y_velocity_local = -sin(yaw_radians) * l_vicon_velocity[0] + cos(yaw_radians) * l_vicon_velocity[1];
+
+            auto roll_pitch = xyToRollPitch(x_error_local, y_error_local, x_velocity_local, y_velocity_local, l_vicon_dt);
             float thrust = zToThrust(z_error, l_vicon_dt);
 
             // Publish the calculated setpoint
