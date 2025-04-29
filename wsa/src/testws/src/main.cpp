@@ -57,11 +57,7 @@ private:
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
-<<<<<<< Updated upstream
             attitude_msg.thrust_body = {0.0, 0.0, -0.5};  // Thrust of 0.5
-=======
-            attitude_msg.thrust_body = {0.0, 0.0, -0.1};  // Thrust of 0.5
->>>>>>> Stashed changes
 =======
             attitude_msg.thrust_body = {0.0, 0.0, -0.1};  // Thrust of 0.5
 >>>>>>> Stashed changes
