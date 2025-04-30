@@ -152,8 +152,8 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, flo
 
 float Controller::zToThrust(float z_error, float dt) {
     float g_compensation = 0.5; // Gravity compensation to make it hover 68.4% to hover
-    float Kp_z = 0.8173f;
-    float Kd_z = 2.214f;
+    float Kp_z = 0.8173f; //Perhaps 0.2043f (Settling time 20s)
+    float Kd_z = 2.214f; //Perhaps 1.107f (Settling time 20s)
 
     static float prev_z_error = 0.0f;
 
