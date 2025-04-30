@@ -136,9 +136,11 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, flo
     // Inner loop: velocity command to roll/pitch
     float dx_inner = (vx_error - prev_vx_error) / dt;
     float dy_inner = (vy_error - prev_vy_error) / dt;
-    float roll_desired = Kp_xy_inner * vy_error + Kd_xy_inner * dy_inner;
-    float pitch_desired = -(Kp_xy_inner * vx_error + Kd_xy_inner * dx_inner);
+    float roll_desired = -(Kp_xy_inner * vy_error + Kd_xy_inner * dy_inner);
+    float pitch_desired = Kp_xy_inner * vx_error + Kd_xy_inner * dx_inner;
+
     std::cout << "roll_desired: " << roll_desired << ", pitch_desired: " << pitch_desired << std::endl;
+
     float roll_desired_clamped = std::clamp(roll_desired, -0.2f, 0.2f);
     float pitch_desired_clamped = std::clamp(pitch_desired, -0.2f, 0.2f);
 
@@ -196,21 +198,21 @@ void Controller::startGoalPositionThread(const std::array<float, 3>& goal_positi
             float y_error_global = goal_position[1] - l_vicon_position[1];
             float z_error = goal_position[2] - l_vicon_position[2];
 
-            // Convert yaw from degrees to radians for trigonometric functions
+            // Calculate drone's local errors and velocity
             float yaw_radians = l_vicon_position[5];
             float x_error_local = cos(yaw_radians) * x_error_global + sin(yaw_radians) * y_error_global;
             float y_error_local = -sin(yaw_radians) * x_error_global + cos(yaw_radians) * y_error_global;
 
-            std::cout << "local errors: x=" << x_error_local
-                      << ", y=" << y_error_local
-                      << ", z=" << z_error
-                      << ", vx=" << l_vicon_velocity[0]
-                      << ", vy=" << l_vicon_velocity[1]
-                      << ", dt=" << l_vicon_dt
-                      << std::endl;
-
             float x_velocity_local = cos(yaw_radians) * l_vicon_velocity[0] + sin(yaw_radians) * l_vicon_velocity[1];
             float y_velocity_local = -sin(yaw_radians) * l_vicon_velocity[0] + cos(yaw_radians) * l_vicon_velocity[1];
+
+            std::cout << "local errors: x=" << x_error_local
+            << ", y=" << y_error_local
+            << ", z=" << z_error
+            << ", vx=" << x_velocity_local
+            << ", vy=" << y_velocity_local
+            << ", dt=" << l_vicon_dt
+            << std::endl;
 
             auto roll_pitch = xyToRollPitch(x_error_local, y_error_local, x_velocity_local, y_velocity_local, l_vicon_dt);
             float thrust = zToThrust(z_error, l_vicon_dt);

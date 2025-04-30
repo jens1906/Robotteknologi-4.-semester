@@ -78,7 +78,15 @@
         "span": "cpp",
         "cinttypes": "cpp",
         "variant": "cpp",
-        "mutex": "cpp"
+        "mutex": "cpp",
+        "bitset": "cpp",
+        "condition_variable": "cpp",
+        "fstream": "cpp",
+        "list": "cpp",
+        "map": "cpp",
+        "queue": "cpp",
+        "xhash": "cpp",
+        "xtree": "cpp"
     },
     "idf.pythonInstallPath": "/usr/bin/python3"
 }
