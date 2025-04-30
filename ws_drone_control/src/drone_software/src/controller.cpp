@@ -149,7 +149,7 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, flo
     prev_vx_error = vx_error;
     prev_vy_error = vy_error;
 
-    return {roll_desired_clamped, pitch_desired_clamped};
+    return {roll_desired_clamped, -pitch_desired_clamped}; // Added a minus (-) to the pitch desired to mitigate the drones coordinate system (North, east, down)
 }
 
 float Controller::zToThrust(float z_error, float dt) {
