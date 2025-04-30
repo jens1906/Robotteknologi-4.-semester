@@ -113,6 +113,7 @@ std::array<float, 4> Controller::rpyToQuaternion(float roll, float pitch, float 
 }
 
 std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, float x_velocity, float y_velocity, float dt) {
+    //PD controller for XY or Roll and Pitch
     float Kp_xy_outer = 0.111f; //Måske prøve 0.9804f   ?
     float Kd_xy_outer = 0.1804f; //Måske prøve 0.6128f   ?
     float Kp_xy_inner = 0.1f; //Måske prøve 0.2788f   ?
@@ -153,6 +154,7 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, flo
 }
 
 float Controller::zToThrust(float z_error, float dt) {
+    //PD controller for Z or Thrust
     float g_compensation = 0.5; // Gravity compensation to make it hover 68.4% to hover
     float Kp_z = 0.8173f; //Perhaps 0.2043f (Settling time 20s)
     float Kd_z = 2.214f; //Perhaps 1.107f (Settling time 20s)
