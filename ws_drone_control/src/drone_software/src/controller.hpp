@@ -29,6 +29,7 @@ public:
     void stopZControlMode(); // Stop zControlMode thread
 
     std::array<float, 3> goal_position; // Store the goal position
+    float goal_yaw; // Store the goal yaw
 
 private:
     rclcpp::Node::SharedPtr node_;  // Store the shared node
