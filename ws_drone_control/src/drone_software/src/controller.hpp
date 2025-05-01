@@ -58,7 +58,7 @@ private:
     bool vicon_updated_ = false; // Flag to indicate a new Vicon update
 
     rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr ros_debug_pub_; // Publisher for debug variables
-    void publishDebugVariables(const std::array<float, 3>& position, const std::array<float, 3>& velocity, const std::array<float, 3>& errors, float thrust); // Publish debug variables
+    void publishDebugVariables(const std::array<float, 3>& position, const std::array<float, 3>& velocity, const std::array<float, 3>& errors, float thrust, const std::array<float, 3>& goal_position); // Publish debug variables
 };
 
 #endif

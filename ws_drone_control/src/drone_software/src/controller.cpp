@@ -229,7 +229,7 @@ void Controller::startGoalPositionThread() {
             publishVehicleAttitudeSetpoint(roll_pitch[0], roll_pitch[1], thrust, 0.0f);
 
             // Publish debug variables
-            publishDebugVariables(position, l_vicon_velocity, {x_error_local, y_error_local, z_error}, thrust);
+            publishDebugVariables(position, l_vicon_velocity, {x_error_local, y_error_local, z_error}, thrust, {goal_position[0], goal_position[1], goal_position[2]});
 
             //if (std::abs(x_error_local) < 0.01f && std::abs(y_error_local) < 0.01f && std::abs(z_error) < 0.01f) {
             //    std::cout << "Goal position reached." << std::endl;
@@ -350,8 +350,8 @@ void Controller::stopZControlMode() {
     }
 }
 
-void Controller::publishDebugVariables(const std::array<float, 3>& position, const std::array<float, 3>& velocity, const std::array<float, 3>& errors, float thrust) {
+void Controller::publishDebugVariables(const std::array<float, 3>& position, const std::array<float, 3>& velocity, const std::array<float, 3>& errors, float thrust, const std::array<float, 3>& goal_position) {
     std_msgs::msg::Float64MultiArray debug_msg;
-    debug_msg.data = {position[0], position[1], position[2], velocity[0], velocity[1], velocity[2], errors[0], errors[1], errors[2], thrust};
+    debug_msg.data = {position[0], position[1], position[2], velocity[0], velocity[1], velocity[2], errors[0], errors[1], errors[2], thrust, goal_position[0], goal_position[1], goal_position[2]};
     ros_debug_pub_->publish(debug_msg);
 }
