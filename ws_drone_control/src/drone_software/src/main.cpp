@@ -6,6 +6,8 @@
 #include <iostream>
 #include <limits>
 
+bool is_goal_position_thread_running = false; // Flag to control the goal position thread
+
 int main(int argc, char *argv[]) {
     // Initialize ROS 2
     rclcpp::init(argc, argv);
@@ -98,7 +100,11 @@ int main(int argc, char *argv[]) {
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
 
             RCLCPP_INFO(node->get_logger(), "Starting goal position thread with x: %.2f, y: %.2f, z: %.2f", x, y, z);
-            controller.startGoalPositionThread({x, y, z});  // Use user-provided goal position
+            controller.goal_position = {x, y, z};  // Store the goal position
+            if (is_goal_position_thread_running == false) {
+                controller.startGoalPositionThread();  // Use user-provided goal position
+                is_goal_position_thread_running = true;  // Set the flag to true
+            }
         } else if (input == "stop") {
             RCLCPP_INFO(node->get_logger(), "Stopping goal position thread...");
             controller.stopGoalPositionThread();

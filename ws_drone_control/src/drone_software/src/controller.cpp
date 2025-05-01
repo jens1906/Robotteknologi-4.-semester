@@ -89,9 +89,10 @@ void Controller::publishVehicleAttitudeSetpoint(float roll, float pitch, float t
     ros_attitude_setpoint_pub_->publish(msg);
 
     // Log the published values
+    /*
     std::cout << "Published VehicleAttitudeSetpoint: roll=" << roll
               << ", pitch=" << pitch << ", yaw=" << yaw
-              << ", thrust=" << thrust << std::endl;
+              << ", thrust=" << thrust << std::endl;*/
 }
 
 std::array<float, 4> Controller::rpyToQuaternion(float roll, float pitch, float yaw) {
@@ -140,7 +141,7 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, flo
     float roll_desired = -(Kp_xy_inner * vy_error + Kd_xy_inner * dy_inner);
     float pitch_desired = Kp_xy_inner * vx_error + Kd_xy_inner * dx_inner;
 
-    std::cout << "roll_desired: " << roll_desired << ", pitch_desired: " << pitch_desired << std::endl;
+    //std::cout << "roll_desired: " << roll_desired << ", pitch_desired: " << pitch_desired << std::endl;
 
     float roll_desired_clamped = std::clamp(roll_desired, -0.2f, 0.2f);
     float pitch_desired_clamped = std::clamp(pitch_desired, -0.2f, 0.2f);
@@ -164,17 +165,17 @@ float Controller::zToThrust(float z_error, float dt) {
     float z_derivative = (z_error - prev_z_error) / dt;
     float thrust = Kp_z * z_error + Kd_z * z_derivative + g_compensation;
     float thrust_clamped = std::clamp(thrust, 0.0f, 1.0f); // Clamp thrust to [0, 1.0]
-    std::cout << "Thrust (lim): " << thrust_clamped << " (" << thrust << ")" << std::endl;
+    //std::cout << "Thrust (lim): " << thrust_clamped << " (" << thrust << ")" << std::endl;
 
     prev_z_error = z_error;
 
     return thrust_clamped;
 }
 
-void Controller::startGoalPositionThread(const std::array<float, 3>& goal_position) {
+void Controller::startGoalPositionThread() {
     stop_thread_.store(false);
-    goal_position_thread_ = std::thread([this, goal_position]() {
-        std::cout << "Starting goalPosition thread." << std::endl;
+    goal_position_thread_ = std::thread([this]() { // Remove goal_position from the capture list
+        //std::cout << "Starting goalPosition thread." << std::endl;
 
         while (!stop_thread_.load()) {
             // Local copies of Vicon data
@@ -196,9 +197,9 @@ void Controller::startGoalPositionThread(const std::array<float, 3>& goal_positi
             }
 
             // Perform calculations using the local copies
-            float x_error_global = goal_position[0] - l_vicon_position[0];
-            float y_error_global = goal_position[1] - l_vicon_position[1];
-            float z_error = goal_position[2] - l_vicon_position[2];
+            float x_error_global = this->goal_position[0] - l_vicon_position[0]; // Access goal_position via this
+            float y_error_global = this->goal_position[1] - l_vicon_position[1];
+            float z_error = this->goal_position[2] - l_vicon_position[2];
 
             // Calculate drone's local errors and velocity
             float yaw_radians = l_vicon_position[5];
@@ -208,13 +209,13 @@ void Controller::startGoalPositionThread(const std::array<float, 3>& goal_positi
             float x_velocity_local = cos(yaw_radians) * l_vicon_velocity[0] + sin(yaw_radians) * l_vicon_velocity[1];
             float y_velocity_local = -sin(yaw_radians) * l_vicon_velocity[0] + cos(yaw_radians) * l_vicon_velocity[1];
 
-            std::cout << "local errors: x=" << x_error_local
-            << ", y=" << y_error_local
-            << ", z=" << z_error
-            << ", vx=" << x_velocity_local
-            << ", vy=" << y_velocity_local
-            << ", dt=" << l_vicon_dt
-            << std::endl;
+            /*std::cout << "local errors: x=" << x_error_local
+                      << ", y=" << y_error_local
+                      << ", z=" << z_error
+                      << ", vx=" << x_velocity_local
+                      << ", vy=" << y_velocity_local
+                      << ", dt=" << l_vicon_dt
+                      << std::endl;*/
 
             auto roll_pitch = xyToRollPitch(x_error_local, y_error_local, x_velocity_local, y_velocity_local, l_vicon_dt);
             float thrust = zToThrust(z_error, l_vicon_dt);
@@ -222,10 +223,11 @@ void Controller::startGoalPositionThread(const std::array<float, 3>& goal_positi
             // Publish the calculated setpoint
             publishVehicleAttitudeSetpoint(roll_pitch[0], roll_pitch[1], thrust, 0.0f);
 
-            //if (std::abs(x_error_local) < 0.01f && std::abs(y_error_local) < 0.01f && std::abs(z_error) < 0.01f) {
-            //    std::cout << "Goal position reached." << std::endl;
-            //    break;
-            //}
+            // Uncomment if you want to stop the thread when the goal is reached
+            // if (std::abs(x_error_local) < 0.01f && std::abs(y_error_local) < 0.01f && std::abs(z_error) < 0.01f) {
+            //     std::cout << "Goal position reached." << std::endl;
+            //     break;
+            // }
         }
 
         std::cout << "Exiting goalPosition thread." << std::endl;

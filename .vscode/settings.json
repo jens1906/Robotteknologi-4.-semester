@@ -86,7 +86,9 @@
         "map": "cpp",
         "queue": "cpp",
         "xhash": "cpp",
-        "xtree": "cpp"
+        "xtree": "cpp",
+        "ranges": "cpp",
+        "semaphore": "cpp"
     },
     "idf.pythonInstallPath": "/usr/bin/python3"
 }

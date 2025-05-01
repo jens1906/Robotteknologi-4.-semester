@@ -18,7 +18,7 @@ public:
     Controller(rclcpp::Node::SharedPtr node); // Constructor to initialize the node
     void initialize(rclcpp::Node::SharedPtr node); // Activation of ROS topics
     void publishVehicleAttitudeSetpoint(float roll, float pitch, float thrust, float yaw); // Publish attitude setpoint
-    void startGoalPositionThread(const std::array<float, 3>& goal_position); // Start thread for goal position control
+    void startGoalPositionThread(); // Start thread for goal position control
     void stopGoalPositionThread(); // Stop the goal position thread
     void simulateDroneCommands(const std::array<float, 3>& xyz_error, float yaw); // Simulate drone commands
     void manualMotorSet(float T); // Set the motor thrust directly
@@ -27,6 +27,8 @@ public:
     // New methods for zControlMode
     void zControlMode(float z_offset, float max_z_thrust); // Control z-axis position
     void stopZControlMode(); // Stop zControlMode thread
+
+    std::array<float, 3> goal_position; // Store the goal position
 
 private:
     rclcpp::Node::SharedPtr node_;  // Store the shared node
