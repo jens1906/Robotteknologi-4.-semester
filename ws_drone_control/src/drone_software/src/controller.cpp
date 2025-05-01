@@ -86,7 +86,7 @@ void Controller::initialize(rclcpp::Node::SharedPtr node) {
                                       vehicle_attitude_quaternion_[1] * vehicle_attitude_quaternion_[2]),
                               .0f - 2.0f * (vehicle_attitude_quaternion_[2] * vehicle_attitude_quaternion_[2] +
                                             vehicle_attitude_quaternion_[3] * vehicle_attitude_quaternion_[3]));
-        float vicon_yaw = vicon_position_[5]; // Assuming yaw is stored in vicon_position_[5]
+        float vicon_yaw = -vicon_position_[5]; // Assuming yaw is stored in vicon_position_[5]
         initial_yaw_offset_ = imu_yaw - vicon_yaw;
         std::cout << "Initial Yaw Offset: " << initial_yaw_offset_ << std::endl;
         }
