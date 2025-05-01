@@ -10,6 +10,12 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(px4_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
+
+# Add the message file
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/DebugVariables.msg"
+)
 
 # Include directories
 include_directories(src)
@@ -19,6 +25,9 @@ add_executable(offboard_control_node src/main.cpp src/initialize.cpp src/control
 
 # Link dependencies
 ament_target_dependencies(offboard_control_node rclcpp px4_msgs std_msgs )
+
+# Ensure dependencies are built
+ament_export_dependencies(rosidl_default_runtime)
 
 # Install the executables
 install(TARGETS offboard_control_node
