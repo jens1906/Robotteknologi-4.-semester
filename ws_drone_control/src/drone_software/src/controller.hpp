@@ -29,6 +29,7 @@ public:
     void stopZControlMode(); // Stop zControlMode thread
 
     std::array<float, 3> goal_position; // Store the goal position
+    float goal_yaw; // Store the goal yaw
 
 private:
     rclcpp::Node::SharedPtr node_;  // Store the shared node
@@ -56,6 +57,9 @@ private:
     mutable std::mutex vicon_mutex_; // Mutex for Vicon data synchronization
     std::condition_variable vicon_update_cv_; // Condition variable for Vicon updates
     bool vicon_updated_ = false; // Flag to indicate a new Vicon update
+
+    std::array<float, 4> vehicle_attitude_quaternion_; // Store the latest vehicle attitude quaternion
+    float initial_yaw_offset_; // Initial yaw offset for Vicon data
 
     rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr ros_debug_pub_; // Publisher for debug variables
     void publishDebugVariables(const std::array<float, 3>& position, const std::array<float, 3>& velocity, const std::array<float, 3>& errors, float thrust, const std::array<float, 3>& goal_position); // Publish debug variables

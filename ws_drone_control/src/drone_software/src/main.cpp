@@ -94,13 +94,15 @@ int main(int argc, char *argv[]) {
             }
             break;  // Correctly placed within the while loop
         } else if (input == "start") {
-            float x, y, z;
-            std::cout << "Enter x, y, and z values separated by spaces: ";
-            std::cin >> x >> y >> z;
+            float x, y, z, yaw;
+            std::cout << "Enter x, y, z, and yaw values separated by spaces: ";
+            std::cin >> x >> y >> z >> yaw;
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
 
-            RCLCPP_INFO(node->get_logger(), "Starting goal position thread with x: %.2f, y: %.2f, z: %.2f", x, y, z);
+            RCLCPP_INFO(node->get_logger(), "Starting goal position thread with x: %.2f, y: %.2f, z: %.2f, yaw: %.2f", x, y, z, yaw);
             controller.goal_position = {x, y, z};  // Store the goal position
+            controller.goal_yaw = yaw;  // Store the goal yaw
+            
             if (is_goal_position_thread_running == false) {
                 controller.startGoalPositionThread();  // Use user-provided goal position
                 is_goal_position_thread_running = true;  // Set the flag to true
