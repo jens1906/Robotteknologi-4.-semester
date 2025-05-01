@@ -73,6 +73,8 @@ void Controller::initialize(rclcpp::Node::SharedPtr node) {
     ros_vicon_sub_ = node_->create_subscription<std_msgs::msg::Float64MultiArray>(
         "/Vicon", qos,
         std::bind(&Controller::viconCallback, this, std::placeholders::_1));
+
+    ros_debug_pub_ = node_->create_publisher<std_msgs::msg::Float64MultiArray>("/debug_variables", 10); // Initialize debug publisher
 }
 
 void Controller::vehicleAttitudeCallback(const px4_msgs::msg::VehicleAttitude::SharedPtr msg) {
@@ -216,11 +218,17 @@ void Controller::startGoalPositionThread(const std::array<float, 3>& goal_positi
             << ", dt=" << l_vicon_dt
             << std::endl;
 
+            // Extract the first three elements of l_vicon_position for position
+            std::array<float, 3> position = {l_vicon_position[0], l_vicon_position[1], l_vicon_position[2]};
+
             auto roll_pitch = xyToRollPitch(x_error_local, y_error_local, x_velocity_local, y_velocity_local, l_vicon_dt);
             float thrust = zToThrust(z_error, l_vicon_dt);
 
             // Publish the calculated setpoint
             publishVehicleAttitudeSetpoint(roll_pitch[0], roll_pitch[1], thrust, 0.0f);
+
+            // Publish debug variables
+            publishDebugVariables(position, l_vicon_velocity, {x_error_local, y_error_local, z_error}, thrust);
 
             //if (std::abs(x_error_local) < 0.01f && std::abs(y_error_local) < 0.01f && std::abs(z_error) < 0.01f) {
             //    std::cout << "Goal position reached." << std::endl;
@@ -339,4 +347,10 @@ void Controller::stopZControlMode() {
         stop_z_control_.store(true);  // Signal the thread to stop
         z_control_thread_.join();  // Wait for the thread to finish
     }
+}
+
+void Controller::publishDebugVariables(const std::array<float, 3>& position, const std::array<float, 3>& velocity, const std::array<float, 3>& errors, float thrust) {
+    std_msgs::msg::Float64MultiArray debug_msg;
+    debug_msg.data = {position[0], position[1], position[2], velocity[0], velocity[1], velocity[2], errors[0], errors[1], errors[2], thrust};
+    ros_debug_pub_->publish(debug_msg);
 }
