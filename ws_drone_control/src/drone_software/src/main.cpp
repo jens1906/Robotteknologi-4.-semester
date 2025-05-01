@@ -7,6 +7,7 @@
 #include <limits>
 
 bool is_goal_position_thread_running = false; // Flag to control the goal position thread
+std::array<float, 2> landing_position = {100,100};  // Store the latest Vicon position
 
 int main(int argc, char *argv[]) {
     // Initialize ROS 2
@@ -71,6 +72,30 @@ int main(int argc, char *argv[]) {
             // controller.publishVehicleAttitudeSetpoint({0.0f, 0.0f, 0.0f}, 0.0f);  // Example setpoint
         } else if (input == "turnoff") {
             RCLCPP_INFO(node->get_logger(), "Turning off the drone...");
+            auto last_execution_time = std::chrono::steady_clock::now();
+
+            while(std::abs(landing_position[1] - landing_position[0]) > 0.2f || landing_position[1] == 100) {
+                auto current_time = std::chrono::steady_clock::now();
+                auto elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(current_time - last_execution_time);
+                if (elapsed_time.count() >= 1) {  // Check if 2 seconds have passed
+                    landing_position[1] = landing_position[0];  // Update landing position
+                    landing_position[0] = controller.vicon_position_[2];  // Update landing position
+                    // Code to execute every 2 seconds
+                    controller.goal_position = {
+                        controller.goal_position[0],
+                        controller.goal_position[1],
+                        controller.goal_position[2] - 0.05f
+                    };  // Gradually reduce the z-coordinate
+        
+                    // Reset the timer
+                    last_execution_time = current_time;
+                    std::cout << "Vicon Position: z=" << controller.vicon_position_[2] << std::endl;
+                    std::cout << "Goal Position: z=" << controller.goal_position[2] << std::endl;
+                    std::cout << "Landing Position: z=" << (landing_position[1]-landing_position[0]) << std::endl;
+                }
+            }
+
+            
             controller.stopGoalPositionThread();
             // controller.publishVehicleAttitudeSetpoint({0.0f, 0.0f, 0.0f}, 0.0f);  // Example setpoint
             running.store(false);  // Stop the drone thread

@@ -30,10 +30,10 @@ public:
 
     std::array<float, 3> goal_position; // Store the goal position
     float goal_yaw; // Store the goal yaw
+    std::array<float, 6> vicon_position_;  // Store the latest Vicon position
 
 private:
     rclcpp::Node::SharedPtr node_;  // Store the shared node
-    std::array<float, 6> vicon_position_;  // Store the latest Vicon position
     std::array<float, 3> vicon_velocity_;  // Store the latest Vicon velocity
     rclcpp::Time prev_vicon_time_;         // Store the previous Vicon timestamp
     float vicon_dt_;  // Time difference between Vicon readings
