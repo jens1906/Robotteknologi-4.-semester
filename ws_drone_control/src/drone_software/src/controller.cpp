@@ -4,7 +4,8 @@
 Controller::Controller(rclcpp::Node::SharedPtr node)
     : vicon_position_{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
       vicon_velocity_{0.0f, 0.0f, 0.0f},
-      prev_vicon_time_(rclcpp::Time(0, 0)) { // Initialize to 0 seconds and 0 milliseconds
+      prev_vicon_time_(rclcpp::Time(0, 0)),
+      vehicle_attitude_quaternion_{1.0f, 0.0f, 0.0f, 0.0f} {
     node_ = node;
     std::cout << std::fixed << std::setprecision(2); // Set precision for output
 }
@@ -75,10 +76,29 @@ void Controller::initialize(rclcpp::Node::SharedPtr node) {
         std::bind(&Controller::viconCallback, this, std::placeholders::_1));
 
     ros_debug_pub_ = node_->create_publisher<std_msgs::msg::Float64MultiArray>("/debug_variables", 10); // Initialize debug publisher
+
+    // Calculate the initial yaw offset
+    {
+        std::unique_lock<std::mutex> lock(vicon_mutex_);
+        float imu_yaw = atan2(2.0f * (vehicle_attitude_quaternion_[0] * vehicle_attitude_quaternion_[3] +
+                                      vehicle_attitude_quaternion_[1] * vehicle_attitude_quaternion_[2]),
+                              1.0f - 2.0f * (vehicle_attitude_quaternion_[2] * vehicle_attitude_quaternion_[2] +
+                                             vehicle_attitude_quaternion_[3] * vehicle_attitude_quaternion_[3]));
+        float vicon_yaw = vicon_position_[5]; // Assuming yaw is stored in vicon_position_[5]
+        initial_yaw_offset_ = imu_yaw - vicon_yaw;
+        std::cout << "Initial Yaw Offset: " << initial_yaw_offset_ << std::endl;
+    }
 }
 
 void Controller::vehicleAttitudeCallback(const px4_msgs::msg::VehicleAttitude::SharedPtr msg) {
-    // RCLCPP_INFO(rclcpp::get_logger("offboard_control_node"), "Received VehicleAttitude message");
+    // Extract quaternion data from the message
+    vehicle_attitude_quaternion_ = {msg->q[0], msg->q[1], msg->q[2], msg->q[3]};
+
+    // Log the quaternion data (optional)
+    //std::cout << "Received VehicleAttitude quaternion: w=" << vehicle_attitude_quaternion_[0]
+    //          << ", x=" << vehicle_attitude_quaternion_[1]
+    //          << ", y=" << vehicle_attitude_quaternion_[2]
+    //          << ", z=" << vehicle_attitude_quaternion_[3] << std::endl;
 }
 
 void Controller::publishVehicleAttitudeSetpoint(float roll, float pitch, float thrust, float yaw) {
@@ -173,9 +193,27 @@ float Controller::zToThrust(float z_error, float dt) {
     return thrust_clamped;
 }
 
-void Controller::startGoalPositionThread(const std::array<float, 3>& goal_position) {
+float Controller::getCorrectedYaw(float imu_yaw, float vicon_yaw) {
+    // Convert Vicon yaw from NWU to NED by negating it
+    float vicon_yaw_ned = -vicon_yaw;
+
+    // Correct the IMU yaw using the initial offset and Vicon yaw
+    float corrected_yaw = imu_yaw - initial_yaw_offset_;
+    float yaw_difference = vicon_yaw_ned - corrected_yaw;
+
+    // Apply a smoothing factor or filter to reduce noise
+    corrected_yaw += yaw_difference * 0.1f; // Apply 10% of the difference
+
+    // Normalize the yaw to the range [-π, π]
+    while (corrected_yaw > M_PI) corrected_yaw -= 2.0f * M_PI;
+    while (corrected_yaw < -M_PI) corrected_yaw += 2.0f * M_PI;
+
+    return corrected_yaw;
+}
+
+void Controller::startGoalPositionThread(const std::array<float, 3>& goal_position, float goal_vicon_yaw) {
     stop_thread_.store(false);
-    goal_position_thread_ = std::thread([this, goal_position]() {
+    goal_position_thread_ = std::thread([this, goal_position, goal_vicon_yaw]() {
         std::cout << "Starting goalPosition thread." << std::endl;
 
         while (!stop_thread_.load()) {
@@ -183,6 +221,7 @@ void Controller::startGoalPositionThread(const std::array<float, 3>& goal_positi
             std::array<float, 6> l_vicon_position;
             std::array<float, 3> l_vicon_velocity;
             float l_vicon_dt;
+            std::array<float, 4> l_quaternion;
 
             // Lock the mutex only to copy the shared data
             {
@@ -195,6 +234,7 @@ void Controller::startGoalPositionThread(const std::array<float, 3>& goal_positi
                 l_vicon_position = vicon_position_; // Copy the shared Vicon position
                 l_vicon_velocity = vicon_velocity_; // Copy the shared Vicon velocity
                 l_vicon_dt = vicon_dt_;             // Copy the shared dt
+                l_quaternion = vehicle_attitude_quaternion_;
             }
 
             // Perform calculations using the local copies
@@ -203,12 +243,11 @@ void Controller::startGoalPositionThread(const std::array<float, 3>& goal_positi
             float z_error = goal_position[2] - l_vicon_position[2];
 
             // Calculate drone's local errors and velocity
-            float yaw_radians = l_vicon_position[5];
-            float x_error_local = cos(yaw_radians) * x_error_global + sin(yaw_radians) * y_error_global;
-            float y_error_local = -sin(yaw_radians) * x_error_global + cos(yaw_radians) * y_error_global;
+            float x_error_local = cos(l_vicon_position[5]) * x_error_global + sin(l_vicon_position[5]) * y_error_global;
+            float y_error_local = -sin(l_vicon_position[5]) * x_error_global + cos(l_vicon_position[5]) * y_error_global;
 
-            float x_velocity_local = cos(yaw_radians) * l_vicon_velocity[0] + sin(yaw_radians) * l_vicon_velocity[1];
-            float y_velocity_local = -sin(yaw_radians) * l_vicon_velocity[0] + cos(yaw_radians) * l_vicon_velocity[1];
+            float x_velocity_local = cos(l_vicon_position[5]) * l_vicon_velocity[0] + sin(l_vicon_position[5]) * l_vicon_velocity[1];
+            float y_velocity_local = -sin(l_vicon_position[5]) * l_vicon_velocity[0] + cos(l_vicon_position[5]) * l_vicon_velocity[1];
 
             std::cout << "local errors: x=" << x_error_local
             << ", y=" << y_error_local
@@ -218,17 +257,21 @@ void Controller::startGoalPositionThread(const std::array<float, 3>& goal_positi
             << ", dt=" << l_vicon_dt
             << std::endl;
 
-            // Extract the first three elements of l_vicon_position for position
-            std::array<float, 3> position = {l_vicon_position[0], l_vicon_position[1], l_vicon_position[2]};
-
             auto roll_pitch = xyToRollPitch(x_error_local, y_error_local, x_velocity_local, y_velocity_local, l_vicon_dt);
             float thrust = zToThrust(z_error, l_vicon_dt);
+            
+            // Convert the input Vicon yaw to the drone's local frame
+            float desired_yaw_ned = -l_vicon_position[5] - initial_yaw_offset_;
+
+            // Normalize the yaw to the range [-π, π]
+            while (desired_yaw_ned > M_PI) desired_yaw_ned -= 2.0f * M_PI;
+            while (desired_yaw_ned < -M_PI) desired_yaw_ned += 2.0f * M_PI;
 
             // Publish the calculated setpoint
-            publishVehicleAttitudeSetpoint(roll_pitch[0], roll_pitch[1], thrust, 0.0f);
+            publishVehicleAttitudeSetpoint(roll_pitch[0], roll_pitch[1], thrust, desired_yaw_ned);
 
             // Publish debug variables
-            publishDebugVariables(position, l_vicon_velocity, {x_error_local, y_error_local, z_error}, thrust);
+            publishDebugVariables({l_vicon_position[0], l_vicon_position[1], l_vicon_position[2]}, l_vicon_velocity, {x_error_local, y_error_local, z_error}, thrust);
 
             //if (std::abs(x_error_local) < 0.01f && std::abs(y_error_local) < 0.01f && std::abs(z_error) < 0.01f) {
             //    std::cout << "Goal position reached." << std::endl;

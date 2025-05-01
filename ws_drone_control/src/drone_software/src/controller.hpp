@@ -18,7 +18,7 @@ public:
     Controller(rclcpp::Node::SharedPtr node); // Constructor to initialize the node
     void initialize(rclcpp::Node::SharedPtr node); // Activation of ROS topics
     void publishVehicleAttitudeSetpoint(float roll, float pitch, float thrust, float yaw); // Publish attitude setpoint
-    void startGoalPositionThread(const std::array<float, 3>& goal_position); // Start thread for goal position control
+    void startGoalPositionThread(const std::array<float, 3>& goal_position, float goal_vicon_yaw); // Start thread for goal position control
     void stopGoalPositionThread(); // Stop the goal position thread
     void simulateDroneCommands(const std::array<float, 3>& xyz_error, float yaw); // Simulate drone commands
     void manualMotorSet(float T); // Set the motor thrust directly
@@ -57,6 +57,9 @@ private:
 
     rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr ros_debug_pub_; // Publisher for debug variables
     void publishDebugVariables(const std::array<float, 3>& position, const std::array<float, 3>& velocity, const std::array<float, 3>& errors, float thrust); // Publish debug variables
+    std::array<float, 4> vehicle_attitude_quaternion_; // Store the quaternion data from the imu
+    float initial_yaw_offset_ = 0.0f;
+    float getCorrectedYaw(float imu_yaw, float vicon_yaw); // Correct yaw using IMU and Vicon data
 };
 
 #endif
