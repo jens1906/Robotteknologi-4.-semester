@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
         
             // Check if it's time to call `initialize.turn_on_drone()`
             auto now = std::chrono::steady_clock::now();
-            if (running.load() && std::chrono::duration_cast<std::chrono::milliseconds>(now - last_drone_update).count() >= 50) {
+            if (running.load() && std::chrono::duration_cast<std::chrono::milliseconds>(now - last_drone_update).count() >= 250) {
                 initialize.turn_on_drone();  // Send the keep-alive command
                 last_drone_update = now;    // Update the last execution time
             }
