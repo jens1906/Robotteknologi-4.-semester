@@ -54,9 +54,6 @@ private:
     mutable std::mutex vicon_mutex_; // Mutex for Vicon data synchronization
     std::condition_variable vicon_update_cv_; // Condition variable for Vicon updates
     bool vicon_updated_ = false; // Flag to indicate a new Vicon update
-
-    rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr ros_debug_pub_; // Publisher for debug variables
-    void publishDebugVariables(const std::array<float, 3>& position, const std::array<float, 3>& velocity, const std::array<float, 3>& errors, float thrust); // Publish debug variables
 };
 
 #endif
