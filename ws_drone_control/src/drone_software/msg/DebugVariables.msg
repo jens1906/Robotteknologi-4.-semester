@@ -1,0 +1,13 @@
+float32 x
+float32 y
+float32 z
+float32 vx
+float32 vy
+float32 vz
+float32 ex
+float32 ey
+float32 ez
+float32 thrust
+float32 goal_x
+float32 goal_y
+float32 goal_z

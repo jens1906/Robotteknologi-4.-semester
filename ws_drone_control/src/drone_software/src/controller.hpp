@@ -12,6 +12,7 @@
 #include <px4_msgs/msg/vehicle_attitude_setpoint.hpp>
 #include <condition_variable>
 #include <mutex>
+#include "drone_software/msg/debug_variables.hpp" // Include the new message type
 
 class Controller {
 public:
@@ -62,6 +63,7 @@ private:
     float initial_yaw_offset_; // Initial yaw offset for Vicon data
 
     rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr ros_debug_pub_; // Publisher for debug variables
+    rclcpp::Publisher<drone_software::msg::DebugVariables>::SharedPtr ros_debug_pub_; // Publisher for debug variables
     void publishDebugVariables(const std::array<float, 3>& position, const std::array<float, 3>& velocity, const std::array<float, 3>& errors, float thrust, const std::array<float, 3>& goal_position); // Publish debug variables
 };
 
