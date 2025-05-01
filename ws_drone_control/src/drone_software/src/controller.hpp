@@ -54,6 +54,9 @@ private:
     std::atomic<float> target_z_{0.0f}; // Target z position
     std::atomic<float> max_z_thrust_{0.0f}; // Maximum z thrust
 
+    std::array<float, 4> vehicle_attitude_quaternion_; // Store the latest vehicle attitude quaternion
+    float initial_yaw_offset_; // Initial yaw offset for Vicon data
+
     mutable std::mutex vicon_mutex_; // Mutex for Vicon data synchronization
     std::condition_variable vicon_update_cv_; // Condition variable for Vicon updates
     bool vicon_updated_ = false; // Flag to indicate a new Vicon update

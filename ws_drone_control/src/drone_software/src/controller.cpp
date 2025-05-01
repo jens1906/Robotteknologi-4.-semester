@@ -374,6 +374,6 @@ void Controller::stopZControlMode() {
 
 void Controller::publishDebugVariables(const std::array<float, 3>& position, const std::array<float, 3>& velocity, const std::array<float, 3>& errors, float thrust, const std::array<float, 3>& goal_position) {
     std_msgs::msg::Float64MultiArray debug_msg;
-    debug_msg.data = {position[0], position[1], position[2], velocity[0], velocity[1], velocity[2], errors[0], errors[1], errors[2], thrust, goal_position[0], goal_position[1], goal_position[2]};
+    debug_msg.data = {position[0], position[1], position[2], velocity[0], velocity[1], velocity[2], errors[0], errors[1], errors[2], thrust, goal_position[0], goal_position[1], goal_position[2], goal_yaw};
     ros_debug_pub_->publish(debug_msg);
 }
