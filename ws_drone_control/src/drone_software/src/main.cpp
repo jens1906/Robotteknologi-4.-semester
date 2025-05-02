@@ -78,7 +78,7 @@ int main(int argc, char *argv[]) {
                 controller.vicon_position_[1],
                 controller.goal_position[2]
             };
-            while(std::abs(landing_position[1] - landing_position[0]) > 0.1f || landing_position[1] == 100) {
+            while(std::abs(landing_position[1] - landing_position[0]) > 0.05f || landing_position[1] == 100) {
                 auto current_time = std::chrono::steady_clock::now();
                 auto elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(current_time - last_execution_time);
                 if (elapsed_time.count() >= 2) {  // Check if 2 seconds have passed
@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) {
                     controller.goal_position = {
                         controller.goal_position[0],
                         controller.goal_position[1],
-                        controller.goal_position[2] - 0.2f
+                        controller.goal_position[2] - 0.15f
                     };  // Gradually reduce the z-coordinate
         
                     // Reset the timer
