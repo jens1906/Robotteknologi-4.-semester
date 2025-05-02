@@ -1,0 +1,12 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ws_drone_control/install/px4_msgs/lib/python3.12/site-packages",
+        "/home/jens/ros2_ws/install/turtlesim/lib/python3.12/site-packages",
+        "/opt/ros/jazzy/lib/python3.12/site-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/jens/Documents/GitHub/Robotteknologi-4.-semester/ws_drone_control/install/px4_msgs/lib/python3.12/site-packages",
+        "/home/jens/ros2_ws/install/turtlesim/lib/python3.12/site-packages",
+        "/opt/ros/jazzy/lib/python3.12/site-packages"
+    ]
+}

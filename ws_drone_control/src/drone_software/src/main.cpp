@@ -73,18 +73,22 @@ int main(int argc, char *argv[]) {
         } else if (input == "turnoff") {
             RCLCPP_INFO(node->get_logger(), "Turning off the drone...");
             auto last_execution_time = std::chrono::steady_clock::now();
-
-            while(std::abs(landing_position[1] - landing_position[0]) > 0.2f || landing_position[1] == 100) {
+            controller.goal_position = {
+                controller.vicon_position_[0],
+                controller.vicon_position_[1],
+                controller.goal_position[2]
+            };
+            while(std::abs(landing_position[1] - landing_position[0]) > 0.1f || landing_position[1] == 100) {
                 auto current_time = std::chrono::steady_clock::now();
                 auto elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(current_time - last_execution_time);
-                if (elapsed_time.count() >= 1) {  // Check if 2 seconds have passed
+                if (elapsed_time.count() >= 2) {  // Check if 2 seconds have passed
                     landing_position[1] = landing_position[0];  // Update landing position
                     landing_position[0] = controller.vicon_position_[2];  // Update landing position
                     // Code to execute every 2 seconds
                     controller.goal_position = {
                         controller.goal_position[0],
                         controller.goal_position[1],
-                        controller.goal_position[2] - 0.05f
+                        controller.goal_position[2] - 0.2f
                     };  // Gradually reduce the z-coordinate
         
                     // Reset the timer
