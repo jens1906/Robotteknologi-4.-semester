@@ -89,7 +89,7 @@ The control panel should explain the implemented commands.
   
 Note: This code can be built and run using both ROS 2 Humble and ROS 2 Jazzy. This means it can run locally on the Raspberry Pi or on another computer on the same network. In the latter case, the Raspberry acts as a ROS 2 topic router. Some issues with this can occur and the most typical can be fixed by:
 
-**Firewall access**
+**Firewall access**  
 Ensure your firewall does not block ROS 2 topics:  
 ```bash
  sudo ufw disable
@@ -100,7 +100,7 @@ Ensure your firewall does not block ROS 2 topics:
  sudo ufw enable
 ```
 
-**Restart ROS**
+**Restart ROS**  
 Sometimes a restart of ROS is useful which is done by:  
 ```bash
 ros2 daemon stop
@@ -109,7 +109,7 @@ ros2 daemon start
 
 ## Contributors
 This project was developed by a group of students from Aalborg University, as part of the 4th semester in the Robot technologi bachalor.  
-- Andre Vester Magnusson
+- André Vester Magnusson
 - Daniel Holst Dreier
 - Jens Søby Hansen
 - Mads Majlund Thomsen
@@ -125,4 +125,4 @@ https://docs.px4.io/main/en/ros2/user_guide.html#setup-micro-xrce-dds-agent-clie
 https://docs.px4.io/main/en/flight_modes/offboard.html?utm_source  
 https://ardupilot.org/copter/docs/common-thecubeorange-overview.html  
 https://github.com/PX4/px4_msgs/tree/release/1.15  
-https://github.com/AAU-Space-Robotics/drone-software/tree/main?tab=readme-ov-file  
+https://github.com/AAU-Space-Robotics/drone-software/tree/main
