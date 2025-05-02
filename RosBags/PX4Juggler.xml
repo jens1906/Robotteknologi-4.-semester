@@ -1,0 +1,534 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<root>
+ <tabbed_widget name="Main Window" parent="main_window">
+  <Tab tab_name="Dpos" containers="1">
+   <Container>
+    <DockSplitter count="2" sizes="0.717418;0.282582" orientation="-">
+     <DockSplitter count="2" sizes="0.500627;0.499373" orientation="|">
+      <DockSplitter count="2" sizes="0.5;0.5" orientation="-">
+       <DockArea name="Position N [m]">
+        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+         <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+         <limitY/>
+        </plot>
+       </DockArea>
+       <DockArea name="Position E [m]">
+        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+         <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+         <limitY/>
+        </plot>
+       </DockArea>
+      </DockSplitter>
+      <DockArea name="Position Vector (N&amp;E) [m]">
+       <plot mode="XYPlot" flip_x="false" flip_y="false" style="Lines">
+        <range left="-0.156317" right="0.156317" top="0.104283" bottom="-0.104283"/>
+        <limitY/>
+       </plot>
+      </DockArea>
+     </DockSplitter>
+     <DockArea name="Position D [m]">
+      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+       <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+       <limitY min="-10" max="10"/>
+      </plot>
+     </DockArea>
+    </DockSplitter>
+   </Container>
+  </Tab>
+  <Tab tab_name="Dvel" containers="1">
+   <Container>
+    <DockSplitter count="2" sizes="0.699147;0.300853" orientation="-">
+     <DockSplitter count="2" sizes="0.500627;0.499373" orientation="|">
+      <DockSplitter count="2" sizes="0.500873;0.499127" orientation="-">
+       <DockArea name="Velocity N [m/s]">
+        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+         <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+         <limitY min="-10" max="10"/>
+        </plot>
+       </DockArea>
+       <DockArea name="Velocity E [m/s]">
+        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+         <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+         <limitY min="-10" max="10"/>
+        </plot>
+       </DockArea>
+      </DockSplitter>
+      <DockArea name="Velocity Vector (N&amp;E) [m/s]">
+       <plot mode="XYPlot" flip_x="false" flip_y="false" style="Lines">
+        <range left="-16.371681" right="16.371681" top="10.442478" bottom="-10.442478"/>
+        <limitY min="-10" max="10"/>
+       </plot>
+      </DockArea>
+     </DockSplitter>
+     <DockArea name="Velocity D [m/s]">
+      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+       <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+       <limitY min="-10" max="10"/>
+      </plot>
+     </DockArea>
+    </DockSplitter>
+   </Container>
+  </Tab>
+  <Tab tab_name="Dacc" containers="1">
+   <Container>
+    <DockSplitter count="2" sizes="0.693057;0.306943" orientation="-">
+     <DockSplitter count="2" sizes="0.500627;0.499373" orientation="|">
+      <DockSplitter count="2" sizes="0.5;0.5" orientation="-">
+       <DockArea name="Acceleration N [m/s²]">
+        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+         <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+         <limitY min="-6" max="6"/>
+        </plot>
+       </DockArea>
+       <DockArea name="Acceleration E [m/s²]">
+        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+         <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+         <limitY min="-6" max="6"/>
+        </plot>
+       </DockArea>
+      </DockSplitter>
+      <DockArea name="Acceleration Vector (N&amp;E) [m/s²]">
+       <plot mode="XYPlot" flip_x="false" flip_y="false" style="Lines">
+        <range left="-9.902004" right="9.902004" top="6.253898" bottom="-6.253898"/>
+        <limitY min="-6" max="6"/>
+       </plot>
+      </DockArea>
+     </DockSplitter>
+     <DockArea name="Acceleration D [m/s²]">
+      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+       <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+       <limitY min="-15" max="1"/>
+      </plot>
+     </DockArea>
+    </DockSplitter>
+   </Container>
+  </Tab>
+  <Tab tab_name="Drpy" containers="1">
+   <Container>
+    <DockSplitter count="2" sizes="0.690621;0.309379" orientation="-">
+     <DockSplitter count="2" sizes="0.679825;0.320175" orientation="|">
+      <DockSplitter count="2" sizes="0.5;0.5" orientation="-">
+       <DockArea name="Roll [rad]">
+        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+         <range left="0.109412" right="107.658572" top="0.200000" bottom="-0.200000"/>
+         <limitY min="-0.2" max="0.2"/>
+         <curve name="quattoroll" color="#ff7f0e"/>
+        </plot>
+       </DockArea>
+       <DockArea name="Pitch [rad]">
+        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+         <range left="0.109412" right="107.658572" top="0.200000" bottom="-0.200000"/>
+         <limitY min="-0.2" max="0.2"/>
+         <curve name="quattopitch" color="#1ac938"/>
+        </plot>
+       </DockArea>
+      </DockSplitter>
+      <DockArea name="Roll &amp; Pitch vector [rad]">
+       <plot mode="XYPlot" flip_x="false" flip_y="false" style="Lines">
+        <range left="-0.228004" right="0.242964" top="0.300000" bottom="-0.200000"/>
+        <limitY min="-0.2" max="0.3"/>
+        <curve curve_x="quattoroll" name="quatto[roll;pitch]" color="#f14cc1" curve_y="quattopitch"/>
+       </plot>
+      </DockArea>
+     </DockSplitter>
+     <DockArea name="Yaw [rad]">
+      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+       <range left="0.109412" right="107.658572" top="2.000000" bottom="-2.000000"/>
+       <limitY min="-2" max="2"/>
+       <curve name="quattoyaw" color="#d62728"/>
+      </plot>
+     </DockArea>
+    </DockSplitter>
+   </Container>
+  </Tab>
+  <Tab tab_name="Dvelrpy" containers="1">
+   <Container>
+    <DockSplitter count="2" sizes="0.741488;0.258512" orientation="-">
+     <DockSplitter count="2" sizes="0.500627;0.499373" orientation="|">
+      <DockSplitter count="2" sizes="0.500852;0.499148" orientation="-">
+       <DockArea name="Angular Velocity Picth [rad/s]">
+        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+         <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+         <limitY min="-2" max="2"/>
+        </plot>
+       </DockArea>
+       <DockArea name="Angular Velocity Roll [rad/s]">
+        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+         <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+         <limitY min="-2" max="2"/>
+        </plot>
+       </DockArea>
+      </DockSplitter>
+      <DockArea name="Angular velocity Pitch &amp; Roll [rad/s]">
+       <plot mode="XYPlot" flip_x="false" flip_y="false" style="Lines">
+        <range left="-3.032922" right="3.032922" top="2.000000" bottom="-2.000000"/>
+        <limitY min="-2" max="2"/>
+       </plot>
+      </DockArea>
+     </DockSplitter>
+     <DockArea name="Angular Velocity Yaw [rad/s]">
+      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+       <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+       <limitY min="-2" max="2"/>
+      </plot>
+     </DockArea>
+    </DockSplitter>
+   </Container>
+  </Tab>
+  <Tab tab_name="Daccrpy" containers="1">
+   <Container>
+    <DockSplitter count="3" sizes="0.376263;0.348485;0.275253" orientation="-">
+     <DockArea name="Angular Acceleration Roll  [m/s²]">
+      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+       <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+       <limitY min="-30" max="30"/>
+      </plot>
+     </DockArea>
+     <DockArea name="Angular Acceleration Pitch  [m/s²]">
+      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+       <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+       <limitY min="-30" max="30"/>
+      </plot>
+     </DockArea>
+     <DockArea name="Angular Acceleration Yaw [m/s²]">
+      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+       <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+       <limitY min="-30" max="30"/>
+      </plot>
+     </DockArea>
+    </DockSplitter>
+   </Container>
+  </Tab>
+  <Tab tab_name="|" containers="1">
+   <Container>
+    <DockSplitter count="1" sizes="1" orientation="-">
+     <DockArea name="&lt;--- Drone input  |  Vicon input --->">
+      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+       <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+       <limitY/>
+      </plot>
+     </DockArea>
+    </DockSplitter>
+   </Container>
+  </Tab>
+  <Tab tab_name="Vpos" containers="1">
+   <Container>
+    <DockSplitter count="2" sizes="0.655298;0.344702" orientation="-">
+     <DockSplitter count="2" sizes="0.500627;0.499373" orientation="|">
+      <DockSplitter count="2" sizes="0.500931;0.499069" orientation="-">
+       <DockArea name="X [m]">
+        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+         <range left="0.000000" right="107.624788" top="0.240526" bottom="-1.177363"/>
+         <limitY/>
+         <curve name="/Vicon/data[2]" color="#1f77b4">
+          <transform name="Outlier Removal" alias="/Vicon/data[2][Outlier Removal]">
+           <options value="100"/>
+          </transform>
+         </curve>
+         <curve name="/debug_variables/data[10]" color="#f14cc1"/>
+        </plot>
+       </DockArea>
+       <DockArea name="Y [m]">
+        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+         <range left="0.000000" right="107.624788" top="2.280570" bottom="-0.432557"/>
+         <limitY/>
+         <curve name="/Vicon/data[3]" color="#28d627">
+          <transform name="Outlier Removal" alias="/Vicon/data[3][Derivative]">
+           <options value="100"/>
+          </transform>
+         </curve>
+         <curve name="/debug_variables/data[11]" color="#9467bd"/>
+        </plot>
+       </DockArea>
+      </DockSplitter>
+      <DockArea name="X &amp; Y [m]">
+       <plot mode="XYPlot" flip_x="false" flip_y="false" style="Lines">
+        <range left="-2.764293" right="1.827456" top="2.280890" bottom="-0.445655"/>
+        <limitY/>
+        <curve curve_x="/Vicon/data[2]" name="/Vicon/data[[2];3]]" color="#1ac938" curve_y="/Vicon/data[3]"/>
+       </plot>
+      </DockArea>
+     </DockSplitter>
+     <DockArea name="Z [m]">
+      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+       <range left="0.000000" right="107.624788" top="1.793750" bottom="-0.043750"/>
+       <limitY/>
+       <curve name="/Vicon/data[4]" color="#d62728">
+        <transform name="Outlier Removal" alias="/Vicon/data[4][Outlier Removal]">
+         <options value="100"/>
+        </transform>
+       </curve>
+       <curve name="/debug_variables/data[12]" color="#17becf"/>
+       <curve name="/debug_variables/data[9]" color="#1f77b4"/>
+      </plot>
+     </DockArea>
+    </DockSplitter>
+   </Container>
+  </Tab>
+  <Tab tab_name="Vvel" containers="1">
+   <Container>
+    <DockSplitter count="2" sizes="0.700365;0.299635" orientation="-">
+     <DockSplitter count="2" sizes="0.500627;0.499373" orientation="|">
+      <DockSplitter count="2" sizes="0.5;0.5" orientation="-">
+       <DockArea name="Velocity X [m/s]">
+        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+         <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+         <limitY/>
+        </plot>
+       </DockArea>
+       <DockArea name="Velocity Y [m/s]">
+        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+         <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+         <limitY/>
+        </plot>
+       </DockArea>
+      </DockSplitter>
+      <DockArea name="Velocity X &amp;Y [m/s]">
+       <plot mode="XYPlot" flip_x="false" flip_y="false" style="Lines">
+        <range left="-0.153911" right="0.153911" top="0.100000" bottom="-0.100000"/>
+        <limitY/>
+       </plot>
+      </DockArea>
+     </DockSplitter>
+     <DockArea name="Velocity Z [m/s]">
+      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+       <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+       <limitY/>
+      </plot>
+     </DockArea>
+    </DockSplitter>
+   </Container>
+  </Tab>
+  <Tab tab_name="Vacc" containers="1">
+   <Container>
+    <DockSplitter count="2" sizes="0.700365;0.299635" orientation="-">
+     <DockSplitter count="2" sizes="0.500627;0.499373" orientation="|">
+      <DockSplitter count="2" sizes="0.5;0.5" orientation="-">
+       <DockArea name="Acceleration X [m/s²]">
+        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+         <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+         <limitY/>
+        </plot>
+       </DockArea>
+       <DockArea name="Acceleration Y [m/s²]">
+        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+         <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+         <limitY/>
+        </plot>
+       </DockArea>
+      </DockSplitter>
+      <DockArea name="Acceleration X &amp; Y [m/s²]">
+       <plot mode="XYPlot" flip_x="false" flip_y="false" style="Lines">
+        <range left="-0.153911" right="0.153911" top="0.100000" bottom="-0.100000"/>
+        <limitY/>
+       </plot>
+      </DockArea>
+     </DockSplitter>
+     <DockArea name="Acceleration Z [m/s²]">
+      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+       <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+       <limitY/>
+      </plot>
+     </DockArea>
+    </DockSplitter>
+   </Container>
+  </Tab>
+  <Tab tab_name="Vrpy" containers="1">
+   <Container>
+    <DockSplitter count="2" sizes="0.700365;0.299635" orientation="-">
+     <DockSplitter count="2" sizes="0.500627;0.499373" orientation="|">
+      <DockSplitter count="2" sizes="0.5;0.5" orientation="-">
+       <DockArea name="Roll [rad]">
+        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+         <range left="0.000000" right="107.646110" top="3.297190" bottom="-3.287990"/>
+         <limitY/>
+         <curve name="/Vicon/data[5]" color="#1ac938"/>
+        </plot>
+       </DockArea>
+       <DockArea name="Pitch [rad]">
+        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+         <range left="0.000000" right="107.646110" top="1.241892" bottom="-0.252992"/>
+         <limitY/>
+         <curve name="/Vicon/data[6]" color="#f14cc1"/>
+        </plot>
+       </DockArea>
+      </DockSplitter>
+      <DockArea name="Roll &amp; Pitch [rad]">
+       <plot mode="XYPlot" flip_x="false" flip_y="false" style="Lines">
+        <range left="-3.287990" right="3.297190" top="2.596947" bottom="-1.608047"/>
+        <limitY/>
+        <curve curve_x="/Vicon/data[5]" name="/Vicon/data[[5];6]]" color="#9467bd" curve_y="/Vicon/data[6]"/>
+       </plot>
+      </DockArea>
+     </DockSplitter>
+     <DockArea name="Yaw [rad]">
+      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+       <range left="0.000000" right="107.646110" top="2.509145" bottom="0.810455"/>
+       <limitY/>
+       <curve name="/Vicon/data[7]" color="#ff7f0e"/>
+      </plot>
+     </DockArea>
+    </DockSplitter>
+   </Container>
+  </Tab>
+  <Tab tab_name="|" containers="1">
+   <Container>
+    <DockSplitter count="1" sizes="1" orientation="-">
+     <DockArea name="...">
+      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+       <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+       <limitY/>
+      </plot>
+     </DockArea>
+    </DockSplitter>
+   </Container>
+  </Tab>
+  <Tab tab_name="PosError" containers="1">
+   <Container>
+    <DockSplitter count="2" sizes="0.673569;0.326431" orientation="-">
+     <DockSplitter count="2" sizes="0.5;0.5" orientation="|">
+      <DockSplitter count="2" sizes="0.5;0.5" orientation="-">
+       <DockArea name="XError">
+        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+         <range left="29.564327" right="102.896611" top="1.275785" bottom="-0.907023"/>
+         <limitY/>
+         <curve name="/debug_variables/data[6]" color="#bcbd22"/>
+        </plot>
+       </DockArea>
+       <DockArea name="YError">
+        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+         <range left="29.564327" right="102.896611" top="0.638743" bottom="-0.889191"/>
+         <limitY/>
+         <curve name="/debug_variables/data[7]" color="#17becf"/>
+        </plot>
+       </DockArea>
+      </DockSplitter>
+      <DockArea name="X&amp;YError">
+       <plot mode="XYPlot" flip_x="false" flip_y="false" style="Lines">
+        <range left="-1.316041" right="1.065593" top="1.260956" bottom="-0.208424"/>
+        <limitY/>
+        <curve curve_x="/debug_variables/data[7]" name="/debug_variables/data[[7];8]]" color="#1f77b4" curve_y="/debug_variables/data[8]"/>
+       </plot>
+      </DockArea>
+     </DockSplitter>
+     <DockArea name="ZError">
+      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
+       <range left="62.888503" right="73.582795" top="1.253263" bottom="0.514726"/>
+       <limitY/>
+       <curve name="/debug_variables/data[8]" color="#9467bd"/>
+      </plot>
+     </DockArea>
+    </DockSplitter>
+   </Container>
+  </Tab>
+  <currentTabIndex index="10"/>
+ </tabbed_widget>
+ <use_relative_time_offset enabled="1"/>
+ <!-- - - - - - - - - - - - - - - -->
+ <!-- - - - - - - - - - - - - - - -->
+ <Plugins>
+  <plugin ID="DataLoad CSV">
+   <parameters time_axis="" delimiter="0"/>
+  </plugin>
+  <plugin ID="DataLoad MCAP">
+   <parameters clamp_large_arrays="0" max_array_size="500" selected_topics="/fmu/out/vehicle_odometry;/fmu/out/vehicle_attitude;/fmu/out/sensor_combined;/fmu/in/vehicle_attitude_setpoint;/debug_variables;/Vicon;/fmu/out/battery_status" use_timestamp="0"/>
+  </plugin>
+  <plugin ID="DataLoad ROS2 bags">
+   <use_header_stamp value="false"/>
+   <discard_large_arrays value="true"/>
+   <max_array_size value="100"/>
+   <boolean_strings_to_number value="true"/>
+   <remove_suffix_from_strings value="true"/>
+   <selected_topics value=""/>
+  </plugin>
+  <plugin ID="DataLoad ULog"/>
+  <plugin ID="ROS2 Topic Subscriber">
+   <use_header_stamp value="true"/>
+   <discard_large_arrays value="false"/>
+   <max_array_size value="100"/>
+   <boolean_strings_to_number value="true"/>
+   <remove_suffix_from_strings value="true"/>
+   <selected_topics value="/Vicon;/debug_variables;/fmu/in/vehicle_attitude_setpoint;/fmu/out/vehicle_attitude;/fmu/out/battery_status;/fmu/out/sensor_combined;/fmu/out/vehicle_odometry;/fmu/out/vehicle_status"/>
+  </plugin>
+  <plugin ID="UDP Server"/>
+  <plugin ID="WebSocket Server"/>
+  <plugin ID="ZMQ Subscriber"/>
+  <plugin ID="Fast Fourier Transform"/>
+  <plugin ID="Quaternion to RPY"/>
+  <plugin ID="Reactive Script Editor">
+   <library code="--[[ Helper function to create a series from arrays&#xa;&#xa; new_series: a series previously created with ScatterXY.new(name)&#xa; prefix:     prefix of the timeseries, before the index of the array&#xa; suffix_X:   suffix to complete the name of the series containing the X value. If [nil], use the index of the array.&#xa; suffix_Y:   suffix to complete the name of the series containing the Y value&#xa; timestamp:   usually the tracker_time variable&#xa;              &#xa; Example:&#xa; &#xa; Assuming we have multiple series in the form:&#xa; &#xa;   /trajectory/node.{X}/position/x&#xa;   /trajectory/node.{X}/position/y&#xa;   &#xa; where {N} is the index of the array (integer). We can create a reactive series from the array with:&#xa; &#xa;   new_series = ScatterXY.new(&quot;my_trajectory&quot;) &#xa;   CreateSeriesFromArray( new_series, &quot;/trajectory/node&quot;, &quot;position/x&quot;, &quot;position/y&quot;, tracker_time );&#xa;--]]&#xa;&#xa;function CreateSeriesFromArray( new_series, prefix, suffix_X, suffix_Y, timestamp )&#xa;  &#xa;  --- clear previous values&#xa;  new_series:clear()&#xa;  &#xa;  --- Append points to new_series&#xa;  index = 0&#xa;  while(true) do&#xa;&#xa;    x = index;&#xa;    -- if not nil, get the X coordinate from a series&#xa;    if suffix_X ~= nil then &#xa;      series_x = TimeseriesView.find( string.format( &quot;%s.%d/%s&quot;, prefix, index, suffix_X) )&#xa;      if series_x == nil then break end&#xa;      x = series_x:atTime(timestamp)&#x9; &#xa;    end&#xa;    &#xa;    series_y = TimeseriesView.find( string.format( &quot;%s.%d/%s&quot;, prefix, index, suffix_Y) )&#xa;    if series_y == nil then break end &#xa;    y = series_y:atTime(timestamp)&#xa;    &#xa;    new_series:push_back(x,y)&#xa;    index = index+1&#xa;  end&#xa;end&#xa;&#xa;--[[ Similar to the built-in function GetSeriesNames(), but select only the names with a give prefix. --]]&#xa;&#xa;function GetSeriesNamesByPrefix(prefix)&#xa;  -- GetSeriesNames(9 is a built-in function&#xa;  all_names = GetSeriesNames()&#xa;  filtered_names = {}&#xa;  for i, name in ipairs(all_names)  do&#xa;    -- check the prefix&#xa;    if name:find(prefix, 1, #prefix) then&#xa;      table.insert(filtered_names, name);&#xa;    end&#xa;  end&#xa;  return filtered_names&#xa;end&#xa;&#xa;--[[ Modify an existing series, applying offsets to all their X and Y values&#xa;&#xa; series: an existing timeseries, obtained with TimeseriesView.find(name)&#xa; delta_x: offset to apply to each x value&#xa; delta_y: offset to apply to each y value &#xa;  &#xa;--]]&#xa;&#xa;function ApplyOffsetInPlace(series, delta_x, delta_y)&#xa;  -- use C++ indeces, not Lua indeces&#xa;  for index=0, series:size()-1 do&#xa;    x,y = series:at(index)&#xa;    series:set(index, x + delta_x, y + delta_y)&#xa;  end&#xa;end&#xa;"/>
+   <scripts/>
+  </plugin>
+  <plugin ID="CSV Exporter"/>
+  <plugin ID="ROS2 Topic Re-Publisher"/>
+ </Plugins>
+ <!-- - - - - - - - - - - - - - - -->
+ <previouslyLoaded_Datafiles>
+  <fileInfo prefix="" filename="ControlSys0205v2/ControlSys0205v2_0.mcap"/>
+ </previouslyLoaded_Datafiles>
+ <!-- - - - - - - - - - - - - - - -->
+ <customMathEquations>
+  <snippet name="quattoroll">
+   <global></global>
+   <function>w = value
+x = v1
+y = v2
+z = v3
+
+dcm21 = 2 * (w * x + y * z)
+dcm22 = w*w - x*x - y*y + z*z
+
+roll = math.atan(dcm21, dcm22)
+
+return roll</function>
+   <linked_source>/fmu/out/vehicle_attitude/q[0]</linked_source>
+   <additional_sources>
+    <v1>/fmu/out/vehicle_attitude/q[1]</v1>
+    <v2>/fmu/out/vehicle_attitude/q[2]</v2>
+    <v3>/fmu/out/vehicle_attitude/q[3]</v3>
+   </additional_sources>
+  </snippet>
+  <snippet name="quattopitch">
+   <global></global>
+   <function>w = value
+x = v1
+y = v2
+z = v3
+
+dcm20 = 2 * (x * z - w * y)
+
+pitch = math.asin(-dcm20)
+
+return pitch</function>
+   <linked_source>/fmu/out/vehicle_attitude/q[0]</linked_source>
+   <additional_sources>
+    <v1>/fmu/out/vehicle_attitude/q[1]</v1>
+    <v2>/fmu/out/vehicle_attitude/q[2]</v2>
+    <v3>/fmu/out/vehicle_attitude/q[3]</v3>
+   </additional_sources>
+  </snippet>
+  <snippet name="quattoyaw">
+   <global></global>
+   <function>w = value
+x = v1
+y = v2
+z = v3
+
+dcm10 = 2 * (x * y + w * z)
+dcm00 = w*w + x*x - y*y - z*z
+
+yaw = math.atan(dcm10, dcm00)
+
+return yaw</function>
+   <linked_source>/fmu/out/vehicle_attitude/q[0]</linked_source>
+   <additional_sources>
+    <v1>/fmu/out/vehicle_attitude/q[1]</v1>
+    <v2>/fmu/out/vehicle_attitude/q[2]</v2>
+    <v3>/fmu/out/vehicle_attitude/q[3]</v3>
+   </additional_sources>
+  </snippet>
+ </customMathEquations>
+ <snippets/>
+ <!-- - - - - - - - - - - - - - - -->
+</root>
+
