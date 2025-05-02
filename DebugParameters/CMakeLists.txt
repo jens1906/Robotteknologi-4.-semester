@@ -10,7 +10,6 @@ find_package(rosidl_default_generators REQUIRED)
 # Specify the custom message files
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/DebugVariables.msg"
-  "msg/StationReport.msg"
 )
 
 # Export dependencies

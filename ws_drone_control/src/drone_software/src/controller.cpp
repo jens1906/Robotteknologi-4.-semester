@@ -74,7 +74,7 @@ void Controller::initialize(rclcpp::Node::SharedPtr node) {
         "/Vicon", qos,
         std::bind(&Controller::viconCallback, this, std::placeholders::_1));
 
-    ros_debug_pub_ = node_->create_publisher<std_msgs::msg::Float64MultiArray>("/debug_variables", 10); // Initialize debug publisher
+    ros_debug_pub_ = node_->create_publisher<drone_software::msg::DebugVariables>("/debug_variables", 10); // Initialize debug publisher
 
     // Sleep for a short duration to allow the subscriber to initialize
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -373,7 +373,22 @@ void Controller::stopZControlMode() {
 }
 
 void Controller::publishDebugVariables(const std::array<float, 3>& position, const std::array<float, 3>& velocity, const std::array<float, 3>& errors, float thrust, const std::array<float, 3>& goal_position) {
-    std_msgs::msg::Float64MultiArray debug_msg;
-    debug_msg.data = {position[0], position[1], position[2], velocity[0], velocity[1], velocity[2], errors[0], errors[1], errors[2], thrust, goal_position[0], goal_position[1], goal_position[2], goal_yaw};
+    //std_msgs::msg::Float64MultiArray debug_msg;
+    //debug_msg.data = {position[0], position[1], position[2], velocity[0], velocity[1], velocity[2], errors[0], errors[1], errors[2], thrust, goal_position[0], goal_position[1], goal_position[2], goal_yaw};
+    drone_software::msg::DebugVariables debug_msg;
+    debug_msg.x = position[0];
+    debug_msg.y = position[1];
+    debug_msg.z = position[2];
+    debug_msg.vx = velocity[0];
+    debug_msg.vy = velocity[1];
+    debug_msg.vz = velocity[2];
+    debug_msg.ex = errors[0];
+    debug_msg.ey = errors[1];
+    debug_msg.ez = errors[2];
+    debug_msg.thrust = thrust;
+    debug_msg.goal_x = goal_position[0];
+    debug_msg.goal_y = goal_position[1];
+    debug_msg.goal_z = goal_position[2];
+    debug_msg.goal_yaw = goal_yaw;
     ros_debug_pub_->publish(debug_msg);
 }
