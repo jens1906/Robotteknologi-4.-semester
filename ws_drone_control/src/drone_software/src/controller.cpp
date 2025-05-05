@@ -251,7 +251,7 @@ void Controller::startGoalPositionThread() {
             publishVehicleAttitudeSetpoint(roll_pitch[0], roll_pitch[1], thrust, desired_yaw_ned);
 
             // Publish debug variables
-            publishDebugVariables(position, l_vicon_velocity, {x_error_local, y_error_local, z_error}, thrust, {goal_position[0], goal_position[1], goal_position[2]});
+            publishDebugVariables(position, l_vicon_velocity, {x_error_local, y_error_local, z_error}, thrust, {goal_position[0], goal_position[1], goal_position[2]}, roll_pitch[0], roll_pitch[1]);
 
             //if (std::abs(x_error_local) < 0.01f && std::abs(y_error_local) < 0.01f && std::abs(z_error) < 0.01f) {
             //    std::cout << "Goal position reached." << std::endl;
@@ -372,7 +372,7 @@ void Controller::stopZControlMode() {
     }
 }
 
-void Controller::publishDebugVariables(const std::array<float, 3>& position, const std::array<float, 3>& velocity, const std::array<float, 3>& errors, float thrust, const std::array<float, 3>& goal_position) {
+void Controller::publishDebugVariables(const std::array<float, 3>& position, const std::array<float, 3>& velocity, const std::array<float, 3>& errors, float thrust, const std::array<float, 3>& goal_position, float roll_desired_pre_clamp, float pitch_desired_pre_clamp) {
     //std_msgs::msg::Float64MultiArray debug_msg;
     //debug_msg.data = {position[0], position[1], position[2], velocity[0], velocity[1], velocity[2], errors[0], errors[1], errors[2], thrust, goal_position[0], goal_position[1], goal_position[2], goal_yaw};
     drone_software::msg::DebugVariables debug_msg;
@@ -390,5 +390,7 @@ void Controller::publishDebugVariables(const std::array<float, 3>& position, con
     debug_msg.goal_y = goal_position[1];
     debug_msg.goal_z = goal_position[2];
     debug_msg.goal_yaw = goal_yaw;
+    debug_msg.roll_desired = roll_desired_pre_clamp; // Add roll desired pre-clamp
+    debug_msg.pitch_desired = pitch_desired_pre_clamp; // Add pitch desired pre-clamp
     ros_debug_pub_->publish(debug_msg);
 }

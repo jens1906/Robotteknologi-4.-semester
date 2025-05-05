@@ -12,3 +12,5 @@ float32 goal_x
 float32 goal_y
 float32 goal_z
 float32 goal_yaw
+float32 roll_desired
+float32 pitch_desired

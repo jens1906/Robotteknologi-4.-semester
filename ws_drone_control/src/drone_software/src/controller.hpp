@@ -63,7 +63,7 @@ private:
     bool vicon_updated_ = false; // Flag to indicate a new Vicon update
 
     rclcpp::Publisher<drone_software::msg::DebugVariables>::SharedPtr ros_debug_pub_; // Publisher for debug variables
-    void publishDebugVariables(const std::array<float, 3>& position, const std::array<float, 3>& velocity, const std::array<float, 3>& errors, float thrust, const std::array<float, 3>& goal_position); // Publish debug variables
+    void publishDebugVariables(const std::array<float, 3>& position, const std::array<float, 3>& velocity, const std::array<float, 3>& errors, float thrust, const std::array<float, 3>& goal_position, float roll_desired_pre_clamp, float pitch_desired_pre_clamp); // Updated signature
 };
 
 #endif
