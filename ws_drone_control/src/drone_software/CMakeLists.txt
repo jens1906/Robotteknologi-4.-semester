@@ -24,7 +24,8 @@ include_directories(src)
 add_executable(offboard_control_node src/main.cpp src/initialize.cpp src/controller.cpp)
 
 # Link dependencies and generated messages
-rosidl_target_interfaces(offboard_control_node ${PROJECT_NAME} "rosidl_typesupport_cpp")
+rosidl_get_typesupport_target(cpp_typesupport_target "${PROJECT_NAME}" "rosidl_typesupport_cpp")
+target_link_libraries(offboard_control_node "${cpp_typesupport_target}")
 ament_target_dependencies(offboard_control_node 
   rclcpp 
   px4_msgs 
