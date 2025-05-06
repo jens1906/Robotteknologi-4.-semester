@@ -47,7 +47,6 @@ void Controller::viconCallback(const std_msgs::msg::Float64MultiArray::SharedPtr
         vicon_position_[4] = msg->data[6];
         vicon_position_[5] = msg->data[7];
 
-        vicon_data_received.store(true); // Set the flag
         vicon_updated_ = true; // Set the update flag
         lock.unlock();
         vicon_update_cv_.notify_one(); // Notify the waiting thread
@@ -56,10 +55,6 @@ void Controller::viconCallback(const std_msgs::msg::Float64MultiArray::SharedPtr
         //          << ", z=" << vicon_position_[2] << ", vx=" << vicon_velocity_[0]
         //          << ", vy=" << vicon_velocity_[1] << ", vz=" << vicon_velocity_[2] << std::endl;
     }
-}
-
-bool Controller::isViconDataAvailable() const {
-    return vicon_data_received.load();
 }
 
 // Initialize ROS topics
