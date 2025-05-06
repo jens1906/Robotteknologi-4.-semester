@@ -24,7 +24,7 @@ public:
     void simulateDroneCommands(const std::array<float, 3>& xyz_error, float yaw); // Simulate drone commands
     void manualMotorSet(float T); // Set the motor thrust directly
     void viconCallback(const std_msgs::msg::Float64MultiArray::SharedPtr msg); // Callback for Vicon data
-    void isViconDataAvailable(); // Check if Vicon data is available
+    void isViconDataAvailable() const; // Check if Vicon data is available
 
     // New methods for zControlMode
     void zControlMode(float z_offset, float max_z_thrust); // Control z-axis position
