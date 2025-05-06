@@ -239,7 +239,7 @@ void Controller::startGoalPositionThread() {
             float thrust = zToThrust(z_error, l_vicon_dt);
 
             // Convert the input Vicon yaw to the drone's local frame
-            float desired_yaw_ned = -goal_yaw - initial_yaw_offset_ - M_PI/2;
+            float desired_yaw_ned = -goal_yaw - initial_yaw_offset_ + M_PI/2;
 
             // Normalize the yaw to the range [-π, π]
             while (desired_yaw_ned > M_PI) desired_yaw_ned -= 2.0f * M_PI;
