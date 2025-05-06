@@ -14,9 +14,9 @@ float32 goal_z
 float32 goal_yaw
 float32 roll_desired
 float32 pitch_desired
-float32 xy_p_outer
-float32 xy_d_outer
-float32 xy_p_inner
-float32 xy_d_inner
-float32 z_p
-float32 z_d
+float32 kp_xy_outer    # Changed from Kp_xy_outer
+float32 kd_xy_outer    # Changed from Kd_xy_outer
+float32 kp_xy_inner    # Changed from Kp_xy_inner
+float32 kd_xy_inner    # Changed from Kd_xy_inner
+float32 kp_z           # Changed from Kp_z
+float32 kd_z           # Changed from Kd_z

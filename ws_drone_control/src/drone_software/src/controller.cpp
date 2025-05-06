@@ -389,12 +389,12 @@ void Controller::publishDebugVariables(const std::array<float, 3>& position, con
     debug_msg.goal_yaw = goal_yaw;
     debug_msg.roll_desired = roll_desired_pre_clamp; // Add roll desired pre-clamp
     debug_msg.pitch_desired = pitch_desired_pre_clamp; // Add pitch desired pre-clamp
-    debug_msg.Kp_xy_outer = Kp_xy_outer;
-    debug_msg.Kd_xy_outer = Kd_xy_outer;
-    debug_msg.Kp_xy_inner = Kp_xy_inner;
-    debug_msg.Kd_xy_inner = Kd_xy_inner;
-    debug_msg.Kp_z = Kp_z;
-    debug_msg.Kd_z = Kd_z;
+     debug_msg.kp_xy_outer = Kp_xy_outer;
+    debug_msg.kd_xy_outer = Kd_xy_outer;
+    debug_msg.kp_xy_inner = Kp_xy_inner;
+    debug_msg.kd_xy_inner = Kd_xy_inner;
+    debug_msg.kp_z = Kp_z;
+    debug_msg.kd_z = Kd_z;
     ros_debug_pub_->publish(debug_msg);
 }
 
