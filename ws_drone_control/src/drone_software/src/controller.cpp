@@ -242,8 +242,8 @@ void Controller::startGoalPositionThread() {
             float desired_yaw_ned = -goal_yaw + initial_yaw_offset_;
 
             // Normalize the yaw to the range [-π, π]
-            while (desired_yaw_ned > pi_) desired_yaw_ned -= 2.0f * pi_;
-            while (desired_yaw_ned < -pi_) desired_yaw_ned += 2.0f * pi_;
+            //while (desired_yaw_ned > pi_) desired_yaw_ned -= 2.0f * pi_;
+            //while (desired_yaw_ned < -pi_) desired_yaw_ned += 2.0f * pi_;
 
             // Publish the calculated setpoint
             publishVehicleAttitudeSetpoint(roll_pitch[0], roll_pitch[1], thrust, desired_yaw_ned);
