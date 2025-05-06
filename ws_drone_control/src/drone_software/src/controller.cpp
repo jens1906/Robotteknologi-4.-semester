@@ -161,7 +161,6 @@ float Controller::zToThrust(float z_error, float dt) {
     //PD controller for Z or Thrust
     float g_compensation = 0.5; // Gravity compensation to make it hover 68.4% to hover
 
-
     static float prev_z_error = 0.0f;
 
     float z_derivative = (z_error - prev_z_error) / dt;
