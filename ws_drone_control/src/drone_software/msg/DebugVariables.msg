@@ -14,3 +14,9 @@ float32 goal_z
 float32 goal_yaw
 float32 roll_desired
 float32 pitch_desired
+float32 xy_p_outer
+float32 xy_d_outer
+float32 xy_p_inner
+float32 xy_d_inner
+float32 z_p
+float32 z_d
