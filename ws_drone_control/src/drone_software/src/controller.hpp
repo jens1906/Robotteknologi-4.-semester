@@ -33,6 +33,15 @@ public:
     float goal_yaw; // Store the goal yaw
     std::array<float, 6> vicon_position_;  // Store the latest Vicon position
 
+    void setXYOuterGains(float kp, float kd);
+    void setXYInnerGains(float kp, float kd);
+    void setZGains(float kp, float kd);
+    
+    // Add getter methods for the current values
+    std::pair<float, float> getXYOuterGains() const { return {Kp_xy_outer, Kd_xy_outer}; }
+    std::pair<float, float> getXYInnerGains() const { return {Kp_xy_inner, Kd_xy_inner}; }
+    std::pair<float, float> getZGains() const { return {Kp_z, Kd_z}; }
+
 private:
     rclcpp::Node::SharedPtr node_;  // Store the shared node
     std::array<float, 3> vicon_velocity_;  // Store the latest Vicon velocity
@@ -54,6 +63,7 @@ private:
     std::atomic<bool> stop_z_control_{false}; // Flag to stop zControlMode
     std::atomic<float> target_z_{0.0f}; // Target z position
     std::atomic<float> max_z_thrust_{0.0f}; // Maximum z thrust
+    
 
     std::array<float, 4> vehicle_attitude_quaternion_; // Store the latest vehicle attitude quaternion
     float initial_yaw_offset_; // Initial yaw offset for Vicon data
@@ -64,6 +74,13 @@ private:
 
     rclcpp::Publisher<drone_software::msg::DebugVariables>::SharedPtr ros_debug_pub_; // Publisher for debug variables
     void publishDebugVariables(const std::array<float, 3>& position, const std::array<float, 3>& velocity, const std::array<float, 3>& errors, float thrust, const std::array<float, 3>& goal_position, float roll_desired_pre_clamp, float pitch_desired_pre_clamp); // Updated signature
+
+    float Kp_xy_outer = 0.9804f; //0.111f; //Måske prøve 0.9804f   ?
+    float Kd_xy_outer = 0.6128f; //0.1804f; //Måske prøve 0.6128f   ?
+    float Kp_xy_inner = 0.2788f; //0.1f; //Måske prøve 0.2788f   ?
+    float Kd_xy_inner = 0.0523f; //0.05f; //Måske prøve 0.0523f   ?
+    float Kp_z = 0.20430f; //Perhaps.8173f (Settling time 10s)
+    float Kd_z = 1.107f; //Perhaps 2.214f (Settling time 10s)
 };
 
 #endif

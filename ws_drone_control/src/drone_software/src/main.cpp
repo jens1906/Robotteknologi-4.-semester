@@ -222,6 +222,44 @@ int main(int argc, char *argv[]) {
             } else {
                 RCLCPP_WARN(node->get_logger(), "Vicon test mode is not running.");
             }
+        } else if (input == "tune") {
+            std::string gain_type;
+            std::cout << "Enter gain type (xy_outer, xy_inner, z): ";
+            std::getline(std::cin, gain_type);
+
+            if (gain_type == "xy_outer") {
+                float kp, kd;
+                std::cout << "Enter Kp and Kd for XY outer loop (current: Kp=" 
+                        << controller.getXYOuterGains().first << ", Kd=" 
+                        << controller.getXYOuterGains().second << "): ";
+                std::cin >> kp >> kd;
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                controller.setXYOuterGains(kp, kd);
+                RCLCPP_INFO(node->get_logger(), "Updated XY outer gains: Kp=%.4f, Kd=%.4f", kp, kd);
+
+            } else if (gain_type == "xy_inner") {
+                float kp, kd;
+                std::cout << "Enter Kp and Kd for XY inner loop (current: Kp=" 
+                        << controller.getXYInnerGains().first << ", Kd=" 
+                        << controller.getXYInnerGains().second << "): ";
+                std::cin >> kp >> kd;
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                controller.setXYInnerGains(kp, kd);
+                RCLCPP_INFO(node->get_logger(), "Updated XY inner gains: Kp=%.4f, Kd=%.4f", kp, kd);
+
+            } else if (gain_type == "z") {
+                float kp, kd;
+                std::cout << "Enter Kp and Kd for Z control (current: Kp=" 
+                        << controller.getZGains().first << ", Kd=" 
+                        << controller.getZGains().second << "): ";
+                std::cin >> kp >> kd;
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                controller.setZGains(kp, kd);
+                RCLCPP_INFO(node->get_logger(), "Updated Z gains: Kp=%.4f, Kd=%.4f", kp, kd);
+
+            } else {
+                RCLCPP_WARN(node->get_logger(), "Unknown gain type: %s", gain_type.c_str());
+            }
         } else {
             RCLCPP_WARN(node->get_logger(), "Unknown command: %s", input.c_str());
         }

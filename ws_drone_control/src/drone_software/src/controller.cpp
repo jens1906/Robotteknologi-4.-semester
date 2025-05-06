@@ -1,6 +1,7 @@
 #include "controller.hpp"
 #include <iomanip> // For std::setprecision and std::fixed
 
+
 Controller::Controller(rclcpp::Node::SharedPtr node)
     : vicon_position_{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
       vicon_velocity_{0.0f, 0.0f, 0.0f},
@@ -132,10 +133,7 @@ std::array<float, 4> Controller::rpyToQuaternion(float roll, float pitch, float 
 
 std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, float x_velocity, float y_velocity, float dt) {
     //PD controller for XY or Roll and Pitch
-    float Kp_xy_outer = 0.9804f; //0.111f; //Måske prøve 0.9804f   ?
-    float Kd_xy_outer = 0.6128f; //0.1804f; //Måske prøve 0.6128f   ?
-    float Kp_xy_inner = 0.2788f; //0.1f; //Måske prøve 0.2788f   ?
-    float Kd_xy_inner = 0.0523f; //0.05f; //Måske prøve 0.0523f   ?
+
 
     static float prev_x_error = 0.0f;
     static float prev_y_error = 0.0f;
@@ -174,8 +172,7 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, flo
 float Controller::zToThrust(float z_error, float dt) {
     //PD controller for Z or Thrust
     float g_compensation = 0.5; // Gravity compensation to make it hover 68.4% to hover
-    float Kp_z = 0.20430f; //Perhaps.8173f (Settling time 10s)
-    float Kd_z = 1.107f; //Perhaps 2.214f (Settling time 10s)
+
 
     static float prev_z_error = 0.0f;
 
@@ -393,4 +390,34 @@ void Controller::publishDebugVariables(const std::array<float, 3>& position, con
     debug_msg.roll_desired = roll_desired_pre_clamp; // Add roll desired pre-clamp
     debug_msg.pitch_desired = pitch_desired_pre_clamp; // Add pitch desired pre-clamp
     ros_debug_pub_->publish(debug_msg);
+}
+
+void Controller::setXYOuterGains(float kp, float kd) {
+    // Only update if values are valid (non-zero)
+    if (kp != 0.0f) {
+        Kp_xy_outer = kp;
+    }
+    if (kd != 0.0f) {
+        Kd_xy_outer = kd;
+    }
+}
+
+void Controller::setXYInnerGains(float kp, float kd) {
+    // Only update if values are valid (non-zero)
+    if (kp != 0.0f) {
+        Kp_xy_inner = kp;
+    }
+    if (kd != 0.0f) {
+        Kd_xy_inner = kd;
+    }
+}
+
+void Controller::setZGains(float kp, float kd) {
+    // Only update if values are valid (non-zero)
+    if (kp != 0.0f) {
+        Kp_z = kp;
+    }
+    if (kd != 0.0f) {
+        Kd_z = kd;
+    }
 }
