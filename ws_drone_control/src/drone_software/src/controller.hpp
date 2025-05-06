@@ -24,8 +24,7 @@ public:
     void simulateDroneCommands(const std::array<float, 3>& xyz_error, float yaw); // Simulate drone commands
     void manualMotorSet(float T); // Set the motor thrust directly
     void viconCallback(const std_msgs::msg::Float64MultiArray::SharedPtr msg); // Callback for Vicon data
-    bool isViconDataAvailable() const;
-
+    
     // New methods for zControlMode
     void zControlMode(float z_offset, float max_z_thrust); // Control z-axis position
     void stopZControlMode(); // Stop zControlMode thread
@@ -64,8 +63,6 @@ private:
     std::atomic<bool> stop_z_control_{false}; // Flag to stop zControlMode
     std::atomic<float> target_z_{0.0f}; // Target z position
     std::atomic<float> max_z_thrust_{0.0f}; // Maximum z thrust
-
-    std::atomic<bool> vicon_data_received{false}; // Flag to track if Vicon data is received
 
     std::array<float, 4> vehicle_attitude_quaternion_; // Store the latest vehicle attitude quaternion
     float initial_yaw_offset_; // Initial yaw offset for Vicon data
