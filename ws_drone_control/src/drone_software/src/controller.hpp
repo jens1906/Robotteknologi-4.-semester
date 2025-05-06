@@ -24,9 +24,6 @@ public:
     void simulateDroneCommands(const std::array<float, 3>& xyz_error, float yaw); // Simulate drone commands
     void manualMotorSet(float T); // Set the motor thrust directly
     void viconCallback(const std_msgs::msg::Float64MultiArray::SharedPtr msg); // Callback for Vicon data
-    void isViconDataAvailable() const; // Check if Vicon data is available
-    
-    bool isViconDataAvailable() const;
 
     // New methods for zControlMode
     void zControlMode(float z_offset, float max_z_thrust); // Control z-axis position
@@ -82,10 +79,10 @@ private:
 
     float Kp_xy_outer = 0.9804f; //0.111f; //Måske prøve 0.9804f   ?
     float Kd_xy_outer = 0.6128f; //0.1804f; //Måske prøve 0.6128f   ?
-    float Kp_xy_inner = 0.2788f; //0.1f; //Måske prøve 0.2788f   ?
-    float Kd_xy_inner = 0.0523f; //0.05f; //Måske prøve 0.0523f   ?
-    float Kp_z = 0.20430f; //Perhaps 0.8173f (Settling time 10s)
-    float Kd_z = 1.107f; //Perhaps 2.214f (Settling time 10s)
+    float Kp_xy_inner = 0.2976; //0.1f; //Måske prøve 0.2788f   ?
+    float Kd_xy_inner = 0.0465f; //0.05f; //Måske prøve 0.0523f   ?
+    float Kp_z = 0.8173f; //Perhaps.8173f (Settling time 10s)
+    float Kd_z = 2.214f; //Perhaps 2.214f (Settling time 10s)
 };
 
 #endif
