@@ -59,7 +59,7 @@ void Controller::viconCallback(const std_msgs::msg::Float64MultiArray::SharedPtr
 }
 
 bool Controller::isViconDataAvailable() const {
-    return vicon_data_received.load(); // Check if data has been received
+    return vicon_data_received.load(); // Return the flag's value
 }
 
 // Initialize ROS topics
