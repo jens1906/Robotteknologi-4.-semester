@@ -47,6 +47,7 @@ void Controller::viconCallback(const std_msgs::msg::Float64MultiArray::SharedPtr
         vicon_position_[4] = msg->data[6];
         vicon_position_[5] = msg->data[7];
 
+        vicon_data_received.store(true); // Set the flag
         vicon_updated_ = true; // Set the update flag
         lock.unlock();
         vicon_update_cv_.notify_one(); // Notify the waiting thread
@@ -55,6 +56,10 @@ void Controller::viconCallback(const std_msgs::msg::Float64MultiArray::SharedPtr
         //          << ", z=" << vicon_position_[2] << ", vx=" << vicon_velocity_[0]
         //          << ", vy=" << vicon_velocity_[1] << ", vz=" << vicon_velocity_[2] << std::endl;
     }
+}
+
+bool Controller::isViconDataAvailable() const {
+    return vicon_data_received.load();
 }
 
 // Initialize ROS topics
@@ -79,6 +84,18 @@ void Controller::initialize(rclcpp::Node::SharedPtr node) {
 
     // Sleep for a short duration to allow the subscriber to initialize
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    // Calculate the initial yaw offset
+    {
+        std::unique_lock<std::mutex> lock(vicon_mutex_);
+        float imu_yaw = atan2(2.0f * (vehicle_attitude_quaternion_[0] * vehicle_attitude_quaternion_[3] +
+                                      vehicle_attitude_quaternion_[1] * vehicle_attitude_quaternion_[2]),
+                              .0f - 2.0f * (vehicle_attitude_quaternion_[2] * vehicle_attitude_quaternion_[2] +
+                                            vehicle_attitude_quaternion_[3] * vehicle_attitude_quaternion_[3]));
+        float vicon_yaw = -vicon_position_[5]; // Assuming yaw is stored in vicon_position_[5]
+        initial_yaw_offset_ = imu_yaw - vicon_yaw;
+        std::cout << "Initial Yaw Offset: " << initial_yaw_offset_ << std::endl;
+        }
 }
 
 void Controller::vehicleAttitudeCallback(const px4_msgs::msg::VehicleAttitude::SharedPtr msg) {
@@ -161,6 +178,7 @@ float Controller::zToThrust(float z_error, float dt) {
     //PD controller for Z or Thrust
     float g_compensation = 0.5; // Gravity compensation to make it hover 68.4% to hover
 
+
     static float prev_z_error = 0.0f;
 
     float z_derivative = (z_error - prev_z_error) / dt;
@@ -175,19 +193,6 @@ float Controller::zToThrust(float z_error, float dt) {
 
 void Controller::startGoalPositionThread() {
     stop_thread_.store(false);
-
-        // Calculate the initial yaw offset
-    {
-        std::unique_lock<std::mutex> lock(vicon_mutex_);
-        float imu_yaw = atan2(2.0f * (vehicle_attitude_quaternion_[0] * vehicle_attitude_quaternion_[3] +
-                                      vehicle_attitude_quaternion_[1] * vehicle_attitude_quaternion_[2]),
-                              .0f - 2.0f * (vehicle_attitude_quaternion_[2] * vehicle_attitude_quaternion_[2] +
-                                            vehicle_attitude_quaternion_[3] * vehicle_attitude_quaternion_[3]));
-        float vicon_yaw = -vicon_position_[5]; // Assuming yaw is stored in vicon_position_[5]
-        initial_yaw_offset_ = imu_yaw - vicon_yaw;
-        std::cout << "Initial Yaw Offset: " << initial_yaw_offset_ << std::endl;
-        }
-
     goal_position_thread_ = std::thread([this]() { // Remove goal_position from the capture list
         //std::cout << "Starting goalPosition thread." << std::endl;
 

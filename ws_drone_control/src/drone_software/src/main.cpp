@@ -67,6 +67,10 @@ int main(int argc, char *argv[]) {
         std::getline(std::cin, input);
 
         if (input == "turnon") {
+            if (!controller.isViconDataAvailable()) {
+                RCLCPP_WARN(node->get_logger(), "Cannot turn on the drone. No Vicon data received.");
+                continue; // Skip the rest of the loop
+            }
             RCLCPP_INFO(node->get_logger(), "Turning on the drone...");
             running.store(true);  // Start the drone thread
             // controller.publishVehicleAttitudeSetpoint({0.0f, 0.0f, 0.0f}, 0.0f);  // Example setpoint
