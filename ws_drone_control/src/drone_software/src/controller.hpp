@@ -24,6 +24,7 @@ public:
     void simulateDroneCommands(const std::array<float, 3>& xyz_error, float yaw); // Simulate drone commands
     void manualMotorSet(float T); // Set the motor thrust directly
     void viconCallback(const std_msgs::msg::Float64MultiArray::SharedPtr msg); // Callback for Vicon data
+    bool isViconDataAvailable() const;
 
     // New methods for zControlMode
     void zControlMode(float z_offset, float max_z_thrust); // Control z-axis position
@@ -72,7 +73,6 @@ private:
     mutable std::mutex vicon_mutex_; // Mutex for Vicon data synchronization
     std::condition_variable vicon_update_cv_; // Condition variable for Vicon updates
     bool vicon_updated_ = false; // Flag to indicate a new Vicon update
-    std::atomic<bool> vicon_data_received{false};
     
     rclcpp::Publisher<drone_software::msg::DebugVariables>::SharedPtr ros_debug_pub_; // Publisher for debug variables
     void publishDebugVariables(const std::array<float, 3>& position, const std::array<float, 3>& velocity, const std::array<float, 3>& errors, float thrust, const std::array<float, 3>& goal_position, float roll_desired_pre_clamp, float pitch_desired_pre_clamp); // Updated signature
