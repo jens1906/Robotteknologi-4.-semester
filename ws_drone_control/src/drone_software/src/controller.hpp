@@ -63,7 +63,8 @@ private:
     std::atomic<bool> stop_z_control_{false}; // Flag to stop zControlMode
     std::atomic<float> target_z_{0.0f}; // Target z position
     std::atomic<float> max_z_thrust_{0.0f}; // Maximum z thrust
-    
+
+    std::atomic<bool> vicon_data_received{false}; // Flag to track if Vicon data is received
 
     std::array<float, 4> vehicle_attitude_quaternion_; // Store the latest vehicle attitude quaternion
     float initial_yaw_offset_; // Initial yaw offset for Vicon data
@@ -71,7 +72,8 @@ private:
     mutable std::mutex vicon_mutex_; // Mutex for Vicon data synchronization
     std::condition_variable vicon_update_cv_; // Condition variable for Vicon updates
     bool vicon_updated_ = false; // Flag to indicate a new Vicon update
-
+    std::atomic<bool> vicon_data_received{false};
+    
     rclcpp::Publisher<drone_software::msg::DebugVariables>::SharedPtr ros_debug_pub_; // Publisher for debug variables
     void publishDebugVariables(const std::array<float, 3>& position, const std::array<float, 3>& velocity, const std::array<float, 3>& errors, float thrust, const std::array<float, 3>& goal_position, float roll_desired_pre_clamp, float pitch_desired_pre_clamp); // Updated signature
 
