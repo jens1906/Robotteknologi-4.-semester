@@ -6,10 +6,11 @@
 #include <iostream>
 #include <limits>
 
-bool is_goal_position_thread_running = false; // Flag to control the goal position thread
-std::array<float, 2> landing_position = {100,100};  // Store the latest Vicon position
+bool is_goal_position_thread_running = false;       // Flag to control the goal position thread
+std::array<float, 2> landing_position = {100, 100}; // Store the latest Vicon position
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
     // Initialize ROS 2
     rclcpp::init(argc, argv);
 
@@ -27,10 +28,11 @@ int main(int argc, char *argv[]) {
     std::atomic<bool> running(false);
     std::atomic<bool> terminate(false);
 
-    // Because we need arming and publishoffboardcontrolmode to be sent often 
+    // Because we need arming and publishoffboardcontrolmode to be sent often
     // we multithread and makes it so these commands are run in the background
     // depending on the atomic bools.
-    std::thread drone_thread([&]() {
+    std::thread drone_thread([&]()
+                             {
         while (rclcpp::ok() && !terminate.load()) {
             static auto last_drone_update = std::chrono::steady_clock::now();
         
@@ -50,217 +52,157 @@ int main(int argc, char *argv[]) {
         
             // Sleep for a short duration to avoid busy-waiting
             std::this_thread::sleep_for(std::chrono::milliseconds(5));
-        }
-    });
+        } });
 
     // A little control panel
     std::string input;
-    std::atomic<bool> test_mode(false);  // New atomic flag for test mode
+    std::atomic<bool> test_mode(false); // New atomic flag for test mode
     std::thread test_thread;
-    std::atomic<bool> vicon_test_mode(false);  // New atomic flag for Vicon test mode
+    std::atomic<bool> vicon_test_mode(false); // New atomic flag for Vicon test mode
     std::thread vicon_test_thread;
 
     std::cout << "--------------------------------------------" << std::endl;
 
-    while (rclcpp::ok()) {
+    while (rclcpp::ok())
+    {
         std::cout << "Enter command (turnon, turnoff, kill, start, stop, setpoint, test, manual, zcon, vicontest, exit): ";
         std::getline(std::cin, input);
 
-        if (input == "turnon") {
+        if (input == "turnon")
+        {
             RCLCPP_INFO(node->get_logger(), "Turning on the drone...");
-            running.store(true);  // Start the drone thread
+            running.store(true); // Start the drone thread
             // controller.publishVehicleAttitudeSetpoint({0.0f, 0.0f, 0.0f}, 0.0f);  // Example setpoint
-        } else if (input == "turnoff") {
+        }
+        else if (input == "turnoff")
+        {
             RCLCPP_INFO(node->get_logger(), "Turning off the drone...");
             auto last_execution_time = std::chrono::steady_clock::now();
             controller.goal_position = {
                 controller.vicon_position_[0],
                 controller.vicon_position_[1],
-                controller.goal_position[2]
-            };
-            landing_position = {100,100};
-            while(std::abs(landing_position[1] - landing_position[0]) > 0.05f || landing_position[1] == 100) {
+                controller.goal_position[2]};
+            landing_position = {100, 100};
+            while (std::abs(landing_position[1] - landing_position[0]) > 0.05f || landing_position[1] == 100)
+            {
                 auto current_time = std::chrono::steady_clock::now();
                 auto elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(current_time - last_execution_time);
-                if (elapsed_time.count() >= 2) {  // Check if 2 seconds have passed
-                    landing_position[1] = landing_position[0];  // Update landing position
-                    landing_position[0] = controller.vicon_position_[2];  // Update landing position
+                if (elapsed_time.count() >= 2)
+                {                                                        // Check if 2 seconds have passed
+                    landing_position[1] = landing_position[0];           // Update landing position
+                    landing_position[0] = controller.vicon_position_[2]; // Update landing position
                     // Code to execute every 2 seconds
                     controller.goal_position = {
                         controller.goal_position[0],
                         controller.goal_position[1],
-                        controller.goal_position[2] - 0.15f
-                    };  // Gradually reduce the z-coordinate
-        
+                        controller.goal_position[2] - 0.15f}; // Gradually reduce the z-coordinate
+
                     // Reset the timer
                     last_execution_time = current_time;
                     std::cout << "Vicon Position: z=" << controller.vicon_position_[2] << std::endl;
                     std::cout << "Goal Position: z=" << controller.goal_position[2] << std::endl;
-                    std::cout << "Landing Position: z=" << (landing_position[1]-landing_position[0]) << std::endl;
+                    std::cout << "Landing Position: z=" << (landing_position[1] - landing_position[0]) << std::endl;
                 }
             }
 
-            
             controller.stopGoalPositionThread();
             // controller.publishVehicleAttitudeSetpoint({0.0f, 0.0f, 0.0f}, 0.0f);  // Example setpoint
-            running.store(false);  // Stop the drone thread
-        } else if (input == "kill") {
+            running.store(false); // Stop the drone thread
+        }
+        else if (input == "kill")
+        {
             RCLCPP_INFO(node->get_logger(), "Kill command received. Disarming...");
             controller.publishVehicleAttitudeSetpoint(0.0f, 0.0f, 0.0f, 0.0f); // Example setpoint
-            running.store(false);  // Stop the drone thread
-            initialize.disarm(true);  // Disarm the drone
-        } else if (input == "exit") {
+            running.store(false);                                              // Stop the drone thread
+            initialize.disarm(true);                                           // Disarm the drone
+        }
+        else if (input == "exit")
+        {
             RCLCPP_INFO(node->get_logger(), "Exiting...");
-            terminate.store(true);  // Signal the thread to terminate
+            terminate.store(true); // Signal the thread to terminate
             controller.stopGoalPositionThread();
             initialize.disablePublishing(); // Disable publishing for safety
-            if (test_thread.joinable()) {
-                test_mode.store(false);  // Stop the test thread
+            if (test_thread.joinable())
+            {
+                test_mode.store(false); // Stop the test thread
                 test_thread.join();
             }
-            if (vicon_test_thread.joinable()) {
-                vicon_test_mode.store(false);  // Stop the Vicon test thread
+            if (vicon_test_thread.joinable())
+            {
+                vicon_test_mode.store(false); // Stop the Vicon test thread
                 vicon_test_thread.join();
             }
-            break;  // Correctly placed within the while loop
-        } else if (input == "start") {
+            rclcpp::shutdown();
+            break; // Correctly placed within the while loop
+        }
+        else if (input == "start")
+        {
             float x, y, z, yaw;
             std::cout << "Enter x, y, z, and yaw values separated by spaces: ";
             std::cin >> x >> y >> z >> yaw;
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
 
             RCLCPP_INFO(node->get_logger(), "Starting goal position thread with x: %.2f, y: %.2f, z: %.2f, yaw: %.2f", x, y, z, yaw);
-            controller.goal_position = {x, y, z};  // Store the goal position
-            controller.goal_yaw = yaw;  // Store the goal yaw
-            
-            if (is_goal_position_thread_running == false) {
-                controller.startGoalPositionThread();  // Use user-provided goal position
-                is_goal_position_thread_running = true;  // Set the flag to true
+            controller.goal_position = {x, y, z}; // Store the goal position
+            controller.goal_yaw = yaw;            // Store the goal yaw
+
+            if (is_goal_position_thread_running == false)
+            {
+                controller.startGoalPositionThread();   // Use user-provided goal position
+                is_goal_position_thread_running = true; // Set the flag to true
             }
-        } else if (input == "stop") {
+        }
+        else if (input == "stop")
+        {
             RCLCPP_INFO(node->get_logger(), "Stopping goal position thread...");
             controller.stopGoalPositionThread();
-            //} else if (input == "setpoint") {
-            //    float x, y, z;
-            //    std::cout << "Enter x, y, and z values separated by spaces: ";
-            //    std::cin >> x >> y >> z;
-            //    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
-
-            //    RCLCPP_INFO(node->get_logger(), "Altitude setpoint command received with x: %.2f, y: %.2f, z: %.2f", x, y, z);
-            //    controller.goalPosition({x, y, z});  // Use user-provided setpoint
-            } else if (input == "test") {
-            if (!test_mode.load()) {
-                float x, y, z, yaw;
-                std::cout << "Enter x, y, z, and yaw values separated by spaces: ";
-                std::cin >> x >> y >> z >> yaw;
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
-
-                test_mode.store(true);
-                test_thread = std::thread([&]() {
-                    controller.simulateDroneCommands({x, y, z}, yaw);  // Execute the command once
-                    test_mode.store(false);  // Reset the test mode flag
-                });
-                if (test_thread.joinable()) {
-                    test_thread.join();  // Ensure the thread completes before proceeding
-                }
-            } else {
-                RCLCPP_WARN(node->get_logger(), "Test mode is already running.");
-            }
-        } else if (input == "manual") {
-            float motor_power;  // Declare motor_power within the correct scope
-            std::cout << "new version 2" << std::endl;
-            std::cout << "Enter motor power (e.g., between 0.0 and 1.0): ";
-            std::cin >> motor_power;
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
-
-            if (motor_power < 0.0f || motor_power > 1.0f) {
-                RCLCPP_WARN(node->get_logger(), "Invalid motor power value. Please enter a value between 0.0 and 1.0.");
-            } else {
-                RCLCPP_INFO(node->get_logger(), "Setting motor power to %.2f.", motor_power);
-                controller.manualMotorSet(motor_power);
-            }
-        } else if (input == "zcon") {
-            float max_z_thrust;
-            std::cout << "Enter maximum z thrust (e.g., between 0.0 and 1.0): ";
-            std::cin >> max_z_thrust;
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
-
-            if (max_z_thrust < 0.0f || max_z_thrust > 1.0f) {
-                RCLCPP_WARN(node->get_logger(), "Invalid max z thrust value. Please enter a value between 0.0 and 1.0.");
-            } else {
-                RCLCPP_INFO(node->get_logger(), "Running zcon mode with max z thrust: %.2f.", max_z_thrust);
-                controller.zControlMode(1.0f, max_z_thrust);  // Target 0.5m above current position
-            }
-        } else if (input == "zconstop") {
-            RCLCPP_INFO(node->get_logger(), "Stopping zcon mode...");
-            controller.stopZControlMode();  // Stop the zControlMode thread
-        } else if (input == "vicontest") {
-            if (!vicon_test_mode.load()) {
-                vicon_test_mode.store(true);
-                vicon_test_thread = std::thread([&]() {
-                    while (vicon_test_mode.load() && rclcpp::ok()) {
-                        //auto vicon_position = controller.getViconPosition();
-                        //std::cout << "Vicon Data: x=" << vicon_position[0]
-                        //          << ", y=" << vicon_position[1]
-                        //          << ", z=" << vicon_position[2]
-                        //          << ", roll=" << vicon_position[3]
-                        //          << ", pitch=" << vicon_position[4]
-                        //          << ", yaw=" << vicon_position[5] << std::endl;
-                        //std::this_thread::sleep_for(std::chrono::milliseconds(500));  // Adjust frequency as needed
-                    }
-                });
-            } else {
-                RCLCPP_WARN(node->get_logger(), "Vicon test mode is already running.");
-            }
-        } else if (input == "stopvicontest") {
-            if (vicon_test_mode.load()) {
-                RCLCPP_INFO(node->get_logger(), "Stopping Vicon test mode...");
-                vicon_test_mode.store(false);  // Stop the Vicon test thread
-                if (vicon_test_thread.joinable()) {
-                    vicon_test_thread.join();
-                }
-            } else {
-                RCLCPP_WARN(node->get_logger(), "Vicon test mode is not running.");
-            }
-        } else if (input == "tune") {
+        }
+        else if (input == "tune")
+        {
             std::string gain_type;
             std::cout << "Enter gain type (xy_outer, xy_inner, z): ";
             std::getline(std::cin, gain_type);
 
-            if (gain_type == "xy_outer") {
+            if (gain_type == "xy_outer")
+            {
                 float kp, kd;
-                std::cout << "Enter Kp and Kd for XY outer loop (current: Kp=" 
-                        << controller.getXYOuterGains().first << ", Kd=" 
-                        << controller.getXYOuterGains().second << "): ";
+                std::cout << "Enter Kp and Kd for XY outer loop (current: Kp="
+                          << controller.getXYOuterGains().first << ", Kd="
+                          << controller.getXYOuterGains().second << "): ";
                 std::cin >> kp >> kd;
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 controller.setXYOuterGains(kp, kd);
                 RCLCPP_INFO(node->get_logger(), "Updated XY outer gains: Kp=%.4f, Kd=%.4f", kp, kd);
-
-            } else if (gain_type == "xy_inner") {
+            }
+            else if (gain_type == "xy_inner")
+            {
                 float kp, kd;
-                std::cout << "Enter Kp and Kd for XY inner loop (current: Kp=" 
-                        << controller.getXYInnerGains().first << ", Kd=" 
-                        << controller.getXYInnerGains().second << "): ";
+                std::cout << "Enter Kp and Kd for XY inner loop (current: Kp="
+                          << controller.getXYInnerGains().first << ", Kd="
+                          << controller.getXYInnerGains().second << "): ";
                 std::cin >> kp >> kd;
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 controller.setXYInnerGains(kp, kd);
                 RCLCPP_INFO(node->get_logger(), "Updated XY inner gains: Kp=%.4f, Kd=%.4f", kp, kd);
-
-            } else if (gain_type == "z") {
+            }
+            else if (gain_type == "z")
+            {
                 float kp, kd;
-                std::cout << "Enter Kp and Kd for Z control (current: Kp=" 
-                        << controller.getZGains().first << ", Kd=" 
-                        << controller.getZGains().second << "): ";
+                std::cout << "Enter Kp and Kd for Z control (current: Kp="
+                          << controller.getZGains().first << ", Kd="
+                          << controller.getZGains().second << "): ";
                 std::cin >> kp >> kd;
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 controller.setZGains(kp, kd);
                 RCLCPP_INFO(node->get_logger(), "Updated Z gains: Kp=%.4f, Kd=%.4f", kp, kd);
-
-            } else {
+            }
+            else
+            {
                 RCLCPP_WARN(node->get_logger(), "Unknown gain type: %s", gain_type.c_str());
             }
-        } else {
+        }
+        else
+        {
             RCLCPP_WARN(node->get_logger(), "Unknown command: %s", input.c_str());
         }
         std::cout << "--------------------------------------------" << std::endl;
@@ -268,10 +210,12 @@ int main(int argc, char *argv[]) {
 
     // Wait for the thread to finish
     drone_thread.join();
-    if (test_thread.joinable()) {
+    if (test_thread.joinable())
+    {
         test_thread.join();
     }
-    if (vicon_test_thread.joinable()) {
+    if (vicon_test_thread.joinable())
+    {
         vicon_test_thread.join();
     }
 
