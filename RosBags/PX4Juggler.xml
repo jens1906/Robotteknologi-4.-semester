@@ -1,35 +1,39 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <root>
- <tabbed_widget name="Main Window" parent="main_window">
+ <tabbed_widget parent="main_window" name="Main Window">
   <Tab tab_name="Dpos" containers="1">
    <Container>
-    <DockSplitter count="2" sizes="0.717418;0.282582" orientation="-">
-     <DockSplitter count="2" sizes="0.500627;0.499373" orientation="|">
-      <DockSplitter count="2" sizes="0.5;0.5" orientation="-">
+    <DockSplitter sizes="0.717418;0.282582" orientation="-" count="2">
+     <DockSplitter sizes="0.50069;0.49931" orientation="|" count="2">
+      <DockSplitter sizes="0.5;0.5" orientation="-" count="2">
        <DockArea name="Position N [m]">
-        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-         <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+        <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+         <range bottom="-3695.580149" right="95.113659" top="94.758783" left="0.000000"/>
          <limitY/>
+         <curve name="/fmu/out/vehicle_local_position/x" color="#d62728"/>
         </plot>
        </DockArea>
        <DockArea name="Position E [m]">
-        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-         <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+        <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+         <range bottom="-605.731939" right="95.113659" top="28.067358" left="0.000000"/>
          <limitY/>
+         <curve name="/fmu/out/vehicle_local_position/y" color="#d62728"/>
         </plot>
        </DockArea>
       </DockSplitter>
       <DockArea name="Position Vector (N&amp;E) [m]">
-       <plot mode="XYPlot" flip_x="false" flip_y="false" style="Lines">
-        <range left="-0.156317" right="0.156317" top="0.104283" bottom="-0.104283"/>
+       <plot flip_y="false" mode="XYPlot" style="Lines" flip_x="false">
+        <range bottom="-2783.903801" right="1078.958988" top="2206.239220" left="-5537.299886"/>
         <limitY/>
+        <curve name="/fmu/out/vehicle_local_position/[x;y]" color="#ff7f0e" curve_y="/fmu/out/vehicle_local_position/y" curve_x="/fmu/out/vehicle_local_position/x"/>
        </plot>
       </DockArea>
      </DockSplitter>
      <DockArea name="Position D [m]">
-      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-       <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
-       <limitY min="-10" max="10"/>
+      <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+       <range bottom="-1.115776" right="95.113659" top="1.582531" left="0.000000"/>
+       <limitY/>
+       <curve name="/fmu/out/vehicle_local_position/z" color="#1ac938"/>
       </plot>
      </DockArea>
     </DockSplitter>
@@ -37,33 +41,38 @@
   </Tab>
   <Tab tab_name="Dvel" containers="1">
    <Container>
-    <DockSplitter count="2" sizes="0.699147;0.300853" orientation="-">
-     <DockSplitter count="2" sizes="0.500627;0.499373" orientation="|">
-      <DockSplitter count="2" sizes="0.500873;0.499127" orientation="-">
+    <DockSplitter sizes="0.699147;0.300853" orientation="-" count="2">
+     <DockSplitter sizes="0.50069;0.49931" orientation="|" count="2">
+      <DockSplitter sizes="0.500873;0.499127" orientation="-" count="2">
        <DockArea name="Velocity N [m/s]">
-        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-         <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
-         <limitY min="-10" max="10"/>
+        <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+         <range bottom="-94.923994" right="95.113659" top="2.787646" left="0.000000"/>
+         <limitY/>
+         <curve name="/fmu/out/vehicle_odometry/velocity[0]" color="#9467bd"/>
+         <curve name="/fmu/out/vehicle_local_position/vx" color="#1ac938"/>
         </plot>
        </DockArea>
        <DockArea name="Velocity E [m/s]">
-        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-         <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
-         <limitY min="-10" max="10"/>
+        <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+         <range bottom="-12.473838" right="95.113659" top="14.999312" left="0.000000"/>
+         <limitY/>
+         <curve name="/fmu/out/vehicle_local_position/vy" color="#d62728"/>
         </plot>
        </DockArea>
       </DockSplitter>
       <DockArea name="Velocity Vector (N&amp;E) [m/s]">
-       <plot mode="XYPlot" flip_x="false" flip_y="false" style="Lines">
-        <range left="-16.371681" right="16.371681" top="10.442478" bottom="-10.442478"/>
+       <plot flip_y="false" mode="XYPlot" style="Lines" flip_x="false">
+        <range bottom="-42.950942" right="9.833386" top="42.950942" left="-110.357064"/>
         <limitY min="-10" max="10"/>
+        <curve name="/fmu/out/vehicle_local_position/v[x;y]" color="#ff7f0e" curve_y="/fmu/out/vehicle_local_position/vy" curve_x="/fmu/out/vehicle_local_position/vx"/>
        </plot>
       </DockArea>
      </DockSplitter>
      <DockArea name="Velocity D [m/s]">
-      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-       <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
-       <limitY min="-10" max="10"/>
+      <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+       <range bottom="-1.283576" right="95.113659" top="0.982245" left="0.000000"/>
+       <limitY/>
+       <curve name="/fmu/out/vehicle_local_position/z_deriv" color="#17becf"/>
       </plot>
      </DockArea>
     </DockSplitter>
@@ -71,33 +80,37 @@
   </Tab>
   <Tab tab_name="Dacc" containers="1">
    <Container>
-    <DockSplitter count="2" sizes="0.693057;0.306943" orientation="-">
-     <DockSplitter count="2" sizes="0.500627;0.499373" orientation="|">
-      <DockSplitter count="2" sizes="0.5;0.5" orientation="-">
+    <DockSplitter sizes="0.693057;0.306943" orientation="-" count="2">
+     <DockSplitter sizes="0.50069;0.49931" orientation="|" count="2">
+      <DockSplitter sizes="0.5;0.5" orientation="-" count="2">
        <DockArea name="Acceleration N [m/s²]">
-        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-         <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
-         <limitY min="-6" max="6"/>
+        <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+         <range bottom="-26.335885" right="95.113659" top="15.281783" left="0.000000"/>
+         <limitY/>
+         <curve name="/fmu/out/vehicle_local_position/ax" color="#17becf"/>
         </plot>
        </DockArea>
        <DockArea name="Acceleration E [m/s²]">
-        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-         <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
-         <limitY min="-6" max="6"/>
+        <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+         <range bottom="-14.452625" right="95.113659" top="13.513286" left="0.000000"/>
+         <limitY/>
+         <curve name="/fmu/out/vehicle_local_position/ay" color="#bcbd22"/>
         </plot>
        </DockArea>
       </DockSplitter>
       <DockArea name="Acceleration Vector (N&amp;E) [m/s²]">
-       <plot mode="XYPlot" flip_x="false" flip_y="false" style="Lines">
-        <range left="-9.902004" right="9.902004" top="6.253898" bottom="-6.253898"/>
+       <plot flip_y="false" mode="XYPlot" style="Lines" flip_x="false">
+        <range bottom="-16.514947" right="17.860359" top="16.514947" left="-28.914461"/>
         <limitY min="-6" max="6"/>
+        <curve name="/fmu/out/vehicle_local_position/a[x;y]" color="#d62728" curve_y="/fmu/out/vehicle_local_position/ay" curve_x="/fmu/out/vehicle_local_position/ax"/>
        </plot>
       </DockArea>
      </DockSplitter>
      <DockArea name="Acceleration D [m/s²]">
-      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-       <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
-       <limitY min="-15" max="1"/>
+      <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+       <range bottom="-13.520861" right="95.113659" top="11.950573" left="0.000000"/>
+       <limitY/>
+       <curve name="/fmu/out/vehicle_local_position/az" color="#1f77b4"/>
       </plot>
      </DockArea>
     </DockSplitter>
@@ -105,37 +118,40 @@
   </Tab>
   <Tab tab_name="Drpy" containers="1">
    <Container>
-    <DockSplitter count="2" sizes="0.690621;0.309379" orientation="-">
-     <DockSplitter count="2" sizes="0.679825;0.320175" orientation="|">
-      <DockSplitter count="2" sizes="0.5;0.5" orientation="-">
+    <DockSplitter sizes="0.690621;0.309379" orientation="-" count="2">
+     <DockSplitter sizes="0.68;0.32" orientation="|" count="2">
+      <DockSplitter sizes="0.5;0.5" orientation="-" count="2">
        <DockArea name="Roll [rad]">
-        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-         <range left="0.109412" right="107.658572" top="0.200000" bottom="-0.200000"/>
-         <limitY min="-0.2" max="0.2"/>
-         <curve name="quattoroll" color="#ff7f0e"/>
+        <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+         <range bottom="-0.212189" right="95.113659" top="0.299739" left="0.000000"/>
+         <limitY/>
+         <curve name="/debug_variables/roll_desired" color="#1f77b4"/>
+         <curve name="QuatToRoll" color="#ff7f0e"/>
+         <curve name="QuatToRollReal" color="#9467bd"/>
         </plot>
        </DockArea>
        <DockArea name="Pitch [rad]">
-        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-         <range left="0.109412" right="107.658572" top="0.200000" bottom="-0.200000"/>
-         <limitY min="-0.2" max="0.2"/>
-         <curve name="quattopitch" color="#1ac938"/>
+        <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+         <range bottom="-0.377146" right="95.113659" top="0.214077" left="0.000000"/>
+         <limitY/>
+         <curve name="/debug_variables/pitch_desired" color="#d62728"/>
+         <curve name="QuatToPitchReal" color="#17becf"/>
         </plot>
        </DockArea>
       </DockSplitter>
       <DockArea name="Roll &amp; Pitch vector [rad]">
-       <plot mode="XYPlot" flip_x="false" flip_y="false" style="Lines">
-        <range left="-0.228004" right="0.242964" top="0.300000" bottom="-0.200000"/>
+       <plot flip_y="false" mode="XYPlot" style="Lines" flip_x="false">
+        <range bottom="-0.319983" right="0.320652" top="0.419983" left="-0.320652"/>
         <limitY min="-0.2" max="0.3"/>
-        <curve curve_x="quattoroll" name="quatto[roll;pitch]" color="#f14cc1" curve_y="quattopitch"/>
        </plot>
       </DockArea>
      </DockSplitter>
      <DockArea name="Yaw [rad]">
-      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-       <range left="0.109412" right="107.658572" top="2.000000" bottom="-2.000000"/>
-       <limitY min="-2" max="2"/>
-       <curve name="quattoyaw" color="#d62728"/>
+      <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+       <range bottom="-3.289334" right="95.113659" top="3.296285" left="0.000000"/>
+       <limitY/>
+       <curve name="/fmu/out/vehicle_local_position/heading" color="#1ac938"/>
+       <curve name="QuatToYaw" color="#1ac938"/>
       </plot>
      </DockArea>
     </DockSplitter>
@@ -143,33 +159,37 @@
   </Tab>
   <Tab tab_name="Dvelrpy" containers="1">
    <Container>
-    <DockSplitter count="2" sizes="0.741488;0.258512" orientation="-">
-     <DockSplitter count="2" sizes="0.500627;0.499373" orientation="|">
-      <DockSplitter count="2" sizes="0.500852;0.499148" orientation="-">
+    <DockSplitter sizes="0.741778;0.258222" orientation="-" count="2">
+     <DockSplitter sizes="0.50069;0.49931" orientation="|" count="2">
+      <DockSplitter sizes="0.5;0.5" orientation="-" count="2">
        <DockArea name="Angular Velocity Picth [rad/s]">
-        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-         <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+        <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+         <range bottom="-2.000000" right="95.113659" top="2.000000" left="0.000000"/>
          <limitY min="-2" max="2"/>
+         <curve name="/fmu/out/vehicle_odometry/angular_velocity[0]" color="#bcbd22"/>
         </plot>
        </DockArea>
        <DockArea name="Angular Velocity Roll [rad/s]">
-        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-         <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+        <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+         <range bottom="-2.000000" right="95.113659" top="2.000000" left="0.000000"/>
          <limitY min="-2" max="2"/>
+         <curve name="/fmu/out/vehicle_odometry/angular_velocity[1]" color="#1f77b4"/>
         </plot>
        </DockArea>
       </DockSplitter>
       <DockArea name="Angular velocity Pitch &amp; Roll [rad/s]">
-       <plot mode="XYPlot" flip_x="false" flip_y="false" style="Lines">
-        <range left="-3.032922" right="3.032922" top="2.000000" bottom="-2.000000"/>
+       <plot flip_y="false" mode="XYPlot" style="Lines" flip_x="false">
+        <range bottom="-2.575318" right="2.546515" top="2.575318" left="-4.287203"/>
         <limitY min="-2" max="2"/>
+        <curve name="/fmu/out/vehicle_odometry/angular_velocity[[0];1]]" color="#1ac938" curve_y="/fmu/out/vehicle_odometry/angular_velocity[1]" curve_x="/fmu/out/vehicle_odometry/angular_velocity[0]"/>
        </plot>
       </DockArea>
      </DockSplitter>
      <DockArea name="Angular Velocity Yaw [rad/s]">
-      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-       <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+      <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+       <range bottom="-2.000000" right="95.113659" top="2.000000" left="0.000000"/>
        <limitY min="-2" max="2"/>
+       <curve name="/fmu/out/vehicle_odometry/angular_velocity[2]" color="#d62728"/>
       </plot>
      </DockArea>
     </DockSplitter>
@@ -177,23 +197,26 @@
   </Tab>
   <Tab tab_name="Daccrpy" containers="1">
    <Container>
-    <DockSplitter count="3" sizes="0.376263;0.348485;0.275253" orientation="-">
+    <DockSplitter sizes="0.37561;0.34878;0.27561" orientation="-" count="3">
      <DockArea name="Angular Acceleration Roll  [m/s²]">
-      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-       <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
-       <limitY min="-30" max="30"/>
+      <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+       <range bottom="-147.380393" right="95.113659" top="113.355501" left="0.000000"/>
+       <limitY/>
+       <curve name="Daccroll" color="#ff7f0e"/>
       </plot>
      </DockArea>
      <DockArea name="Angular Acceleration Pitch  [m/s²]">
-      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-       <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
-       <limitY min="-30" max="30"/>
+      <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+       <range bottom="-87.985250" right="95.113659" top="82.473309" left="0.000000"/>
+       <limitY/>
+       <curve name="Daccpitch" color="#f14cc1"/>
       </plot>
      </DockArea>
      <DockArea name="Angular Acceleration Yaw [m/s²]">
-      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-       <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+      <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+       <range bottom="-30.000000" right="95.113659" top="30.000000" left="0.000000"/>
        <limitY min="-30" max="30"/>
+       <curve name="Daccyaw" color="#9467bd"/>
       </plot>
      </DockArea>
     </DockSplitter>
@@ -201,10 +224,10 @@
   </Tab>
   <Tab tab_name="|" containers="1">
    <Container>
-    <DockSplitter count="1" sizes="1" orientation="-">
+    <DockSplitter sizes="1" orientation="-" count="1">
      <DockArea name="&lt;--- Drone input  |  Vicon input --->">
-      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-       <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+      <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+       <range bottom="0.000000" right="1.000000" top="1.000000" left="0.000000"/>
        <limitY/>
       </plot>
      </DockArea>
@@ -213,53 +236,57 @@
   </Tab>
   <Tab tab_name="Vpos" containers="1">
    <Container>
-    <DockSplitter count="2" sizes="0.655298;0.344702" orientation="-">
-     <DockSplitter count="2" sizes="0.500627;0.499373" orientation="|">
-      <DockSplitter count="2" sizes="0.500931;0.499069" orientation="-">
+    <DockSplitter sizes="0.655298;0.344702" orientation="-" count="2">
+     <DockSplitter sizes="0.50069;0.49931" orientation="|" count="2">
+      <DockSplitter sizes="0.500931;0.499069" orientation="-" count="2">
        <DockArea name="X [m]">
-        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-         <range left="0.000000" right="107.624788" top="0.240526" bottom="-1.177363"/>
+        <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+         <range bottom="-1.546834" right="95.113659" top="1.796889" left="0.000000"/>
          <limitY/>
          <curve name="/Vicon/data[2]" color="#1f77b4">
-          <transform name="Outlier Removal" alias="/Vicon/data[2][Outlier Removal]">
+          <transform alias="/Vicon/data[2][Outlier Removal]" name="Outlier Removal">
            <options value="100"/>
           </transform>
          </curve>
-         <curve name="/debug_variables/data[10]" color="#f14cc1"/>
+         <curve name="/debug_variables/goal_x" color="#1ac938"/>
+         <curve name="/debug_variables/ex" color="#bcbd22"/>
         </plot>
        </DockArea>
        <DockArea name="Y [m]">
-        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-         <range left="0.000000" right="107.624788" top="2.280570" bottom="-0.432557"/>
+        <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+         <range bottom="-2.087081" right="95.113659" top="2.532098" left="0.000000"/>
          <limitY/>
          <curve name="/Vicon/data[3]" color="#28d627">
-          <transform name="Outlier Removal" alias="/Vicon/data[3][Derivative]">
+          <transform alias="/Vicon/data[3][Derivative]" name="Outlier Removal">
            <options value="100"/>
           </transform>
          </curve>
-         <curve name="/debug_variables/data[11]" color="#9467bd"/>
+         <curve name="/debug_variables/goal_y" color="#ff7f0e"/>
+         <curve name="/debug_variables/ey" color="#1f77b4"/>
         </plot>
        </DockArea>
       </DockSplitter>
       <DockArea name="X &amp; Y [m]">
-       <plot mode="XYPlot" flip_x="false" flip_y="false" style="Lines">
-        <range left="-2.764293" right="1.827456" top="2.280890" bottom="-0.445655"/>
+       <plot flip_y="false" mode="XYPlot" style="Lines" flip_x="false">
+        <range bottom="-1.088290" right="2.648631" top="2.619897" left="-2.960320"/>
         <limitY/>
-        <curve curve_x="/Vicon/data[2]" name="/Vicon/data[[2];3]]" color="#1ac938" curve_y="/Vicon/data[3]"/>
+        <curve name="/Vicon/data[[2];3]]" color="#1ac938" curve_y="/Vicon/data[3]" curve_x="/Vicon/data[2]"/>
+        <curve name="/debug_variables/goal_[x;y]" color="#9467bd" curve_y="/debug_variables/goal_y" curve_x="/debug_variables/goal_x"/>
        </plot>
       </DockArea>
      </DockSplitter>
      <DockArea name="Z [m]">
-      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-       <range left="0.000000" right="107.624788" top="1.793750" bottom="-0.043750"/>
+      <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+       <range bottom="-0.382056" right="95.113659" top="1.802001" left="0.000000"/>
        <limitY/>
        <curve name="/Vicon/data[4]" color="#d62728">
-        <transform name="Outlier Removal" alias="/Vicon/data[4][Outlier Removal]">
+        <transform alias="/Vicon/data[4][Outlier Removal]" name="Outlier Removal">
          <options value="100"/>
         </transform>
        </curve>
-       <curve name="/debug_variables/data[12]" color="#17becf"/>
-       <curve name="/debug_variables/data[9]" color="#1f77b4"/>
+       <curve name="/debug_variables/goal_z" color="#f14cc1"/>
+       <curve name="/debug_variables/thrust" color="#17becf"/>
+       <curve name="/debug_variables/ez" color="#d62728"/>
       </plot>
      </DockArea>
     </DockSplitter>
@@ -267,33 +294,38 @@
   </Tab>
   <Tab tab_name="Vvel" containers="1">
    <Container>
-    <DockSplitter count="2" sizes="0.700365;0.299635" orientation="-">
-     <DockSplitter count="2" sizes="0.500627;0.499373" orientation="|">
-      <DockSplitter count="2" sizes="0.5;0.5" orientation="-">
+    <DockSplitter sizes="0.700365;0.299635" orientation="-" count="2">
+     <DockSplitter sizes="0.50069;0.49931" orientation="|" count="2">
+      <DockSplitter sizes="0.5;0.5" orientation="-" count="2">
        <DockArea name="Velocity X [m/s]">
-        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-         <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+        <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+         <range bottom="-3.470168" right="95.113659" top="3.125045" left="0.000000"/>
          <limitY/>
+         <curve name="/debug_variables/vx" color="#1ac938"/>
+         <curve name="Viconvx" color="#17becf"/>
         </plot>
        </DockArea>
        <DockArea name="Velocity Y [m/s]">
-        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-         <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+        <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+         <range bottom="-0.798032" right="95.113659" top="1.315942" left="0.000000"/>
          <limitY/>
+         <curve name="/debug_variables/vy" color="#ff7f0e"/>
         </plot>
        </DockArea>
       </DockSplitter>
       <DockArea name="Velocity X &amp;Y [m/s]">
-       <plot mode="XYPlot" flip_x="false" flip_y="false" style="Lines">
-        <range left="-0.153911" right="0.153911" top="0.100000" bottom="-0.100000"/>
+       <plot flip_y="false" mode="XYPlot" style="Lines" flip_x="false">
+        <range bottom="-0.798032" right="1.287483" top="1.315942" left="-1.655240"/>
         <limitY/>
+        <curve name="/debug_variables/v[x;y]" color="#bcbd22" curve_y="/debug_variables/vy" curve_x="/debug_variables/vx"/>
        </plot>
       </DockArea>
      </DockSplitter>
      <DockArea name="Velocity Z [m/s]">
-      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-       <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+      <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+       <range bottom="-0.953780" right="95.113659" top="1.487721" left="0.000000"/>
        <limitY/>
+       <curve name="/debug_variables/vz" color="#f14cc1"/>
       </plot>
      </DockArea>
     </DockSplitter>
@@ -301,33 +333,37 @@
   </Tab>
   <Tab tab_name="Vacc" containers="1">
    <Container>
-    <DockSplitter count="2" sizes="0.700365;0.299635" orientation="-">
-     <DockSplitter count="2" sizes="0.500627;0.499373" orientation="|">
-      <DockSplitter count="2" sizes="0.5;0.5" orientation="-">
+    <DockSplitter sizes="0.700365;0.299635" orientation="-" count="2">
+     <DockSplitter sizes="0.50069;0.49931" orientation="|" count="2">
+      <DockSplitter sizes="0.5;0.5" orientation="-" count="2">
        <DockArea name="Acceleration X [m/s²]">
-        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-         <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+        <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+         <range bottom="-28.831095" right="95.113659" top="22.616863" left="0.000000"/>
          <limitY/>
+         <curve name="DEaccx" color="#1f77b4"/>
         </plot>
        </DockArea>
        <DockArea name="Acceleration Y [m/s²]">
-        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-         <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+        <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+         <range bottom="-14.506890" right="95.113659" top="16.785457" left="0.000000"/>
          <limitY/>
+         <curve name="DEaccy" color="#d62728"/>
         </plot>
        </DockArea>
       </DockSplitter>
       <DockArea name="Acceleration X &amp; Y [m/s²]">
-       <plot mode="XYPlot" flip_x="false" flip_y="false" style="Lines">
-        <range left="-0.153911" right="0.153911" top="0.100000" bottom="-0.100000"/>
+       <plot flip_y="false" mode="XYPlot" style="Lines" flip_x="false">
+        <range bottom="-20.297366" right="26.733418" top="22.575932" left="-32.947650"/>
         <limitY/>
+        <curve name="DEacc[x;y]" color="#bcbd22" curve_y="DEaccy" curve_x="DEaccx"/>
        </plot>
       </DockArea>
      </DockSplitter>
      <DockArea name="Acceleration Z [m/s²]">
-      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-       <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+      <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+       <range bottom="-16.257611" right="95.113659" top="20.480745" left="0.000000"/>
        <limitY/>
+       <curve name="DEaccz" color="#1ac938"/>
       </plot>
      </DockArea>
     </DockSplitter>
@@ -335,35 +371,36 @@
   </Tab>
   <Tab tab_name="Vrpy" containers="1">
    <Container>
-    <DockSplitter count="2" sizes="0.700365;0.299635" orientation="-">
-     <DockSplitter count="2" sizes="0.500627;0.499373" orientation="|">
-      <DockSplitter count="2" sizes="0.5;0.5" orientation="-">
+    <DockSplitter sizes="0.700365;0.299635" orientation="-" count="2">
+     <DockSplitter sizes="0.50069;0.49931" orientation="|" count="2">
+      <DockSplitter sizes="0.5;0.5" orientation="-" count="2">
        <DockArea name="Roll [rad]">
-        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-         <range left="0.000000" right="107.646110" top="3.297190" bottom="-3.287990"/>
+        <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+         <range bottom="-0.229780" right="95.113659" top="0.269180" left="0.000000"/>
          <limitY/>
          <curve name="/Vicon/data[5]" color="#1ac938"/>
         </plot>
        </DockArea>
        <DockArea name="Pitch [rad]">
-        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-         <range left="0.000000" right="107.646110" top="1.241892" bottom="-0.252992"/>
+        <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+         <range bottom="-0.441787" right="95.113659" top="0.259088" left="0.000000"/>
          <limitY/>
          <curve name="/Vicon/data[6]" color="#f14cc1"/>
+         <curve name="/debug_variables/roll_desired" color="#1f77b4"/>
         </plot>
        </DockArea>
       </DockSplitter>
       <DockArea name="Roll &amp; Pitch [rad]">
-       <plot mode="XYPlot" flip_x="false" flip_y="false" style="Lines">
-        <range left="-3.287990" right="3.297190" top="2.596947" bottom="-1.608047"/>
+       <plot flip_y="false" mode="XYPlot" style="Lines" flip_x="false">
+        <range bottom="-2.039721" right="3.291328" top="2.606121" left="-3.287027"/>
         <limitY/>
-        <curve curve_x="/Vicon/data[5]" name="/Vicon/data[[5];6]]" color="#9467bd" curve_y="/Vicon/data[6]"/>
+        <curve name="/Vicon/data[[5];6]]" color="#9467bd" curve_y="/Vicon/data[6]" curve_x="/Vicon/data[5]"/>
        </plot>
       </DockArea>
      </DockSplitter>
      <DockArea name="Yaw [rad]">
-      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-       <range left="0.000000" right="107.646110" top="2.509145" bottom="0.810455"/>
+      <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+       <range bottom="-1.605325" right="95.113659" top="0.268925" left="0.000000"/>
        <limitY/>
        <curve name="/Vicon/data[7]" color="#ff7f0e"/>
       </plot>
@@ -373,65 +410,103 @@
   </Tab>
   <Tab tab_name="|" containers="1">
    <Container>
-    <DockSplitter count="1" sizes="1" orientation="-">
+    <DockSplitter sizes="1" orientation="-" count="1">
      <DockArea name="...">
-      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-       <range left="0.000000" right="1.000000" top="1.000000" bottom="0.000000"/>
+      <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+       <range bottom="0.000000" right="1.000000" top="1.000000" left="0.000000"/>
        <limitY/>
       </plot>
      </DockArea>
     </DockSplitter>
    </Container>
   </Tab>
-  <Tab tab_name="PosError" containers="1">
+  <Tab tab_name="Battery" containers="1">
    <Container>
-    <DockSplitter count="2" sizes="0.673569;0.326431" orientation="-">
-     <DockSplitter count="2" sizes="0.5;0.5" orientation="|">
-      <DockSplitter count="2" sizes="0.5;0.5" orientation="-">
-       <DockArea name="XError">
-        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-         <range left="29.564327" right="102.896611" top="1.275785" bottom="-0.907023"/>
-         <limitY/>
-         <curve name="/debug_variables/data[6]" color="#bcbd22"/>
-        </plot>
-       </DockArea>
-       <DockArea name="YError">
-        <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-         <range left="29.564327" right="102.896611" top="0.638743" bottom="-0.889191"/>
-         <limitY/>
-         <curve name="/debug_variables/data[7]" color="#17becf"/>
-        </plot>
-       </DockArea>
-      </DockSplitter>
-      <DockArea name="X&amp;YError">
-       <plot mode="XYPlot" flip_x="false" flip_y="false" style="Lines">
-        <range left="-1.316041" right="1.065593" top="1.260956" bottom="-0.208424"/>
-        <limitY/>
-        <curve curve_x="/debug_variables/data[7]" name="/debug_variables/data[[7];8]]" color="#1f77b4" curve_y="/debug_variables/data[8]"/>
-       </plot>
-      </DockArea>
-     </DockSplitter>
-     <DockArea name="ZError">
-      <plot mode="TimeSeries" flip_x="false" flip_y="false" style="Lines">
-       <range left="62.888503" right="73.582795" top="1.253263" bottom="0.514726"/>
+    <DockSplitter sizes="0.250305;0.250305;0.249084;0.250305" orientation="-" count="4">
+     <DockArea name="Battery [V]">
+      <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+       <range bottom="0.094468" right="95.113659" top="17.014159" left="0.000000"/>
        <limitY/>
-       <curve name="/debug_variables/data[8]" color="#9467bd"/>
+       <curve name="/fmu/out/battery_status/voltage_filtered_v" color="#bcbd22"/>
+       <curve name="/fmu/out/battery_status/current_filtered_a" color="#1f77b4"/>
+      </plot>
+     </DockArea>
+     <DockArea name="...">
+      <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+       <range bottom="0.175069" right="95.113659" top="13.709517" left="0.000000"/>
+       <limitY/>
+       <curve name="/fmu/out/battery_status/current_filtered_a" color="#1f77b4"/>
+      </plot>
+     </DockArea>
+     <DockArea name="...">
+      <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+       <range bottom="65.534255" right="95.113659" top="298.822206" left="0.000000"/>
+       <limitY/>
+       <curve name="/fmu/out/battery_status/discharged_mah" color="#9467bd"/>
+      </plot>
+     </DockArea>
+     <DockArea name="Battery percentage [%]">
+      <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+       <range bottom="0.660627" right="95.113659" top="0.987483" left="0.000000"/>
+       <limitY/>
+       <curve name="/fmu/out/battery_status/remaining" color="#17becf"/>
       </plot>
      </DockArea>
     </DockSplitter>
    </Container>
   </Tab>
-  <currentTabIndex index="10"/>
+  <Tab tab_name="Motors" containers="1">
+   <Container>
+    <DockSplitter sizes="0.200489;0.199267;0.200489;0.199267;0.200489" orientation="-" count="5">
+     <DockArea name="M1 [PWM]">
+      <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+       <range bottom="977.500000" right="95.113659" top="1922.500000" left="0.000000"/>
+       <limitY/>
+       <curve name="/fmu/out/actuator_outputs/output[0]" color="#d62728"/>
+      </plot>
+     </DockArea>
+     <DockArea name="M2 [PWM]">
+      <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+       <range bottom="977.500000" right="95.113659" top="1922.500000" left="0.000000"/>
+       <limitY/>
+       <curve name="/fmu/out/actuator_outputs/output[1]" color="#1ac938"/>
+      </plot>
+     </DockArea>
+     <DockArea name="M3 [PWM]">
+      <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+       <range bottom="977.500000" right="95.113659" top="1922.500000" left="0.000000"/>
+       <limitY/>
+       <curve name="/fmu/out/actuator_outputs/output[2]" color="#ff7f0e"/>
+      </plot>
+     </DockArea>
+     <DockArea name="M4 [PWM]">
+      <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+       <range bottom="977.500000" right="95.113659" top="1922.500000" left="0.000000"/>
+       <limitY/>
+       <curve name="/fmu/out/actuator_outputs/output[3]" color="#f14cc1"/>
+      </plot>
+     </DockArea>
+     <DockArea name="Desired Thrust [0-(-1)]">
+      <plot flip_y="false" mode="TimeSeries" style="Lines" flip_x="false">
+       <range bottom="-1.025000" right="95.113659" top="0.025000" left="0.000000"/>
+       <limitY/>
+       <curve name="/fmu/in/vehicle_attitude_setpoint/thrust_body[2]" color="#d62728"/>
+      </plot>
+     </DockArea>
+    </DockSplitter>
+   </Container>
+  </Tab>
+  <currentTabIndex index="13"/>
  </tabbed_widget>
  <use_relative_time_offset enabled="1"/>
  <!-- - - - - - - - - - - - - - - -->
  <!-- - - - - - - - - - - - - - - -->
  <Plugins>
   <plugin ID="DataLoad CSV">
-   <parameters time_axis="" delimiter="0"/>
+   <parameters delimiter="0" time_axis=""/>
   </plugin>
   <plugin ID="DataLoad MCAP">
-   <parameters clamp_large_arrays="0" max_array_size="500" selected_topics="/fmu/out/vehicle_odometry;/fmu/out/vehicle_attitude;/fmu/out/sensor_combined;/fmu/in/vehicle_attitude_setpoint;/debug_variables;/Vicon;/fmu/out/battery_status" use_timestamp="0"/>
+   <parameters selected_topics="/parameter_events;/fmu/out/vehicle_status;/fmu/out/vehicle_odometry;/fmu/out/vehicle_local_position;/fmu/out/vehicle_control_mode;/fmu/out/vehicle_command_ack;/fmu/out/vehicle_attitude;/fmu/out/sensor_combined;/fmu/out/position_setpoint_triplet;/fmu/out/manual_control_setpoint;/fmu/out/failsafe_flags;/fmu/out/estimator_status_flags;/fmu/in/vehicle_command;/fmu/in/vehicle_attitude_setpoint;/fmu/in/offboard_control_mode;/events/write_split;/debug_variables;/Vicon;/fmu/out/battery_status;/rosout;/fmu/out/actuator_outputs" use_timestamp="0" clamp_large_arrays="0" max_array_size="500"/>
   </plugin>
   <plugin ID="DataLoad ROS2 bags">
    <use_header_stamp value="false"/>
@@ -464,11 +539,114 @@
  </Plugins>
  <!-- - - - - - - - - - - - - - - -->
  <previouslyLoaded_Datafiles>
-  <fileInfo prefix="" filename="ControlSys0205v2/ControlSys0205v2_0.mcap"/>
+  <fileInfo prefix="" filename="ControlSys0205v2/ControlSys0205v2_0.mcap">
+   <plugin ID="DataLoad MCAP">
+    <parameters selected_topics="/parameter_events;/fmu/out/vehicle_status;/fmu/out/vehicle_odometry;/fmu/out/vehicle_local_position;/fmu/out/vehicle_control_mode;/fmu/out/vehicle_command_ack;/fmu/out/vehicle_attitude;/fmu/out/timesync_status;/fmu/out/sensor_combined;/fmu/out/position_setpoint_triplet;/fmu/out/manual_control_setpoint;/fmu/out/failsafe_flags;/fmu/out/estimator_status_flags;/fmu/out/battery_status;/fmu/in/vehicle_command;/fmu/in/vehicle_attitude_setpoint;/fmu/in/offboard_control_mode;/events/write_split;/debug_variables;/Vicon" use_timestamp="0" clamp_large_arrays="0" max_array_size="500"/>
+   </plugin>
+  </fileInfo>
  </previouslyLoaded_Datafiles>
  <!-- - - - - - - - - - - - - - - -->
  <customMathEquations>
-  <snippet name="quattoroll">
+  <snippet name="Daccpitch">
+   <global>firstX = 0
+firstY = 0
+is_first = true
+secondX = 0
+secondY = 0
+is_second = false</global>
+   <function>-- Wait for initial values
+if (is_first) then
+  is_first = false
+  is_second = true
+  firstX = time
+  firstY = value
+end
+
+if (is_second) then
+  is_second = false
+  secondX = time
+  secondY = value
+end
+
+-- Central derivative: dy/dx ~= f(x+delta_x)-f(x-delta_x)/(2*delta_x)
+dx = time - firstX
+dy = value - firstY
+-- Increment
+firstX = secondX
+firstY = secondY
+secondX = time
+secondY = value
+
+return dy/dx</function>
+   <linked_source>/fmu/out/vehicle_odometry/angular_velocity[1]</linked_source>
+  </snippet>
+  <snippet name="Daccyaw">
+   <global>firstX = 0
+firstY = 0
+is_first = true
+secondX = 0
+secondY = 0
+is_second = false</global>
+   <function>-- Wait for initial values
+if (is_first) then
+  is_first = false
+  is_second = true
+  firstX = time
+  firstY = value
+end
+
+if (is_second) then
+  is_second = false
+  secondX = time
+  secondY = value
+end
+
+-- Central derivative: dy/dx ~= f(x+delta_x)-f(x-delta_x)/(2*delta_x)
+dx = time - firstX
+dy = value - firstY
+-- Increment
+firstX = secondX
+firstY = secondY
+secondX = time
+secondY = value
+
+return dy/dx</function>
+   <linked_source>/fmu/out/vehicle_odometry/angular_velocity[2]</linked_source>
+  </snippet>
+  <snippet name="Daccroll">
+   <global>firstX = 0
+firstY = 0
+is_first = true
+secondX = 0
+secondY = 0
+is_second = false</global>
+   <function>-- Wait for initial values
+if (is_first) then
+  is_first = false
+  is_second = true
+  firstX = time
+  firstY = value
+end
+
+if (is_second) then
+  is_second = false
+  secondX = time
+  secondY = value
+end
+
+-- Central derivative: dy/dx ~= f(x+delta_x)-f(x-delta_x)/(2*delta_x)
+dx = time - firstX
+dy = value - firstY
+-- Increment
+firstX = secondX
+firstY = secondY
+secondX = time
+secondY = value
+
+return dy/dx</function>
+   <linked_source>/fmu/out/vehicle_odometry/angular_velocity[0]</linked_source>
+  </snippet>
+  <snippet name="QuatToRollReal">
    <global></global>
    <function>w = value
 x = v1
@@ -488,26 +666,7 @@ return roll</function>
     <v3>/fmu/out/vehicle_attitude/q[3]</v3>
    </additional_sources>
   </snippet>
-  <snippet name="quattopitch">
-   <global></global>
-   <function>w = value
-x = v1
-y = v2
-z = v3
-
-dcm20 = 2 * (x * z - w * y)
-
-pitch = math.asin(-dcm20)
-
-return pitch</function>
-   <linked_source>/fmu/out/vehicle_attitude/q[0]</linked_source>
-   <additional_sources>
-    <v1>/fmu/out/vehicle_attitude/q[1]</v1>
-    <v2>/fmu/out/vehicle_attitude/q[2]</v2>
-    <v3>/fmu/out/vehicle_attitude/q[3]</v3>
-   </additional_sources>
-  </snippet>
-  <snippet name="quattoyaw">
+  <snippet name="QuatToYawReal">
    <global></global>
    <function>w = value
 x = v1
@@ -526,6 +685,197 @@ return yaw</function>
     <v2>/fmu/out/vehicle_attitude/q[2]</v2>
     <v3>/fmu/out/vehicle_attitude/q[3]</v3>
    </additional_sources>
+  </snippet>
+  <snippet name="QuatToYaw">
+   <global></global>
+   <function>w = value
+x = v1
+y = v2
+z = v3
+
+dcm10 = 2 * (x * y + w * z)
+dcm00 = w*w + x*x - y*y - z*z
+
+yaw = math.atan(dcm10, dcm00)
+
+return yaw</function>
+   <linked_source>/fmu/in/vehicle_attitude_setpoint/q_d[0]</linked_source>
+   <additional_sources>
+    <v1>/fmu/in/vehicle_attitude_setpoint/q_d[1]</v1>
+    <v2>/fmu/in/vehicle_attitude_setpoint/q_d[2]</v2>
+    <v3>/fmu/in/vehicle_attitude_setpoint/q_d[3]</v3>
+   </additional_sources>
+  </snippet>
+  <snippet name="QuatToRoll">
+   <global></global>
+   <function>w = value
+x = v1
+y = v2
+z = v3
+
+dcm21 = 2 * (w * x + y * z)
+dcm22 = w*w - x*x - y*y + z*z
+
+roll = math.atan(dcm21, dcm22)
+
+return roll</function>
+   <linked_source>/fmu/in/vehicle_attitude_setpoint/q_d[0]</linked_source>
+   <additional_sources>
+    <v1>/fmu/in/vehicle_attitude_setpoint/q_d[1]</v1>
+    <v2>/fmu/in/vehicle_attitude_setpoint/q_d[2]</v2>
+    <v3>/fmu/in/vehicle_attitude_setpoint/q_d[3]</v3>
+   </additional_sources>
+  </snippet>
+  <snippet name="DEaccz">
+   <global>firstX = 0
+firstY = 0
+is_first = true
+secondX = 0
+secondY = 0
+is_second = false</global>
+   <function>-- Wait for initial values
+if (is_first) then
+  is_first = false
+  is_second = true
+  firstX = time
+  firstY = value
+end
+
+if (is_second) then
+  is_second = false
+  secondX = time
+  secondY = value
+end
+
+-- Central derivative: dy/dx ~= f(x+delta_x)-f(x-delta_x)/(2*delta_x)
+dx = time - firstX
+dy = value - firstY
+-- Increment
+firstX = secondX
+firstY = secondY
+secondX = time
+secondY = value
+
+return dy/dx</function>
+   <linked_source>/debug_variables/vz</linked_source>
+  </snippet>
+  <snippet name="QuatToPitchReal">
+   <global></global>
+   <function>w = value
+x = v1
+y = v2
+z = v3
+
+dcm20 = 2 * (x * z - w * y)
+
+pitch = math.asin(-dcm20)
+
+return pitch</function>
+   <linked_source>/fmu/out/vehicle_attitude/q[0]</linked_source>
+   <additional_sources>
+    <v1>/fmu/out/vehicle_attitude/q[1]</v1>
+    <v2>/fmu/out/vehicle_attitude/q[2]</v2>
+    <v3>/fmu/out/vehicle_attitude/q[3]</v3>
+   </additional_sources>
+  </snippet>
+  <snippet name="DEaccy">
+   <global>firstX = 0
+firstY = 0
+is_first = true
+secondX = 0
+secondY = 0
+is_second = false</global>
+   <function>-- Wait for initial values
+if (is_first) then
+  is_first = false
+  is_second = true
+  firstX = time
+  firstY = value
+end
+
+if (is_second) then
+  is_second = false
+  secondX = time
+  secondY = value
+end
+
+-- Central derivative: dy/dx ~= f(x+delta_x)-f(x-delta_x)/(2*delta_x)
+dx = time - firstX
+dy = value - firstY
+-- Increment
+firstX = secondX
+firstY = secondY
+secondX = time
+secondY = value
+
+return dy/dx</function>
+   <linked_source>/debug_variables/vy</linked_source>
+  </snippet>
+  <snippet name="DEaccx">
+   <global>firstX = 0
+firstY = 0
+is_first = true
+secondX = 0
+secondY = 0
+is_second = false</global>
+   <function>-- Wait for initial values
+if (is_first) then
+  is_first = false
+  is_second = true
+  firstX = time
+  firstY = value
+end
+
+if (is_second) then
+  is_second = false
+  secondX = time
+  secondY = value
+end
+
+-- Central derivative: dy/dx ~= f(x+delta_x)-f(x-delta_x)/(2*delta_x)
+dx = time - firstX
+dy = value - firstY
+-- Increment
+firstX = secondX
+firstY = secondY
+secondX = time
+secondY = value
+
+return dy/dx</function>
+   <linked_source>/debug_variables/vx</linked_source>
+  </snippet>
+  <snippet name="Viconvx">
+   <global>firstX = 0
+firstY = 0
+is_first = true
+secondX = 0
+secondY = 0
+is_second = false</global>
+   <function>-- Wait for initial values
+if (is_first) then
+  is_first = false
+  is_second = true
+  firstX = time
+  firstY = value
+end
+
+if (is_second) then
+  is_second = false
+  secondX = time
+  secondY = value
+end
+
+-- Central derivative: dy/dx ~= f(x+delta_x)-f(x-delta_x)/(2*delta_x)
+dx = time - firstX
+dy = value - firstY
+-- Increment
+firstX = secondX
+firstY = secondY
+secondX = time
+secondY = value
+
+return dy/dx</function>
+   <linked_source>/Vicon/data[2]</linked_source>
   </snippet>
  </customMathEquations>
  <snippets/>
