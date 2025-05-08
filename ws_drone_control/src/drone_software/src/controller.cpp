@@ -136,6 +136,8 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, flo
     // Inner loop: velocity command to roll/pitch
     float dx_inner = (vx_error - prev_vx_error) / dt;
     float dy_inner = (vy_error - prev_vy_error) / dt;
+
+    // Integral terms for inner loop (commented out for now)
     //x_integral_inner_ += vx_error * dt; // Integral term for inner loop
     //y_integral_inner_ += vy_error * dt; // Integral term for inner loop
 
