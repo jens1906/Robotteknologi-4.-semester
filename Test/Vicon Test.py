@@ -52,14 +52,34 @@ def compare(txt_coloms, mcap_coloms):
 
 def plot_columns(columns):
     column_labels = ['X', 'Y', 'Z', 'Roll', 'Pitch', 'Yaw']
+    y_axis = ['Position[m]', 'Angle[rad]']
     for i, column in enumerate(columns):
-        plt.figure()  # Create a new figure for each plot
-        plt.plot(column, marker='o', linestyle='-', markersize=1, label=column_labels[i])  # Adjust markersize and label
+        plt.figure()
+        plt.plot(column, marker='o', linestyle='-', markersize=1, label=column_labels[i])
         plt.title(f'Plot of {column_labels[i]}')
-        plt.xlabel('Index')
-        plt.ylabel('Value')
+        plt.xlabel('Time(s)')
+        plt.ylabel(y_axis[i//3])
         plt.legend()
         plt.grid(True)
+    plt.show()
+
+def plot(columns):
+    column_labels = ['X', 'Y', 'Z', 'Roll', 'Pitch', 'Yaw']
+    y_axis = ['Position[m]', 'Angle[rad]']
+    
+    # Create a 2x3 grid for all six plots
+    fig, axes = plt.subplots(2, 3, figsize=(15, 10))
+    axes = axes.flatten()  # Flatten the 2D array of axes for easier indexing
+    
+    for i, column in enumerate(columns):
+        axes[i].plot(column, marker='o', linestyle='-', markersize=1, label=column_labels[i])
+        axes[i].set_title(f'Plot of {column_labels[i]}')
+        axes[i].set_xlabel('Package number')
+        axes[i].set_ylabel(y_axis[i // 3])  # Use 'Position[m]' for first 3, 'Angle[rad]' for last 3
+        axes[i].legend()
+        axes[i].grid(True)
+    
+    plt.tight_layout()  # Adjust layout to prevent overlap
     plt.show()
 
 def get_data(within_index, outside_index, coloms):
@@ -126,10 +146,11 @@ outside_means = [np.mean(values) for values in outside_values]
 
 print("Comparing recorded Vicon data to recived data")
 compare(txt_coloms, mcap_coloms)
+print(f"Total time: {time_s} seconds")
 print("")
 
 print(f"Error interval: {outside_time} seconds")
-print(f"Total time: {time_s} seconds")
+
 
 print("Within interval:")
 print(f"x standard deviation: {within_std[0]}")
@@ -139,4 +160,4 @@ print(f"roll standard deviation: {within_std[3]}")
 print(f"pitch standard deviation: {within_std[4]}")
 print(f"yaw standard deviation: {within_std[5]}")
 
-plot_columns(txt_coloms)
+plot(txt_coloms)
