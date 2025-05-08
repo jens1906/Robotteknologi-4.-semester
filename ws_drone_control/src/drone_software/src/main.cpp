@@ -82,11 +82,11 @@ int main(int argc, char *argv[])
                 controller.vicon_position_[1],
                 controller.goal_position[2]};
             landing_position = {100, 100};
-            while (std::abs(landing_position[1] - landing_position[0]) > 0.05f || landing_position[1] == 100)
+            while (std::abs(landing_position[1] - landing_position[0]) > 0.005f || landing_position[1] == 100)
             {
                 auto current_time = std::chrono::steady_clock::now();
                 auto elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(current_time - last_execution_time);
-                if (elapsed_time.count() >= 2)
+                if (elapsed_time.count() >= 0.12f)
                 {                                                        // Check if 2 seconds have passed
                     landing_position[1] = landing_position[0];           // Update landing position
                     landing_position[0] = controller.vicon_position_[2]; // Update landing position

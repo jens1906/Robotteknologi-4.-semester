@@ -138,14 +138,14 @@ std::array<float, 2> Controller::xyToRollPitch(float x_error, float y_error, flo
     float dy_inner = (vy_error - prev_vy_error) / dt;
 
     // Integral terms for inner loop (commented out for now)
-    //x_integral_inner_ += vx_error * dt; // Integral term for inner loop
-    //y_integral_inner_ += vy_error * dt; // Integral term for inner loop
+    x_integral_inner_ += vx_error * dt; // Integral term for inner loop
+    y_integral_inner_ += vy_error * dt; // Integral term for inner loop
 
-    //float roll_desired = -(Kp_xy_inner * vy_error + Ki_xy_inner * y_integral_inner_ + Kd_xy_inner * dy_inner);
-    //float pitch_desired = Kp_xy_inner * vx_error + Ki_xy_inner * x_integral_inner_ + Kd_xy_inner * dx_inner;
+    float roll_desired = -(Kp_xy_inner * vy_error + Ki_xy_inner * y_integral_inner_ + Kd_xy_inner * dy_inner);
+    float pitch_desired = Kp_xy_inner * vx_error + Ki_xy_inner * x_integral_inner_ + Kd_xy_inner * dx_inner;
 
-    float roll_desired = -(Kp_xy_inner * vy_error + Kd_xy_inner * dy_inner);
-    float pitch_desired = Kp_xy_inner * vx_error + Kd_xy_inner * dx_inner;
+    // float roll_desired = -(Kp_xy_inner * vy_error + Kd_xy_inner * dy_inner);
+    // float pitch_desired = Kp_xy_inner * vx_error + Kd_xy_inner * dx_inner;
 
     float roll_desired_clamped = std::clamp(roll_desired, -0.2f, 0.2f);
     float pitch_desired_clamped = std::clamp(pitch_desired, -0.2f, 0.2f);
