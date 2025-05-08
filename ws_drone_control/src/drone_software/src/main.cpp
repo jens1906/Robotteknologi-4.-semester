@@ -65,14 +65,13 @@ int main(int argc, char *argv[])
 
     while (rclcpp::ok())
     {
-        std::cout << "Enter command (turnon, turnoff, kill, start, stop, setpoint, test, manual, zcon, vicontest, exit): ";
+        std::cout << "Enter command (turnon, turnoff, kill, start, stop, exit, tune): ";
         std::getline(std::cin, input);
 
         if (input == "turnon")
         {
             RCLCPP_INFO(node->get_logger(), "Turning on the drone...");
             running.store(true); // Start the drone thread
-            // controller.publishVehicleAttitudeSetpoint({0.0f, 0.0f, 0.0f}, 0.0f);  // Example setpoint
         }
         else if (input == "turnoff")
         {
@@ -106,13 +105,11 @@ int main(int argc, char *argv[])
             }
 
             controller.stopGoalPositionThread();
-            // controller.publishVehicleAttitudeSetpoint({0.0f, 0.0f, 0.0f}, 0.0f);  // Example setpoint
             running.store(false); // Stop the drone thread
         }
         else if (input == "kill")
         {
             RCLCPP_INFO(node->get_logger(), "Kill command received. Disarming...");
-            controller.publishVehicleAttitudeSetpoint(0.0f, 0.0f, 0.0f, 0.0f); // Example setpoint
             running.store(false);                                              // Stop the drone thread
             initialize.disarm(true);                                           // Disarm the drone
         }
