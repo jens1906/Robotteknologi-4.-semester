@@ -20,3 +20,8 @@ float32 kp_xy_inner    # Changed from Kp_xy_inner
 float32 kd_xy_inner    # Changed from Kd_xy_inner
 float32 kp_z           # Changed from Kp_z
 float32 kd_z           # Changed from Kd_z
+float32 ki_x_inner_integral    # Changed from Ki_xy_inner
+float32 ki_y_inner_integral    # Changed from Ki_xy_inner
+float32 ki_xy_inner
+float32 ki_z_inner_integral    # Changed from Ki_z_inner
+float32 ki_z           # Changed from Ki_z

@@ -235,11 +235,11 @@ void Controller::startGoalPositionThread()
             // Convert the input Vicon yaw to the drone's local frame
             float desired_yaw_ned = -goal_yaw + initial_yaw_offset_;
 
-            // Publish the calculated setpoint
+            // Publish the calculated setpoint  
             publishVehicleAttitudeSetpoint(roll_pitch[0], roll_pitch[1], thrust, desired_yaw_ned);
 
             // Publish debug variables
-            publishDebugVariables(position, l_vicon_velocity, {x_error_local, y_error_local, z_error}, thrust, {goal_position[0], goal_position[1], goal_position[2]}, roll_pitch[0], roll_pitch[1], Kp_xy_outer, Kd_xy_outer, Kp_xy_inner, Kd_xy_inner, Kp_z, Kd_z);
+            publishDebugVariables(position, l_vicon_velocity, {x_error_local, y_error_local, z_error}, thrust, {goal_position[0], goal_position[1], goal_position[2]}, roll_pitch[0], roll_pitch[1], Kp_xy_outer, Kd_xy_outer, Kp_xy_inner, Kd_xy_inner, Kp_z, Kd_z, x_integral_inner_, y_integral_inner_, Ki_xy_inner, z_integral_inner_, Ki_z);
         }
 
         std::cout << "Exiting goalPosition thread." << std::endl;
@@ -255,7 +255,7 @@ void Controller::stopGoalPositionThread()
     }
 }
 
-void Controller::publishDebugVariables(const std::array<float, 3> &position, const std::array<float, 3> &velocity, const std::array<float, 3> &errors, float thrust, const std::array<float, 3> &goal_position, float roll_desired_pre_clamp, float pitch_desired_pre_clamp, float Kp_xy_outer, float Kd_xy_outer, float Kp_xy_inner, float Kd_xy_inner, float Kp_z, float Kd_z)
+void Controller::publishDebugVariables(const std::array<float, 3> &position, const std::array<float, 3> &velocity, const std::array<float, 3> &errors, float thrust, const std::array<float, 3> &goal_position, float roll_desired_pre_clamp, float pitch_desired_pre_clamp, float Kp_xy_outer, float Kd_xy_outer, float Kp_xy_inner, float Kd_xy_inner, float Kp_z, float Kd_z, float x_integral_inner, float y_integral_inner, float Ki_xy_inner, float z_integral_inner, float Ki_z)
 {
     drone_software::msg::DebugVariables debug_msg;
     debug_msg.x = position[0];
@@ -280,6 +280,12 @@ void Controller::publishDebugVariables(const std::array<float, 3> &position, con
     debug_msg.kd_xy_inner = Kd_xy_inner;
     debug_msg.kp_z = Kp_z;
     debug_msg.kd_z = Kd_z;
+    debug_msg.ki_x_inner_integral = x_integral_inner;
+    debug_msg.ki_y_inner_integral = y_integral_inner;
+    debug_msg.ki_xy_inner = Ki_xy_inner;
+    debug_msg.ki_z_inner_integral = z_integral_inner;
+    debug_msg.ki_z = Ki_z;
+
     ros_debug_pub_->publish(debug_msg);
 }
 

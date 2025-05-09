@@ -67,7 +67,7 @@ private:
     bool vicon_updated_ = false;              // Flag to indicate a new Vicon update
 
     rclcpp::Publisher<drone_software::msg::DebugVariables>::SharedPtr ros_debug_pub_;                                                                                                                                                                                                                                                                                     // Publisher for debug variables
-    void publishDebugVariables(const std::array<float, 3> &position, const std::array<float, 3> &velocity, const std::array<float, 3> &errors, float thrust, const std::array<float, 3> &goal_position, float roll_desired_pre_clamp, float pitch_desired_pre_clamp, float Kp_xy_outer, float Kd_xy_outer, float Kp_xy_inner, float Kd_xy_inner, float Kp_z, float Kd_z); // Updated signature
+    void publishDebugVariables(const std::array<float, 3> &position, const std::array<float, 3> &velocity, const std::array<float, 3> &errors, float thrust, const std::array<float, 3> &goal_position, float roll_desired_pre_clamp, float pitch_desired_pre_clamp, float Kp_xy_outer, float Kd_xy_outer, float Kp_xy_inner, float Kd_xy_inner, float Kp_z, float Kd_z, float x_integral_inner, float y_integral_inner, float Ki_xy_inner, float z_integral_inner, float Ki_z); // Updated signature
 
     float pi_ = 3.14159265358979323846; // Pi constant
 
@@ -75,6 +75,9 @@ private:
     float x_integral_inner_ = 0.32f; // Integral term for x inner PID controller
     float y_integral_inner_ = 0.32f; // Integral term for y inner PID controller
     float Ki_xy_inner = 0.03; 
+
+    float z_integral_inner_ = 0.0f; // Integral term for z inner PID controller
+    float Ki_z = 0.0f; // Integral term for z PID controller
 
     float Kp_xy_outer = 2.0f; //0.111f; //Måske prøve 0.9804f   ?
     float Kd_xy_outer = 0.2f;//0.6128f; //0.1804f; //Måske prøve 0.6128f   ?
