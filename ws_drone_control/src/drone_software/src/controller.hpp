@@ -71,6 +71,8 @@ private:
 
     float pi_ = 3.14159265358979323846; // Pi constant
 
+    float getYawOffset(float vicon_yaw); //Calcuate the yaw offset
+
     // Integral Terms for PID controllers (commented out for now)
     float x_integral_inner_ = 0.32f; // Integral term for x inner PID controller
     float y_integral_inner_ = 0.32f; // Integral term for y inner PID controller

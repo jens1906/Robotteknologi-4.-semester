@@ -174,21 +174,21 @@ float Controller::zToThrust(float z_error, float dt)
     return thrust_clamped;
 }
 
+float Controller::getYawOffset(float vicon_yaw) // Calculate the yaw offset
+{
+    std::unique_lock<std::mutex> lock(vicon_mutex_);
+    float imu_yaw = atan2(2.0f * (vehicle_attitude_quaternion_[0] * vehicle_attitude_quaternion_[3] +
+                                  vehicle_attitude_quaternion_[1] * vehicle_attitude_quaternion_[2]),
+                          1.0f - 2.0f * (vehicle_attitude_quaternion_[2] * vehicle_attitude_quaternion_[2] +
+                                         vehicle_attitude_quaternion_[3] * vehicle_attitude_quaternion_[3]));
+    float neg_vicon_yaw = -vicon_yaw; // Rename the local variable
+    float yaw_offset = imu_yaw - neg_vicon_yaw;
+    return yaw_offset;
+}
+
 void Controller::startGoalPositionThread()
 {
     stop_thread_.store(false);
-
-    // Calculate the initial yaw offset
-    {
-        std::unique_lock<std::mutex> lock(vicon_mutex_);
-        float imu_yaw = atan2(2.0f * (vehicle_attitude_quaternion_[0] * vehicle_attitude_quaternion_[3] +
-                                      vehicle_attitude_quaternion_[1] * vehicle_attitude_quaternion_[2]),
-                              .0f - 2.0f * (vehicle_attitude_quaternion_[2] * vehicle_attitude_quaternion_[2] +
-                                            vehicle_attitude_quaternion_[3] * vehicle_attitude_quaternion_[3]));
-        float vicon_yaw = -vicon_position_[5];
-        initial_yaw_offset_ = imu_yaw - vicon_yaw;
-        std::cout << "Initial Yaw Offset: " << initial_yaw_offset_ << std::endl;
-    }
 
     goal_position_thread_ = std::thread([this]() { // Remove goal_position from the capture list
         while (!stop_thread_.load())
@@ -233,7 +233,8 @@ void Controller::startGoalPositionThread()
             float thrust = zToThrust(z_error, l_vicon_dt);
 
             // Convert the input Vicon yaw to the drone's local frame
-            float desired_yaw_ned = -goal_yaw + initial_yaw_offset_;
+            float yaw_offset = getYawOffset(l_vicon_position[5]);
+            float desired_yaw_ned = -goal_yaw + yaw_offset;
 
             // Publish the calculated setpoint  
             publishVehicleAttitudeSetpoint(roll_pitch[0], roll_pitch[1], thrust, desired_yaw_ned);
