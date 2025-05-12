@@ -1,0 +1,44 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36" version="27.0.1">
+  <diagram name="Page-1" id="G-ckZTs5RPdfkZEC8eKY">
+    <mxGraphModel dx="706" dy="1631" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="XXsTWGEr5qUVlCdPRMRx-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;" edge="1" parent="1" source="XXsTWGEr5qUVlCdPRMRx-1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="440" y="345" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XXsTWGEr5qUVlCdPRMRx-6" value="Turn off roters &amp;amp;&lt;br&gt;stop current task" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="XXsTWGEr5qUVlCdPRMRx-3">
+          <mxGeometry x="-0.1203" y="3" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XXsTWGEr5qUVlCdPRMRx-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;" edge="1" parent="1" source="XXsTWGEr5qUVlCdPRMRx-1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="440" y="375" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XXsTWGEr5qUVlCdPRMRx-8" value="Start landing &lt;br&gt;procedure" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="XXsTWGEr5qUVlCdPRMRx-4">
+          <mxGeometry x="-0.3195" relative="1" as="geometry">
+            <mxPoint x="9" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XXsTWGEr5qUVlCdPRMRx-1" value="Safety module" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="330" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="XXsTWGEr5qUVlCdPRMRx-2" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" target="XXsTWGEr5qUVlCdPRMRx-1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="80" y="360" as="sourcePoint" />
+            <mxPoint x="130" y="380" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XXsTWGEr5qUVlCdPRMRx-5" value="Command from &lt;br&gt;interface" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="XXsTWGEr5qUVlCdPRMRx-2">
+          <mxGeometry x="-0.5833" relative="1" as="geometry">
+            <mxPoint x="25" as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
