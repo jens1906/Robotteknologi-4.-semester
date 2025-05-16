@@ -74,8 +74,8 @@ private:
     float getYawOffset(float vicon_yaw); //Calcuate the yaw offset
 
     // Integral Terms for PID controllers (commented out for now)
-    float x_integral_inner_ = 0.32f; // Integral term for x inner PID controller
-    float y_integral_inner_ = 0.32f; // Integral term for y inner PID controller
+    float x_integral_inner_ = 0.0f; // Integral term for x inner PID controller
+    float y_integral_inner_ = 0.0f; // Integral term for y inner PID controller
     float Ki_xy_inner = 0.03; 
 
     float z_integral_inner_ = 0.0f; // Integral term for z inner PID controller
