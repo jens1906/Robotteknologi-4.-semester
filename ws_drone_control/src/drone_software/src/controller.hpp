@@ -80,14 +80,14 @@ private:
     float Ki_xy_inner = 0.15f; // Integral gain for xy inner PID controller
 
     float z_integral_inner_ = 0.0f; // Integral term for z inner PID controller
-    float Ki_z = 0.1f; // Integral term for z PID controller
+    float Ki_z = 0.2f; // Integral term for z PID controller
 
     float Kp_xy_outer = 2.0f; //0.111f; //Måske prøve 0.9804f   ?
-    float Kd_xy_outer = 0.2f;//0.6128f; //0.1804f; //Måske prøve 0.6128f   ?
-    float Kp_xy_inner = 0.3;//0.2976; //0.1f; //Måske prøve 0.2788f   ?
+    float Kd_xy_outer = 0.3f;//0.6128f; //0.1804f; //Måske prøve 0.6128f   ?
+    float Kp_xy_inner = 0.2;//0.2976; //0.1f; //Måske prøve 0.2788f   ?
     float Kd_xy_inner = 0.0465f; //0.05f; //Måske prøve 0.0523f   ?
     float Kp_z = 1.3f; //Stable p 1.3f | 0.8173f Settling time 10s | Perhaps 0.20430f (Settling time 20s)
-    float Kd_z = 1.0f; //Stable d 1.0f | 2.2140f Settling time 10s | Perhaps 1.10700f (Settling time 20s)
+    float Kd_z = 1.1f; //Stable d 1.0f | 2.2140f Settling time 10s | Perhaps 1.10700f (Settling time 20s)
 };
 
 #endif
