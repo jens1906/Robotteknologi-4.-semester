@@ -77,10 +77,10 @@ private:
     float x_integral_inner_ = 0.0f; // Integral term for x inner PID controller
     float y_integral_inner_ = 0.0f; // Integral term for y inner PID controller
 
-    float Ki_xy_inner = 0.03; 
+    float Ki_xy_inner = 0.15f; // Integral gain for xy inner PID controller
 
     float z_integral_inner_ = 0.0f; // Integral term for z inner PID controller
-    float Ki_z = 0.0f; // Integral term for z PID controller
+    float Ki_z = 0.1f; // Integral term for z PID controller
 
     float Kp_xy_outer = 2.0f; //0.111f; //Måske prøve 0.9804f   ?
     float Kd_xy_outer = 0.2f;//0.6128f; //0.1804f; //Måske prøve 0.6128f   ?
