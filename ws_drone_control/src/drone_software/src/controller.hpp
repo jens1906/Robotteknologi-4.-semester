@@ -84,7 +84,7 @@ private:
 
     float Kp_xy_inner = 0.15;//0.2976; //0.1f; //Måske prøve 0.2788f   ?
     float Ki_xy_inner = 0.1f; // Integral gain for xy inner PID controller
-    float Kd_xy_inner = 0.0465f; //0.05f; //Måske prøve 0.0523f   ?
+    float Kd_xy_inner = 0.1f; //0.05f; //Måske prøve 0.0523f   ?
 
 
     float z_integral_inner_ = 0.0f; // Integral term for z inner PID controller
