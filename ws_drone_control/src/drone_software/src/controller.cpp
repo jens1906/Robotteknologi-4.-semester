@@ -242,7 +242,7 @@ void Controller::startGoalPositionThread()
             publishVehicleAttitudeSetpoint(roll_pitch[0], roll_pitch[1], thrust, desired_yaw_ned);
 
             // Publish debug variables
-            publishDebugVariables(position, l_vicon_velocity, {x_error_local, y_error_local, z_error}, thrust, {goal_position[0], goal_position[1], goal_position[2]}, roll_pitch[0], roll_pitch[1], Kp_xy_outer, Kd_xy_outer, Kp_xy_inner, Kd_xy_inner, Kp_z, Kd_z, x_integral_inner_, y_integral_inner_, Ki_xy_inner, z_integral_inner_, Ki_z);
+            publishDebugVariables(position, l_vicon_velocity, {x_error_local, y_error_local, z_error}, thrust, {goal_position[0], goal_position[1], goal_position[2]}, roll_pitch[0], roll_pitch[1], Kp_xy_outer, Kd_xy_outer, Kp_xy_inner, Kd_xy_inner, Kp_z, Kd_z, x_integral_inner_, y_integral_inner_, Ki_xy_inner, z_integral_inner_, Ki_z, {x_velocity_local, y_velocity_local});
         }
 
         std::cout << "Exiting goalPosition thread." << std::endl;
