@@ -1,0 +1,501 @@
+{
+  "configById": {
+    "Plot!13wdiof": {
+      "paths": [
+        {
+          "value": "/debug_variables.goal_x",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "color": "#4e98e2"
+        },
+        {
+          "value": "/Vicon.data[2]",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "color": "#f5774d"
+        }
+      ],
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240
+    },
+    "Plot!11mlhzf": {
+      "paths": [
+        {
+          "value": "/debug_variables.goal_y",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "color": "#4e98e2"
+        },
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/Vicon.data[3]",
+          "enabled": true,
+          "color": "#f5774d"
+        }
+      ],
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240
+    },
+    "Plot!10j0xa3": {
+      "paths": [
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/Vicon.data[4]",
+          "enabled": true,
+          "color": "#f5774d"
+        },
+        {
+          "value": "/debug_variables.goal_z",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "color": "#4e98e2"
+        }
+      ],
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240
+    },
+    "Plot!5hirz": {
+      "paths": [
+        {
+          "value": "/Vicon.data[5]",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "color": "#4e98e2"
+        }
+      ],
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240,
+      "foxglovePanelTitle": "Roll"
+    },
+    "Plot!2wswwd4": {
+      "paths": [
+        {
+          "value": "/Vicon.data[6]",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "color": "#4e98e2"
+        }
+      ],
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240,
+      "foxglovePanelTitle": "Pitch"
+    },
+    "Plot!a33dno": {
+      "paths": [
+        {
+          "value": "/Vicon.data[7]",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "color": "#4e98e2"
+        }
+      ],
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240,
+      "foxglovePanelTitle": "Yaw"
+    },
+    "Plot!jccsn4": {
+      "paths": [
+        {
+          "value": "/debug_variables.kp_xy_outer",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "color": "#4e98e2"
+        },
+        {
+          "value": "/debug_variables.kd_xy_outer",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "color": "#f5774d"
+        }
+      ],
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240
+    },
+    "Plot!2s850p0": {
+      "paths": [
+        {
+          "value": "/debug_variables.kp_xy_inner",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "color": "#4e98e2"
+        },
+        {
+          "value": "/debug_variables.ki_xy_inner",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "color": "#f7df71"
+        },
+        {
+          "value": "/debug_variables.kd_xy_inner",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "color": "#f5774d"
+        }
+      ],
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240
+    },
+    "Plot!4kjbmqu": {
+      "paths": [
+        {
+          "value": "/debug_variables.kp_z",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "color": "#4e98e2"
+        },
+        {
+          "value": "/debug_variables.ki_z",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "color": "#f5774d"
+        },
+        {
+          "value": "/debug_variables.kd_z",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "color": "#f7df71"
+        }
+      ],
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240
+    },
+    "Plot!jpwixb": {
+      "paths": [
+        {
+          "value": "/fmu/out/actuator_outputs.output[0]",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "color": "#4e98e2"
+        }
+      ],
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240
+    },
+    "Plot!2lhsp71": {
+      "paths": [
+        {
+          "value": "/fmu/out/actuator_outputs.output[0]",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "color": "#4e98e2"
+        }
+      ],
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240
+    },
+    "Plot!11lvwev": {
+      "paths": [
+        {
+          "value": "/fmu/out/actuator_outputs.output[1]",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "color": "#4e98e2"
+        }
+      ],
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240
+    },
+    "Plot!3ud2hrx": {
+      "paths": [
+        {
+          "value": "/fmu/out/actuator_outputs.output[0]",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "color": "#4e98e2"
+        }
+      ],
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240
+    },
+    "Plot!1iypedu": {
+      "paths": [
+        {
+          "value": "/fmu/in/vehicle_attitude_setpoint.thrust_body[2]",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "color": "#f5774d"
+        }
+      ],
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240
+    },
+    "Plot!20js9qx": {
+      "paths": [
+        {
+          "value": "/fmu/out/battery_status.voltage_filtered_v",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "color": "#4e98e2"
+        }
+      ],
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240
+    },
+    "Gauge!myyapk": {
+      "path": "/fmu/out/battery_status.voltage_filtered_v",
+      "minValue": 13.5,
+      "maxValue": 16.8,
+      "colorMap": "red-yellow-green",
+      "colorMode": "colormap",
+      "gradient": [
+        "#0000ff",
+        "#ff00ff"
+      ],
+      "reverse": false,
+      "foxglovePanelTitle": "Battery Status"
+    },
+    "Plot!47p0o5p": {
+      "paths": [
+        {
+          "value": "/fmu/out/battery_status.current_filtered_a",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "color": "#4e98e2"
+        },
+        {
+          "value": "/fmu/out/battery_status.current_average_a",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "color": "#f5774d"
+        }
+      ],
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240
+    },
+    "RosOut!38e601s": {
+      "searchTerms": [],
+      "minLogLevel": 1,
+      "nameFilter": {
+        "rosbag2_recorder": {
+          "visible": false
+        }
+      }
+    },
+    "StateTransitions!2ei8vim": {
+      "paths": [
+        {
+          "value": "/fmu/in/vehicle_command.param2",
+          "timestampMethod": "receiveTime"
+        },
+        {
+          "value": "/fmu/in/vehicle_command.command",
+          "enabled": true,
+          "timestampMethod": "receiveTime"
+        },
+        {
+          "value": "/fmu/in/vehicle_command.from_external",
+          "enabled": true,
+          "timestampMethod": "receiveTime"
+        },
+        {
+          "value": "/fmu/out/actuator_outputs.output[1]",
+          "timestampMethod": "receiveTime"
+        },
+        {
+          "value": "/fmu/out/vehicle_status.arming_state",
+          "timestampMethod": "receiveTime"
+        },
+        {
+          "value": "/fmu/out/vehicle_control_mode.flag_control_offboard_enabled",
+          "timestampMethod": "receiveTime"
+        }
+      ],
+      "isSynced": true,
+      "xAxisLabel": "Time",
+      "showPoints": true,
+      "timeWindowMode": "automatic"
+    },
+    "Tab!2jbngyn": {
+      "activeTabIdx": 6,
+      "tabs": [
+        {
+          "title": "VXYZ",
+          "layout": {
+            "first": "Plot!13wdiof",
+            "second": {
+              "first": "Plot!11mlhzf",
+              "second": "Plot!10j0xa3",
+              "direction": "column"
+            },
+            "direction": "column",
+            "splitPercentage": 28.900949796472187
+          }
+        },
+        {
+          "title": "VRPY",
+          "layout": {
+            "first": "Plot!5hirz",
+            "second": {
+              "first": "Plot!2wswwd4",
+              "second": "Plot!a33dno",
+              "direction": "column"
+            },
+            "direction": "column",
+            "splitPercentage": 37.27619473134231
+          }
+        },
+        {
+          "title": "ControlVars",
+          "layout": {
+            "first": {
+              "first": "Plot!jccsn4",
+              "second": "Plot!2s850p0",
+              "direction": "column"
+            },
+            "second": "Plot!4kjbmqu",
+            "direction": "column",
+            "splitPercentage": 64.85753052917232
+          }
+        },
+        {
+          "title": "Motors",
+          "layout": {
+            "first": "Plot!jpwixb",
+            "second": {
+              "first": "Plot!2lhsp71",
+              "second": {
+                "first": "Plot!11lvwev",
+                "second": {
+                  "first": "Plot!3ud2hrx",
+                  "second": "Plot!1iypedu",
+                  "direction": "column",
+                  "splitPercentage": 45.14363508160217
+                },
+                "direction": "column",
+                "splitPercentage": 29.947291013092865
+              },
+              "direction": "column",
+              "splitPercentage": 23.32843392810095
+            },
+            "direction": "column",
+            "splitPercentage": 20.105664087377548
+          }
+        },
+        {
+          "title": "BatteryStatus",
+          "layout": {
+            "first": {
+              "first": "Plot!20js9qx",
+              "second": "Gauge!myyapk",
+              "direction": "row"
+            },
+            "second": "Plot!47p0o5p",
+            "direction": "column"
+          }
+        },
+        {
+          "title": "ConsoleCommands",
+          "layout": "RosOut!38e601s"
+        },
+        {
+          "title": "CommandChanges",
+          "layout": "StateTransitions!2ei8vim"
+        }
+      ]
+    }
+  },
+  "globalVariables": {
+    "globalVariable": 5
+  },
+  "userNodes": {},
+  "playbackConfig": {
+    "speed": 1
+  },
+  "layout": "Tab!2jbngyn"
+}
