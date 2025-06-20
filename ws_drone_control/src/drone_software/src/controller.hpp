@@ -75,16 +75,16 @@ private:
 
     // Integral Terms for PID controllers (commented out for now)
 
-    float Kp_xy_outer = 1.5f; //0.111f; //Måske prøve 0.9804f   ?
-    float Kd_xy_outer = 0.45f;//0.6128f; //0.1804f; //Måske prøve 0.6128f   ?
+    float Kp_xy_outer = 2.0f; //0.111f; //Måske prøve 0.9804f   ?
+    float Kd_xy_outer = 0.2f;//0.6128f; //0.1804f; //Måske prøve 0.6128f   ?
 
 
     float x_integral_inner_ = 0.0f; // Integral term for x inner PID controller
     float y_integral_inner_ = 0.0f; // Integral term for y inner PID controller
 
-    float Kp_xy_inner = 0.15;//0.2976; //0.1f; //Måske prøve 0.2788f   ?
-    float Ki_xy_inner = 0.175f; // Integral gain for xy inner PID controller
-    float Kd_xy_inner = 0.1f; //0.05f; //Måske prøve 0.0523f   ?
+    float Kp_xy_inner = 0.3f;//0.2976; //0.1f; //Måske prøve 0.2788f   ?
+    float Ki_xy_inner = 0.03f; // Integral gain for xy inner PID controller
+    float Kd_xy_inner = 0.0465f; //0.05f; //Måske prøve 0.0523f   ?
 
 
     float z_integral_inner_ = 0.0f; // Integral term for z inner PID controller
