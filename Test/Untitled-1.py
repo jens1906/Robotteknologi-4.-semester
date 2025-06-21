@@ -82,7 +82,7 @@ mcap_full_path = base_path / mcap_path
 grouped_msgs = []
 change_pos = []
 i = 0
-mcap_full_path = r"C:\Users\André's PC\Documents\GitHub\Robotteknologi-4.-semester\RosBags\PIDTEST0805V3\PIDTEST0805V3_0.mcap"
+mcap_full_path = r"C:\Users\André's PC\Documents\GitHub\Robotteknologi-4.-semester\RosBags\2006\2006testV14FULL\2006testV14FULL_0.mcap"
 with open(mcap_full_path, "rb") as f:
     current_group = None
     for msg in read_ros2_messages(f):
@@ -113,7 +113,7 @@ with open(mcap_full_path, "rb") as f:
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 
-def plot_3d_path(grouped_msgs):
+def plot_3d_path(grouped_msgs, last_group_cutoff=None):
     fig = plt.figure(figsize=(10, 8))
     ax = fig.add_subplot(111, projection='3d')
 
@@ -123,9 +123,16 @@ def plot_3d_path(grouped_msgs):
 
     for idx, group in enumerate(grouped_msgs):
         if len(group) > 1 and isinstance(group[1], list):  # Ensure group contains valid data
-            x = [entry[2] for entry in group[1:]]
-            y = [entry[3] for entry in group[1:]]
-            z = [entry[4] for entry in group[1:]]
+            # If this is the last group and a cutoff is set, only plot up to last_group_cutoff
+            if idx == len(grouped_msgs) - 1 and last_group_cutoff is not None:
+                data_range = group[1:1+last_group_cutoff]
+            else:
+                data_range = group[1:]
+            if not data_range:
+                continue
+            x = [entry[2] for entry in data_range]
+            y = [entry[3] for entry in data_range]
+            z = [entry[4] for entry in data_range]
             label = group[0] if idx < 5 else None  # Limit legend to first 5 groups
             ax.plot(x, y, z, label=label)
 
@@ -158,7 +165,12 @@ def plot_3d_path(grouped_msgs):
         ax.legend()
     plt.show()
 
-plot_3d_path(grouped_msgs)
+# Set cutoff index for grouped_msgs to ignore useless data at the end
+#cutoff_index = len(grouped_msgs)  # Change this to your desired cutoff index, e.g., 10
+print (f"Total groups: {len(grouped_msgs)}")
+cutoff_index = 32
+last_group_cutoff = 720  # set this to the number of valid points in the last group
+plot_3d_path(grouped_msgs[:cutoff_index], last_group_cutoff=last_group_cutoff)
 
 # %%
 #csv file
