@@ -165,8 +165,10 @@ float Controller::zToThrust(float z_error, float dt)
 
     static float prev_z_error = 0.0f;
 
+    z_integral_inner_ += z_error * dt; // Integral term for inner loop
+
     float z_derivative = (z_error - prev_z_error) / dt;
-    float thrust = Kp_z * z_error + Kd_z * z_derivative + g_compensation;
+    float thrust = Kp_z * z_error + Ki_z * z_integral_inner_ + Kd_z * z_derivative + g_compensation;
     float thrust_clamped = std::clamp(thrust, 0.0f, 1.0f); // Clamp thrust to [0, 1.0]
 
     prev_z_error = z_error;
